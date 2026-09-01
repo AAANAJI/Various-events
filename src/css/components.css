@@ -170,7 +170,6 @@
 /* ── Numbered list (values, method, why) ─────────────────────────────── */
 .numbered { display: grid; gap: var(--sp-6); }
 @media (min-width: 44rem) { .numbered { grid-template-columns: repeat(2, 1fr); gap: var(--sp-7) var(--sp-6); } }
-.numbered--five { }
 @media (min-width: 62rem) { .numbered--three { grid-template-columns: repeat(3, 1fr); } }
 
 .numbered__item { position: relative; padding-block-start: var(--sp-5); border-block-start: 1px solid var(--rule-hairline); }
@@ -194,7 +193,7 @@
   font-variant-numeric: tabular-nums;
   display: flex; align-items: baseline; gap: 0.1em;
 }
-.stat--pending .stat__value { color: var(--text-faint); font-weight: 300; }
+.stat--pending .stat__value { color: var(--text-faint); font-weight: 400; }
 .stat__unit { font-size: 0.42em; font-weight: 600; color: var(--lime-400); }
 .stat__label { font-size: var(--fs-small); color: var(--text-body); margin-block-start: var(--sp-3); }
 .stat__label-en { font-size: var(--fs-micro); color: var(--text-muted); margin-block-start: var(--sp-1); }

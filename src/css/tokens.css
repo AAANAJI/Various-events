@@ -9,20 +9,20 @@
   --ink-900: #0a141f;   /* near-black, deepest ground */
   --ink-800: #0f1b28;   /* navy, the primary page ground */
   --ink-700: #152433;   /* raised surface: cards, wells */
-  --ink-600: #1d3044;   /* hairline-adjacent surface, derived for borders */
 
   /* The green ramp — the brand's only chromatic axis. */
-  --lime-400: #afda68;  /* primary accent */
-  --green-500:#7fae4b;
-  --green-600:#457a2e;  /* gradient terminus */
-  --green-700:#3f6b2a;
+  --lime-400: #afda68;  /* primary accent, and the gradient's start */
+  --green-600:#457a2e;  /* the gradient's terminus */
   --pale-300: #d3e9b0;  /* headings on dark ground */
   --sage-300: #a9c39a;  /* eyebrows, secondary labels */
-  --cream-200:#fff3b8;  /* rare highlight */
 
-  /* Neutrals */
+  /* Deliberately absent: #fff3b8. It reads as a brand accent in the deck — it
+     is the third most common colour there — but every one of its 69 uses is a
+     highlighter behind an editorial marker («للاعتماد», «تأكيد الأسماء», the X
+     placeholders). It is the deck's "to be confirmed" annotation, not part of
+     the palette, and carrying it over would import proofing marks as design. */
+
   --white:    #ffffff;
-  --off-white:#f3f5f1;
 
   /* Semantic text colours */
   --text-strong:  var(--white);
@@ -44,8 +44,6 @@
   --grad-rule-rtl: linear-gradient(270deg, var(--lime-400), var(--green-600));
 
   /* The navy scrim laid over full-bleed photography so text stays legible. */
-  --scrim-top: linear-gradient(180deg, rgba(15,27,40,.88) 0%, rgba(15,27,40,.35) 45%, rgba(15,27,40,0) 100%);
-  --scrim-bottom: linear-gradient(0deg, rgba(15,27,40,.94) 0%, rgba(15,27,40,.55) 40%, rgba(15,27,40,0) 100%);
   --scrim-full: linear-gradient(180deg, rgba(15,27,40,.72) 0%, rgba(15,27,40,.58) 50%, rgba(15,27,40,.86) 100%);
 
   /* Type scale — fluid, clamped. Arabic runs slightly larger than Latin at the
@@ -71,7 +69,7 @@
   /* Space — a 4px base, named by role rather than size. */
   --sp-1: 0.25rem;  --sp-2: 0.5rem;   --sp-3: 0.75rem;  --sp-4: 1rem;
   --sp-5: 1.5rem;   --sp-6: 2rem;     --sp-7: 3rem;     --sp-8: 4rem;
-  --sp-9: 6rem;     --sp-10: 8rem;
+  --sp-9: 6rem;
 
   /* Section rhythm — the "pause" between blocks, tightened on small screens. */
   --section-y: clamp(4rem, 2rem + 8vw, 9rem);
@@ -79,13 +77,11 @@
 
   /* Measure and gutters */
   --measure: 62ch;
-  --measure-tight: 46ch;
   --gutter: clamp(1.25rem, 0.6rem + 3vw, 4.5rem);
   --maxw: 1440px;
   --maxw-text: 1100px;
 
   --radius: 2px;      /* the deck is hard-edged; corners stay near-square */
-  --radius-lg: 4px;
 
   --dur-fast: 140ms;
   --dur: 260ms;

@@ -234,7 +234,7 @@ export function work(route, lang, A) {
     <div class="container">
       <p class="muted" style="max-inline-size:var(--measure)">${esc(t(workIntro.note, lang))}</p>
       <div class="work-grid" style="margin-block-start:3rem">
-        ${projects.map((p, i) => C.projectCard(route, lang, p, { featured: i === 0 || i === 7 })).join('\n        ')}
+        ${projects.map((p, i) => C.projectCard(route, lang, p, { featured: i === 0 })).join('\n        ')}
       </div>
     </div>
   </section>

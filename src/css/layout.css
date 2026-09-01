@@ -24,7 +24,6 @@
 }
 .section--tight { padding-block: var(--section-y-tight); }
 .section--dark  { background: var(--ink-900); }
-.section--raised{ background: var(--ink-700); }
 
 /* ── The eyebrow ──────────────────────────────────────────────────────────
    Sage, uppercase in Latin, with the Arabic label leading and the English
