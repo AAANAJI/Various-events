@@ -451,7 +451,7 @@ function ctaBand(route, lang, A) {
     ${C.watermark(route, lang, 'watermark--start watermark--bottom')}
     <div class="container">
       <hr class="rule" style="margin-inline:auto">
-      <p class="h2" style="max-inline-size:20ch;margin-inline:auto">${esc(t(ui.getInTouch, lang))}</p>
+      <h2 class="h2" style="max-inline-size:20ch;margin-inline:auto">${esc(t(ui.getInTouch, lang))}</h2>
       <p class="text-en" style="margin-block-start:.75rem">${C.echoSpan(ui.getInTouch, lang)}</p>
       <div style="margin-block-start:2rem;display:flex;gap:1rem;justify-content:center;flex-wrap:wrap">
         ${C.btn(linkTo(route, lang, 'contact', lang), t(ui.startConversation, lang))}

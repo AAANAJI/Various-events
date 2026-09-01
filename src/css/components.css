@@ -24,8 +24,8 @@
 
 .display { font-size: var(--fs-display); font-weight: 700; line-height: var(--lh-tight); }
 .h1 { font-size: var(--fs-h1); font-weight: 700; line-height: var(--lh-tight); }
-.h2 { font-size: var(--fs-h2); font-weight: 600; }
-.h3 { font-size: var(--fs-h3); font-weight: 600; }
+.h2 { font-size: var(--fs-h2); font-weight: 600; line-height: var(--lh-head); }
+.h3 { font-size: var(--fs-h3); font-weight: 600; line-height: var(--lh-head); }
 .lead {
   font-size: var(--fs-lead);
   line-height: 1.6;
