@@ -194,6 +194,19 @@
   .nav__link[aria-current='page']::after { inset-inline-end: auto; inline-size: 48px; }
 }
 
+/* At 320px (iPhone SE) the brand, language toggle and menu button together
+   overrun the row by ~29px. Tighten all three rather than dropping the wordmark:
+   the logo is the one thing that should survive the narrowest screen. */
+@media (max-width: 26rem) {
+  .masthead__inner { gap: var(--sp-3); }
+  .masthead__brand { gap: var(--sp-2); }
+  .masthead__wordmark { block-size: 20px; }
+  .masthead__mark { block-size: 24px; }
+  .lang-switch { padding: var(--sp-2) var(--sp-3); }
+  .nav-toggle { padding: var(--sp-1); }
+  .nav-toggle svg { inline-size: 22px; block-size: 22px; }
+}
+
 /* ── Footer ───────────────────────────────────────────────────────────── */
 .site-footer {
   background: var(--ink-900);

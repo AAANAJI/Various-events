@@ -27,9 +27,12 @@ export function eyebrow(pair, lang, n, { tag = 'h2' } = {}) {
 /** A heading whose primary language leads and whose other language echoes below. */
 export function pair(value, lang, { tag = 'h2', className = '' } = {}) {
   const lead = t(value, lang)
+  const other = lang === 'ar' ? 'en' : 'ar'
+  // `lang` is safe on the block and lets :lang() reach it; only `dir` has to
+  // stay on the inner span, since on a block it would flip text-align.
   return `<${tag} class="${esc(className)}">
       <span class="pair__lead">${esc(lead)}</span>
-      <span class="pair__echo">${echoSpan(value, lang)}</span>
+      <span class="pair__echo" lang="${other}">${echoSpan(value, lang)}</span>
     </${tag}>`
 }
 
