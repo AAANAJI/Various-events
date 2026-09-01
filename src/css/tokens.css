@@ -1,0 +1,94 @@
+/* ─────────────────────────────────────────────────────────────────────────
+   VARIOUS — design tokens
+   Every value is lifted from the 2026 company profile deck («منظومة الوقفة»
+   / The Pause System). No colour here is invented.
+   ───────────────────────────────────────────────────────────────────────── */
+
+:root {
+  /* Ground — the deck is a dark document. */
+  --ink-900: #0a141f;   /* near-black, deepest ground */
+  --ink-800: #0f1b28;   /* navy, the primary page ground */
+  --ink-700: #152433;   /* raised surface: cards, wells */
+  --ink-600: #1d3044;   /* hairline-adjacent surface, derived for borders */
+
+  /* The green ramp — the brand's only chromatic axis. */
+  --lime-400: #afda68;  /* primary accent */
+  --green-500:#7fae4b;
+  --green-600:#457a2e;  /* gradient terminus */
+  --green-700:#3f6b2a;
+  --pale-300: #d3e9b0;  /* headings on dark ground */
+  --sage-300: #a9c39a;  /* eyebrows, secondary labels */
+  --cream-200:#fff3b8;  /* rare highlight */
+
+  /* Neutrals */
+  --white:    #ffffff;
+  --off-white:#f3f5f1;
+
+  /* Semantic text colours */
+  --text-strong:  var(--white);
+  --text-body:    rgba(228, 238, 246, 0.78);
+  --text-muted:   rgba(228, 238, 246, 0.56);
+  --text-faint:   rgba(228, 238, 246, 0.38);
+  --text-accent:  var(--pale-300);
+  --text-eyebrow: var(--sage-300);
+
+  /* Lines */
+  --rule-hairline: rgba(255, 255, 255, 0.10);
+  --rule-strong:   rgba(255, 255, 255, 0.18);
+
+  /* The signature gradient rule: 56×3px, lime → deep green. */
+  --grad-rule: linear-gradient(90deg, var(--lime-400), var(--green-600));
+  --grad-rule-rtl: linear-gradient(270deg, var(--lime-400), var(--green-600));
+
+  /* The navy scrim laid over full-bleed photography so text stays legible. */
+  --scrim-top: linear-gradient(180deg, rgba(15,27,40,.88) 0%, rgba(15,27,40,.35) 45%, rgba(15,27,40,0) 100%);
+  --scrim-bottom: linear-gradient(0deg, rgba(15,27,40,.94) 0%, rgba(15,27,40,.55) 40%, rgba(15,27,40,0) 100%);
+  --scrim-full: linear-gradient(180deg, rgba(15,27,40,.72) 0%, rgba(15,27,40,.58) 50%, rgba(15,27,40,.86) 100%);
+
+  /* Type scale — fluid, clamped. Arabic runs slightly larger than Latin at the
+     same nominal step because Plex Arabic has a smaller apparent x-height. */
+  --fs-display: clamp(2.5rem, 1.5rem + 4.6vw, 5.25rem);
+  --fs-h1:      clamp(2rem, 1.35rem + 2.9vw, 3.75rem);
+  --fs-h2:      clamp(1.6rem, 1.25rem + 1.6vw, 2.5rem);
+  --fs-h3:      clamp(1.25rem, 1.1rem + 0.7vw, 1.625rem);
+  --fs-h4:      clamp(1.0625rem, 1rem + 0.35vw, 1.25rem);
+  --fs-lead:    clamp(1.125rem, 1.02rem + 0.55vw, 1.5rem);
+  --fs-body:    clamp(1rem, 0.97rem + 0.16vw, 1.0625rem);
+  --fs-small:   0.9375rem;
+  --fs-micro:   0.8125rem;
+  --fs-eyebrow: 0.8125rem;
+
+  --lh-tight: 1.18;
+  --lh-head:  1.32;
+  --lh-body:  1.85;
+
+  --ls-eyebrow: 0.16em;
+  --ls-latin-head: -0.01em;
+
+  /* Space — a 4px base, named by role rather than size. */
+  --sp-1: 0.25rem;  --sp-2: 0.5rem;   --sp-3: 0.75rem;  --sp-4: 1rem;
+  --sp-5: 1.5rem;   --sp-6: 2rem;     --sp-7: 3rem;     --sp-8: 4rem;
+  --sp-9: 6rem;     --sp-10: 8rem;
+
+  /* Section rhythm — the "pause" between blocks, tightened on small screens. */
+  --section-y: clamp(4rem, 2rem + 8vw, 9rem);
+  --section-y-tight: clamp(3rem, 1.75rem + 5vw, 5.5rem);
+
+  /* Measure and gutters */
+  --measure: 62ch;
+  --measure-tight: 46ch;
+  --gutter: clamp(1.25rem, 0.6rem + 3vw, 4.5rem);
+  --maxw: 1440px;
+  --maxw-text: 1100px;
+
+  --radius: 2px;      /* the deck is hard-edged; corners stay near-square */
+  --radius-lg: 4px;
+
+  --dur-fast: 140ms;
+  --dur: 260ms;
+  --dur-slow: 520ms;
+  --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+
+  --focus-ring: 2px solid var(--lime-400);
+  --focus-offset: 3px;
+}

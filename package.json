@@ -1,0 +1,14 @@
+{
+  "name": "various-events-site",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Static bilingual (Arabic/English) site for VARIOUS for Events Services",
+  "type": "module",
+  "scripts": {
+    "build": "node build/build.mjs",
+    "check": "node build/check.mjs",
+    "serve": "node build/serve.mjs",
+    "dev": "npm run build && npm run check && npm run serve"
+  },
+  "engines": { "node": ">=20" }
+}

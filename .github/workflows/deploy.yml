@@ -1,0 +1,76 @@
+name: Deploy to staging
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:        # lets you redeploy without a commit
+
+# Two pushes in quick succession must not rsync over each other.
+concurrency:
+  group: staging-various
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      # The generator has zero dependencies, so there is no install step and
+      # nothing to cache. Fail loudly here rather than rsyncing an empty
+      # directory over a working site.
+      - name: Build
+        run: |
+          set -eu
+          node build/build.mjs
+          test -f dist/index.html    || { echo "::error::dist/index.html missing after build"; exit 1; }
+          test -f dist/en/index.html || { echo "::error::dist/en/index.html missing after build"; exit 1; }
+          echo "dist: $(find dist -type f | wc -l) files, $(du -sh dist | cut -f1)"
+
+      # A root-absolute link is invisible locally and fatal on a subpath (§5 of
+      # the deployment playbook). Refuse to ship one.
+      - name: Verify no root-absolute links
+        run: node build/check.mjs
+
+      - name: Set up SSH
+        run: |
+          install -d -m 700 ~/.ssh
+          printf '%s\n' "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          ssh-keyscan -H "${{ secrets.SSH_HOST }}" >> ~/.ssh/known_hosts 2>/dev/null || true
+
+      # Confirms the target exists and is writable before --delete is let loose.
+      # A missing directory needs one `install -d -o deploy -g deploy` from root
+      # (§2); this step says so plainly instead of failing with a bare rsync error.
+      - name: Probe the target directory
+        run: |
+          set -eu
+          SSH="ssh -i ~/.ssh/id_ed25519 -o StrictHostKeyChecking=accept-new ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}"
+          if $SSH 'test -w /var/www/staging/various'; then
+            echo "::notice::/var/www/staging/various exists and is writable."
+          else
+            echo "::error::/var/www/staging/various is missing or not writable by ${{ secrets.SSH_USER }}."
+            echo "::error::A user with root must run once: install -d -o deploy -g deploy /var/www/staging/various"
+            exit 1
+          fi
+
+      # --delete is safe here: this directory belongs to this site alone and
+      # nothing is nested inside it (§9).
+      - name: Deploy
+        run: |
+          set -eu
+          rsync -az --delete \
+            -e "ssh -i ~/.ssh/id_ed25519 -o StrictHostKeyChecking=accept-new" \
+            dist/ \
+            "${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/var/www/staging/various/"
+
+      - name: Summary
+        run: |
+          echo "### Deployed" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- Arabic: https://staging.shfrah.com/various/" >> $GITHUB_STEP_SUMMARY
+          echo "- English: https://staging.shfrah.com/various/en/" >> $GITHUB_STEP_SUMMARY
