@@ -10,9 +10,10 @@ Intended home: **https://staging.shfrah.com/various/**
 
 ## Status
 
-The site is complete and verified. **It is not yet live** — two things are
-needed that only someone with server and repository access can do. See
-[Before it can deploy](#before-it-can-deploy).
+**Live** at https://staging.shfrah.com/various/ (English at `/various/en/`).
+
+Every push to this branch redeploys it. The one-time setup below is done —
+it is kept as the record of how, and for the next project on this host.
 
 ---
 
@@ -33,16 +34,11 @@ production, so a path bug shows up locally instead of on a client's screen.
 
 ---
 
-## Before it can deploy
+## The one-time setup (done)
 
-Both were confirmed by an actual CI run
-([run #1](https://github.com/AAANAJI/Various-events/actions)) — the build and
-link check passed; the deploy stopped at the server probe.
+### 1. The three repository secrets
 
-### 1. The three repository secrets are not set
-
-The CI log shows all three resolving to empty strings. Set them at
-**Settings → Secrets and variables → Actions**:
+Set at **Settings → Secrets and variables → Actions**:
 
 | Secret | Value |
 |---|---|
@@ -50,28 +46,52 @@ The CI log shows all three resolving to empty strings. Set them at
 | `SSH_USER` | `deploy` |
 | `SSH_PRIVATE_KEY` | the full private key, **including** the `-----BEGIN…` / `-----END…` lines *and* a trailing newline |
 
-A key pasted without its trailing newline is the usual cause of
-`Load key: error in libcrypto`.
+`SSH_PRIVATE_KEY` accepts either the raw PEM or a single base64 line. Prefer
+base64: it is one unbroken string, which is far easier to copy correctly off a
+phone terminal, and it makes `Load key: error in libcrypto` — a PEM pasted
+without its trailing newline — impossible. The workflow takes the longest run of
+base64 characters in the secret, so banner text copied along with the key is
+absorbed rather than breaking the deploy.
 
-### 2. The target directory does not exist
+### 2. The target directory
 
-`https://staging.shfrah.com/various/` currently returns a genuine 404, and the
-deploy user cannot create top-level directories. Someone with root runs, once:
+The deploy user cannot create top-level directories under `/var/www/staging/`,
+so this needed one run as root. `scripts/server-setup.sh` does it, along with
+generating and authorising the CI key:
 
 ```sh
-install -d -o deploy -g deploy /var/www/staging/various
+curl -fsSL https://raw.githubusercontent.com/AAANAJI/Various-events/claude/events-site-design-staging-u5jac0/scripts/server-setup.sh -o s.sh
+less s.sh          # read it before running it
+sudo bash s.sh
 ```
 
-Once both are done, push to this branch (or use **Run workflow**) and the deploy
-runs unattended. The workflow probes the directory before letting `rsync
---delete` near it, so a missing directory reports itself rather than failing
-with a bare permission error.
+The workflow probes the directory before letting `rsync --delete` near it, so a
+missing or unwritable directory reports itself rather than failing with a bare
+permission error.
 
-### After the first deploy
+### Verified on the live server
 
-Status codes cannot be fully trusted on this host — some prefixes have an nginx
-SPA fallback that answers missing files with `200` and a small HTML shell. This
-site's prefix should *not* have one (it needs no rewrite), so confirm that first:
+Measured after the first successful deploy (run #11):
+
+- **No SPA fallback on this prefix.** A missing path returns a genuine 404 of
+  162 bytes, so status codes here are trustworthy — which is what pre-rendering
+  a directory per route buys, and it makes every later diagnosis easier.
+- **All 117 files byte-identical** to the local build, by md5.
+- `css/site.css` → `text/css`, `.woff2` → `font/woff2`, `.svg` → `image/svg+xml`,
+  `.jpg` → `image/jpeg`. The silent font-fallback trap is not present here.
+- Both editions and deep links in both languages resolve, and the cross-language
+  switch on a depth-3 page resolves to a real page.
+
+A headless browser could not be used against the live URL: this environment's
+proxy resets the browser's TLS tunnel even though `curl` succeeds. The browser
+suite therefore ran against the local copy, which the checksum sweep proves is
+byte-identical to what the server returns.
+
+### Re-checking after a future deploy
+
+Status codes cannot be fully trusted on every prefix of this host — some have an
+nginx SPA fallback that answers missing files with `200` and a small HTML shell.
+This prefix does not, but confirm it again if the server config ever changes:
 
 ```sh
 curl -s -o /dev/null -w '%{http_code} %{size_download}b %{content_type}\n' \
