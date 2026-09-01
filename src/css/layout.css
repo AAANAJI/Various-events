@@ -98,9 +98,7 @@
   inset-block-start: 0;
   z-index: 100;
   padding-block: var(--sp-4);
-  background: rgba(10, 20, 31, 0.86);
-  backdrop-filter: blur(14px) saturate(1.2);
-  -webkit-backdrop-filter: blur(14px) saturate(1.2);
+  background: var(--ink-900);
   border-block-end: 1px solid var(--rule-hairline);
   transition: background-color var(--dur) var(--ease),
               backdrop-filter var(--dur) var(--ease),
@@ -115,11 +113,18 @@
   border-block-end-color: transparent;
 }
 .masthead[data-scrolled] {
-  background: rgba(10, 20, 31, 0.86);
-  backdrop-filter: blur(14px) saturate(1.2);
-  -webkit-backdrop-filter: blur(14px) saturate(1.2);
+  background: var(--ink-900);
   border-block-end-color: var(--rule-hairline);
   padding-block: var(--sp-3);
+}
+
+/* The blur is an enhancement, never the thing that makes the header readable. */
+@supports ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .masthead[data-scrolled] {
+    background: rgba(10, 20, 31, 0.88);
+    backdrop-filter: blur(14px) saturate(1.2);
+    -webkit-backdrop-filter: blur(14px) saturate(1.2);
+  }
 }
 .masthead__inner {
   display: flex;
@@ -185,12 +190,18 @@
 .nav-toggle[aria-expanded='true'] .nav-toggle__close { display: block; }
 
 @media (max-width: 60rem) {
-  .nav-toggle { display: block; order: 3; }
-  .lang-switch { order: 2; }
+  .nav-toggle { display: block; order: 3; position: relative; z-index: 95; }
+  .lang-switch { order: 2; position: relative; z-index: 95; }
+  /* The panel is a sibling of the toggle inside the masthead, so its z-index
+     must stay BELOW the toggle's or it paints over the close button and the
+     menu cannot be shut. */
   .nav {
     position: fixed;
     inset: 0;
-    inset-block-start: 0;
+    z-index: 90;
+    block-size: 100dvh;
+    overflow-y: auto;
+    overscroll-behavior: contain;
     flex-direction: column;
     align-items: flex-start;
     justify-content: center;

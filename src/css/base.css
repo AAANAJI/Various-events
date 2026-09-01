@@ -45,9 +45,22 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
-  overflow-x: hidden;
   min-height: 100vh;
 }
+
+/* NOTE: body must NOT carry `overflow-x: hidden`. It forces overflow-y to
+   compute to `auto`, which turns body into a scroll container — and that
+   breaks `position: sticky` on the masthead and re-bases `position: fixed`
+   for the mobile nav panel, which then renders off-screen. Horizontal
+   overflow is contained where it originates instead: `.section` clips its
+   own watermark. `build/check.mjs` fails the build if any page overflows. */
+
+/* Deliberately NO scroll lock while the nav is open. Setting overflow:hidden on
+   the scroll container while the page is scrolled makes a `position: fixed`
+   panel resolve against the document instead of the viewport — it then renders
+   at -scrollY, entirely off-screen. The panel is a full-screen opaque overlay
+   with `overscroll-behavior: contain`, so nothing shows through and no scroll
+   chains out of it; a lock buys nothing and costs that bug. */
 
 /* Latin headings get a touch of negative tracking; Arabic never does —
    letter-spacing breaks Arabic joining. */

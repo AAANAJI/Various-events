@@ -21,7 +21,9 @@
     var setOpen = function (open) {
       toggle.setAttribute('aria-expanded', String(open))
       panel.toggleAttribute('data-open', open)
-      document.documentElement.style.overflow = open ? 'hidden' : ''
+      // No scroll lock — see the note in base.css. Locking overflow while
+      // scrolled re-bases the fixed panel and it renders off-screen.
+      document.documentElement.classList.toggle('nav-open', open)
     }
     toggle.addEventListener('click', function () {
       setOpen(toggle.getAttribute('aria-expanded') !== 'true')
