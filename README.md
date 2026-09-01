@@ -90,6 +90,12 @@ the literal words «السنة» / «الموقع» / «الدورة» alongside
 present: Boulevard City Riyadh, Clock Tower Makkah, Hayat Mall Riyadh, Sinclair
 Riyadh, plus the Media Excellence Award's fifth edition.
 
+**Project films** — the deck states that every project has a documentary film on
+the company's YouTube channel, and its project slides carry a «التوثيق: فيلم
+يوتيوب + أرشيف صور» field plus a note about per-project QR codes. No channel or
+video URLs were supplied, so no links are published and that metadata field is
+omitted. Supply the URLs and each project page can carry its film.
+
 **Also flagged in the deck itself**
 
 - Founders' names and titles — «تأكيد الأسماء والمسميات» on the founders' slide.
