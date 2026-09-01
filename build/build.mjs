@@ -9,10 +9,15 @@ import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 import { LANGS, DIR, outDir, rootFrom, linkTo, esc, t, indexImages, widthsFor, walk } from './lib.mjs'
-import { nav, ui, brand, contact } from '../content/site.mjs'
+import { nav as navSource, ui, brand, contact } from '../content/site.mjs'
 import { projects } from '../content/projects.mjs'
+import { services } from '../content/services.mjs'
 import * as P from './pages.mjs'
-import { masthead, footer } from './components.mjs'
+import { masthead, footer, resolveNav } from './components.mjs'
+
+// Services drive their own sub-menu, so the menu and the pages cannot drift.
+const nav = resolveNav(navSource, { services })
+const sectionOf = id => nav.find(n => n.id === id)
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..')
 const DIST = join(ROOT, 'dist')
@@ -73,12 +78,12 @@ ${heroImage ? preloadHero(up, heroImage, heroSizes) : ''}
 </head>
 <body>
 <a class="skip-link" href="#main">${esc(t(ui.skipToContent, lang))}</a>
-${masthead(route, lang)}
+${masthead(route, lang, nav)}
 <main id="main">
 <div data-top-sentinel aria-hidden="true"></div>
 ${body}
 </main>
-${footer(route, lang, { contact, ui })}
+${footer(route, lang, { contact, ui, nav })}
 <script src="${esc(up)}js/site.js" defer></script>
 </body>
 </html>
@@ -101,19 +106,29 @@ function preloadHero(up, name, sizes = '100vw') {
 /** Every route, for both languages. */
 function routes() {
   const list = [
-    { route: '',         render: P.home },
-    { route: 'about',    render: P.about_ },
-    { route: 'services', render: P.servicesPage },
-    { route: 'work',     render: P.work },
-    { route: 'clients',  render: P.clientsPage },
-    { route: 'contact',  render: P.contactPage },
-    { route: '404',      render: P.notFound },
+    { route: '',               render: P.home },
+    { route: 'about',          render: (r, l) => P.aboutIndex(r, l, sectionOf('about')) },
+    { route: 'about/vision',   render: (r, l) => P.aboutVision(r, l, sectionOf('about')) },
+    { route: 'about/values',   render: (r, l) => P.aboutValues(r, l, sectionOf('about')) },
+    { route: 'about/founders', render: (r, l) => P.aboutFounders(r, l, sectionOf('about')) },
+    { route: 'services',       render: (r, l) => P.servicesIndex(r, l, sectionOf('services')) },
+    { route: 'process',        render: P.process },
+    { route: 'work',           render: (r, l) => P.work(r, l, sectionOf('work')) },
+    { route: 'sectors',        render: (r, l) => P.sectorsPage(r, l, sectionOf('work')) },
+    { route: 'clients',        render: P.clientsPage },
+    { route: 'contact',        render: P.contactPage },
+    { route: '404',            render: P.notFound },
   ]
+  services.forEach((s, i) => {
+    list.push({
+      route: `services/${s.slug}`,
+      render: (r, l) => P.servicePage(r, l, s, services[i - 1] ?? null, services[i + 1] ?? null, sectionOf('services')),
+    })
+  })
   projects.forEach((p, i) => {
     list.push({
       route: `work/${p.slug}`,
-      render: (route, lang) =>
-        P.project(route, lang, p, projects[i - 1] ?? null, projects[i + 1] ?? null),
+      render: (r, l) => P.project(r, l, p, projects[i - 1] ?? null, projects[i + 1] ?? null),
     })
   })
   return list

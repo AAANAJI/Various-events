@@ -315,3 +315,114 @@
   }
   .js-reveal [data-reveal][data-revealed] { opacity: 1; transform: none; }
 }
+
+/* ─────────────────────────────────────────────────────────────────────────
+   Page components introduced by the multi-page architecture
+   ───────────────────────────────────────────────────────────────────────── */
+
+/* A single sentence carrying a section — the web equivalent of the deck's
+   statement slides, but sized to be read rather than projected. */
+.statement {
+  font-size: var(--fs-h2);
+  font-weight: 600;
+  line-height: var(--lh-head);
+  color: var(--text-strong);
+  max-inline-size: 30ch;
+  text-wrap: balance;
+}
+.prose--lead { font-size: var(--fs-lead); line-height: 1.75; color: var(--text-accent); }
+.prose--lead p + p { margin-block-start: var(--sp-5); }
+
+.hero--page { min-block-size: clamp(22rem, 56vh, 34rem); }
+.hero--short { min-block-size: clamp(19rem, 46vh, 28rem); }
+.hero__sub { font-size: var(--fs-lead); color: var(--text-body); }
+
+/* ── Service tiles (homepage) ─────────────────────────────────────────── */
+.tiles { display: grid; gap: 1px; background: var(--rule-hairline); border: 1px solid var(--rule-hairline); }
+@media (min-width: 40rem) { .tiles { grid-template-columns: repeat(2, 1fr); } }
+@media (min-width: 64rem) { .tiles { grid-template-columns: repeat(3, 1fr); } }
+.tile { background: var(--ink-900); }
+.tile__link {
+  display: block;
+  block-size: 100%;
+  padding: var(--sp-6) var(--sp-5);
+  transition: background-color var(--dur-fast) var(--ease);
+}
+.tile__link:hover { background: var(--ink-700); }
+.tile__num { display: block; font-size: var(--fs-micro); font-weight: 700; color: var(--lime-400); margin-block-end: var(--sp-3); }
+.tile__title { display: block; font-size: var(--fs-h4); font-weight: 600; color: var(--text-strong); }
+.tile__lead { display: block; font-size: var(--fs-small); color: var(--text-muted); margin-block-start: var(--sp-3); line-height: 1.65; }
+
+/* ── Service rows (services index) ────────────────────────────────────── */
+.service-list { display: grid; gap: var(--sp-8); }
+.service-row { display: grid; gap: var(--sp-5); align-items: center; }
+@media (min-width: 62rem) {
+  .service-row { grid-template-columns: 0.85fr 1fr; gap: var(--sp-8); }
+  /* Alternate the media side so the page has a rhythm rather than a stack. */
+  .service-row:nth-child(even) .service-row__media { order: 2; }
+}
+.service-row__media { overflow: hidden; background: var(--ink-700); aspect-ratio: 4 / 3; }
+.service-row__media img { inline-size: 100%; block-size: 100%; object-fit: cover; transition: transform var(--dur-slow) var(--ease); }
+.service-row:hover .service-row__media img { transform: scale(1.03); }
+.service-row__num { font-size: var(--fs-micro); font-weight: 700; color: var(--lime-400); }
+.service-row__title { font-size: var(--fs-h2); font-weight: 600; margin-block-start: var(--sp-3); }
+.service-row__title a { position: relative; }
+.service-row__title a::after { content: ''; position: absolute; inset: 0; }
+.service-row:hover .service-row__title { color: var(--lime-400); }
+.service-row__title-en { font-size: var(--fs-micro); color: var(--text-muted); margin-block-start: var(--sp-2); }
+.service-row__lead { font-size: var(--fs-lead); color: var(--text-body); margin-block-start: var(--sp-4); max-inline-size: 46ch; line-height: 1.6; }
+
+.plate__lead { font-size: var(--fs-lead); color: var(--text-accent); line-height: 1.6; }
+
+/* ── Capability list ─────────────────────────────────────────────────── */
+.caps { display: grid; gap: var(--sp-4); margin-block-start: var(--sp-6); }
+@media (min-width: 44rem) { .caps { grid-template-columns: repeat(2, 1fr); gap: var(--sp-5) var(--sp-7); } }
+.cap {
+  display: flex; align-items: flex-start; gap: var(--sp-4);
+  padding-block-start: var(--sp-4);
+  border-block-start: 1px solid var(--rule-hairline);
+  font-size: var(--fs-body); color: var(--text-strong);
+}
+.cap__mark { flex: none; inline-size: 8px; block-size: 8px; margin-block-start: .55em; background: var(--grad-rule); }
+.cap__en { display: block; font-size: var(--fs-micro); color: var(--text-muted); margin-block-start: var(--sp-1); font-weight: 400; }
+
+/* ── Method steps ────────────────────────────────────────────────────── */
+.steps { display: grid; gap: var(--sp-7); counter-reset: step; }
+.step { display: grid; gap: var(--sp-4); grid-template-columns: auto 1fr; align-items: start; }
+.step__num {
+  font-size: var(--fs-h3); font-weight: 700; color: var(--lime-400);
+  font-variant-numeric: tabular-nums; line-height: 1.1;
+  min-inline-size: 3ch;
+}
+.step__body { padding-block-start: var(--sp-1); border-block-start: 1px solid var(--rule-hairline); padding-block-start: var(--sp-4); }
+.step__title { font-size: var(--fs-h3); font-weight: 600; color: var(--text-strong); }
+.step__title-en { display: block; font-size: var(--fs-micro); font-weight: 400; color: var(--text-eyebrow); margin-block-start: var(--sp-1); }
+.step__text { font-size: var(--fs-body); color: var(--text-body); margin-block-start: var(--sp-3); max-inline-size: var(--measure); }
+.step__detail { font-size: var(--fs-small); color: var(--text-muted); margin-block-start: var(--sp-3); max-inline-size: var(--measure); font-style: italic; }
+:lang(ar) .step__detail { font-style: normal; padding-inline-start: var(--sp-4); border-inline-start: 2px solid var(--rule-hairline); }
+
+/* ── Vision / mission cards ──────────────────────────────────────────── */
+.statement-pair { display: grid; gap: var(--sp-6); }
+@media (min-width: 52rem) { .statement-pair { grid-template-columns: repeat(2, 1fr); gap: var(--sp-7); } }
+.statement-card { padding-block-start: var(--sp-5); border-block-start: 2px solid var(--lime-400); }
+.statement-card__text { font-size: var(--fs-h3); font-weight: 600; color: var(--text-strong); line-height: 1.5; }
+
+/* ── Founders' quote ─────────────────────────────────────────────────── */
+.quote { font-size: var(--fs-lead); line-height: 1.8; color: var(--text-accent); max-inline-size: var(--measure); }
+.quote p + p { margin-block-start: var(--sp-5); }
+.quote__by { margin-block-start: var(--sp-6); font-weight: 600; color: var(--text-strong); }
+
+/* ── Sector grid ─────────────────────────────────────────────────────── */
+.sector-grid { display: grid; gap: 1px; background: var(--rule-hairline); border: 1px solid var(--rule-hairline); }
+@media (min-width: 40rem) { .sector-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (min-width: 64rem) { .sector-grid { grid-template-columns: repeat(3, 1fr); } }
+.sector-cell { background: var(--ink-800); padding: var(--sp-6) var(--sp-5); display: flex; gap: var(--sp-4); align-items: baseline; }
+.sector-cell__num { font-size: var(--fs-micro); color: var(--lime-400); font-variant-numeric: tabular-nums; flex: none; }
+.sector-cell__name { font-size: var(--fs-h4); font-weight: 600; color: var(--text-strong); line-height: 1.4; }
+.sector-cell__en { display: block; font-size: var(--fs-micro); font-weight: 400; color: var(--text-muted); margin-block-start: var(--sp-1); }
+
+/* ── Call to action ──────────────────────────────────────────────────── */
+.cta { text-align: center; }
+.cta__title { max-inline-size: 20ch; margin-inline: auto; }
+.cta__actions { margin-block-start: var(--sp-6); display: flex; gap: var(--sp-4); justify-content: center; flex-wrap: wrap; }
+.cta .text-en { text-align: center; }

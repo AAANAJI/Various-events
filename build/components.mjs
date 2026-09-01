@@ -2,7 +2,7 @@
 // it can compute its own relative links — nothing here ever emits "/...".
 
 import { esc, t, linkTo, rootFrom, img } from './lib.mjs'
-import { num, figure, ui, nav, brand, copyrightYear } from '../content/site.mjs'
+import { num, figure, ui, brand, copyrightYear } from '../content/site.mjs'
 
 export const ARROW = '<svg class="btn__arrow" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M1 8h13M9 3l5 5-5 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>'
 
@@ -81,14 +81,50 @@ export function btn(href, label, { variant = 'primary', arrow = true, attrs = ''
     </a>`
 }
 
-export function masthead(route, lang) {
+/** Expand nav entries that pull their children from a content file. */
+export function resolveNav(nav, sources) {
+  return nav.map(item => {
+    if (!item.childrenFrom) return item
+    const list = sources[item.childrenFrom] || []
+    return {
+      ...item,
+      children: [
+        { id: `${item.id}-index`, path: item.path, ar: 'كل الخدمات', en: 'All services' },
+        ...list.map(x => ({ id: x.slug, path: `${item.path}/${x.slug}`, ar: x.title.ar, en: x.title.en })),
+      ],
+    }
+  })
+}
+
+const isCurrent = (route, path) =>
+  path === '' ? route === '' : (route === path || route.startsWith(path + '/'))
+
+export function masthead(route, lang, nav) {
   const other = lang === 'ar' ? 'en' : 'ar'
   const up = rootFrom(route, lang)
+
   const items = nav.map(item => {
+    const current = isCurrent(route, item.path)
     const href = linkTo(route, lang, item.path, lang)
-    const isHome = item.path === ''
-    const current = isHome ? route === '' : (route === item.path || route.startsWith(item.path + '/'))
-    return `<li><a class="nav__link" href="${esc(href)}"${current ? ' aria-current="page"' : ''}>${esc(t(item, lang))}</a></li>`
+    if (!item.children) {
+      return `<li class="nav__item">
+          <a class="nav__link" href="${esc(href)}"${current ? ' aria-current="page"' : ''}>${esc(t(item, lang))}</a>
+        </li>`
+    }
+    const subs = item.children.map(c => {
+      const sc = route === c.path
+      return `<li><a class="subnav__link" href="${esc(linkTo(route, lang, c.path, lang))}"${sc ? ' aria-current="page"' : ''}>${esc(t(c, lang))}</a></li>`
+    }).join('\n              ')
+    // No JS: the submenu opens on hover and on focus-within, and on mobile the
+    // children are simply always visible. Nothing here depends on a script.
+    return `<li class="nav__item nav__item--has-sub">
+          <a class="nav__link" href="${esc(href)}"${current ? ' aria-current="page"' : ''}>${esc(t(item, lang))}<span class="nav__chev" aria-hidden="true"></span></a>
+          <div class="subnav">
+            <ul class="subnav__list">
+              ${subs}
+            </ul>
+          </div>
+        </li>`
   }).join('\n        ')
 
   return `<header class="masthead" data-masthead>
@@ -98,7 +134,7 @@ export function masthead(route, lang) {
         <img class="masthead__wordmark" src="${esc(up)}assets/logo/wordmark-light.svg" alt="" width="440" height="101" fetchpriority="high" decoding="async">
       </a>
       <nav id="site-nav" class="nav" aria-label="${esc(t(ui.menu, lang))}">
-        <ul style="display:contents">
+        <ul class="nav__list">
         ${items}
         </ul>
       </nav>
@@ -115,7 +151,23 @@ export function masthead(route, lang) {
   </header>`
 }
 
-export function footer(route, lang, { contact, ui: u }) {
+/** A section's own sub-navigation, shown on the pages inside it. */
+export function sectionNav(route, lang, item) {
+  if (!item || !item.children) return ''
+  const links = item.children.map(c =>
+    `<li><a class="sectionnav__link" href="${esc(linkTo(route, lang, c.path, lang))}"${route === c.path ? ' aria-current="page"' : ''}>${esc(t(c, lang))}</a></li>`
+  ).join('\n        ')
+  return `<nav class="sectionnav" aria-label="${esc(t(ui.inThisSection, lang))}">
+      <div class="container">
+        <p class="sectionnav__label">${esc(t(ui.inThisSection, lang))}</p>
+        <ul class="sectionnav__list">
+        ${links}
+        </ul>
+      </div>
+    </nav>`
+}
+
+export function footer(route, lang, { contact, ui: u, nav }) {
   const up = rootFrom(route, lang)
   const navLinks = nav.slice(1).map(item =>
     `<li><a href="${esc(linkTo(route, lang, item.path, lang))}">${esc(t(item, lang))}</a></li>`

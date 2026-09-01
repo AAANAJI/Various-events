@@ -22,15 +22,38 @@ export const contact = {
   address: { ar: 'الرياض، المملكة العربية السعودية', en: 'Riyadh, Kingdom of Saudi Arabia' },
 }
 
-// Routes are declared once and emitted for both languages.
+// The site's information architecture. Each entry is a page; `children` become
+// a sub-menu and give the section its own landing page plus real sub-pages, so
+// content is distributed rather than stacked onto the homepage.
+//
 // `path` is the Arabic (root) path; the English edition prefixes it with `en/`.
 export const nav = [
-  { id: 'home',     path: '',          ar: 'الرئيسية',  en: 'Home' },
-  { id: 'about',    path: 'about',     ar: 'من نحن',    en: 'About' },
-  { id: 'services', path: 'services',  ar: 'خدماتنا',   en: 'Services' },
-  { id: 'work',     path: 'work',      ar: 'أعمالنا',   en: 'Work' },
-  { id: 'clients',  path: 'clients',   ar: 'عملاؤنا',   en: 'Clients' },
-  { id: 'contact',  path: 'contact',   ar: 'تواصل معنا', en: 'Contact' },
+  { id: 'home', path: '', ar: 'الرئيسية', en: 'Home' },
+  {
+    id: 'about', path: 'about', ar: 'من نحن', en: 'About',
+    children: [
+      { id: 'about-index',    path: 'about',           ar: 'نبذة عن فاريوس',   en: 'Who we are' },
+      { id: 'about-vision',   path: 'about/vision',    ar: 'الرؤية والرسالة',  en: 'Vision & mission' },
+      { id: 'about-values',   path: 'about/values',    ar: 'قيمنا',            en: 'Our values' },
+      { id: 'about-founders', path: 'about/founders',  ar: 'كلمة المؤسسين',    en: 'From the founders' },
+    ],
+  },
+  {
+    id: 'services', path: 'services', ar: 'خدماتنا', en: 'Services',
+    // Filled from content/services.mjs at build time so the menu and the
+    // service pages can never drift apart.
+    childrenFrom: 'services',
+  },
+  { id: 'process', path: 'process', ar: 'منهجية العمل', en: 'How we work' },
+  {
+    id: 'work', path: 'work', ar: 'أعمالنا', en: 'Work',
+    children: [
+      { id: 'work-index',   path: 'work',    ar: 'كل الأعمال',           en: 'All work' },
+      { id: 'work-sectors', path: 'sectors', ar: 'القطاعات التي نخدمها', en: 'Sectors we serve' },
+    ],
+  },
+  { id: 'clients', path: 'clients', ar: 'عملاؤنا', en: 'Clients' },
+  { id: 'contact', path: 'contact', ar: 'تواصل معنا', en: 'Contact' },
 ]
 
 // Interface strings. Kept out of the templates so both editions stay in step.
@@ -64,6 +87,17 @@ export const ui = {
   crLabel:       { ar: 'س.ت',                     en: 'CR' },
   readMore:      { ar: 'اقرأ المزيد',             en: 'Read more' },
   links:         { ar: 'روابط',                   en: 'Links' },
+  explore:       { ar: 'تصفح',                    en: 'Explore' },
+  inThisSection: { ar: 'في هذا القسم',            en: 'In this section' },
+  openSubmenu:   { ar: 'افتح القائمة الفرعية',    en: 'Open submenu' },
+  allServices:   { ar: 'كل الخدمات',              en: 'All services' },
+  relatedWork:   { ar: 'أعمال ذات صلة',           en: 'Related work' },
+  whatWeDo:      { ar: 'ما نقوم به',              en: 'What this covers' },
+  nextService:   { ar: 'الخدمة التالية',          en: 'Next service' },
+  seeSectors:    { ar: 'القطاعات التي نخدمها',    en: 'Sectors we serve' },
+  seeWork:       { ar: 'شاهد أعمالنا',            en: 'See our work' },
+  aboutUs:       { ar: 'المزيد عن فاريوس',        en: 'More about VARIOUS' },
+  talkToUs:      { ar: 'تحدّث إلينا',             en: 'Talk to us' },
   pageOf:        { ar: 'من',                      en: 'of' },
 }
 

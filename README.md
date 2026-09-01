@@ -164,8 +164,48 @@ build/       the generator. Zero dependencies.
 src/css/     tokens → base → layout → components, concatenated in that order.
 src/js/      progressive enhancement only; every page works without it.
 assets/      fonts, photographs, logos — the source of truth, copied verbatim.
+scripts/     one-time server setup.
 dist/        generated output. Not committed.
 ```
+
+### Information architecture
+
+32 routes per language, 64 pages. The homepage is deliberately short: it says
+what VARIOUS is, shows the six services and three projects, and sends the
+visitor into the section they want. The detail lives on the page that owns it.
+
+```
+/                     home — short, an index into the rest
+/about/               who we are, the integrated model, the numbers
+  /about/vision/      vision and mission
+  /about/values/      the four values
+  /about/founders/    the founders' letter
+/services/            the six services, as an index
+  /services/<slug>/   one page per service  (6)
+/process/             how we work — the five steps
+/work/                the portfolio index
+  /work/<slug>/       one page per project  (14)
+/sectors/             the nine sectors served
+/clients/             the client roster, linked to the work
+/contact/             contact details
+```
+
+`nav` in `content/site.mjs` is the single source for the menu, and the services
+sub-menu is generated from `content/services.mjs`, so the menu and the pages
+cannot drift apart. The menu is CSS-only — sub-menus open on hover **and** on
+`:focus-within`, so every item is keyboard-reachable with no JavaScript at all.
+
+### A note on the copy
+
+This is not a transcript of the deck. Slide copy is written to be spoken over;
+web copy has to be read alone and scanned before it is read. So the sentences
+are shorter and front-loaded, and each page opens with the one line that has to
+land. Service pages break out the capabilities their own paragraph already
+names, so the page is scannable.
+
+The substance is unchanged: every fact, claim, client and figure still traces to
+the deck. Nothing has been added that the company did not say about itself, and
+where the deck is silent — a project's year, a stat — the site is silent too.
 
 ### Two rules that govern everything
 
