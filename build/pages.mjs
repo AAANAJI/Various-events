@@ -142,7 +142,7 @@ export function about_(route, lang, A) {
 
   <section class="section">
     <div class="container">
-      <div class="numbered numbered--three" style="gap:var(--sp-7)">
+      <div class="numbered" style="gap:var(--sp-7)">
         <div class="numbered__item" style="border-block-start-color:var(--lime-400);border-block-start-width:2px">
           ${C.eyebrow(vision.eyebrow, lang, null, { tag: 'h3' })}
           <p class="lead" style="color:var(--text-strong)">${esc(t(vision.text, lang))}</p>

@@ -242,9 +242,21 @@
 .project-hero__media img { inline-size: 100%; block-size: 100%; object-fit: cover; }
 
 /* Flex, not a fixed grid: most projects have only two of the four fields
-   confirmed, and a 4-column grid strands the rest as empty cells. */
-.meta { display: flex; flex-wrap: wrap; gap: var(--sp-5) var(--sp-8); }
-.meta > li { min-inline-size: 11rem; flex: 0 1 auto; }
+   confirmed, and a 4-column grid strands the rest as empty cells. The width cap
+   plus equal flex-basis means two items fill their block as convincingly as
+   four do, instead of huddling at the reading edge of a 1300px band. */
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-5) var(--sp-7);
+  max-inline-size: 64rem;
+}
+.meta > li {
+  flex: 1 1 12rem;
+  min-inline-size: 11rem;
+  padding-block-start: var(--sp-4);
+  border-block-start: 1px solid var(--rule-hairline);
+}
 .meta__label {
   font-size: var(--fs-micro); text-transform: uppercase; letter-spacing: var(--ls-eyebrow);
   color: var(--text-eyebrow); margin-block-end: var(--sp-2);
