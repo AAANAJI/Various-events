@@ -331,8 +331,8 @@ export function clientsPage(route, lang, A) {
     title: `${t(clientsIntro.eyebrow, lang)} — ${t(brand.shortName, lang)}`,
     description: t(clientsIntro.lead, lang),
     body: `
-  ${pageHeader(route, lang, A, clientsIntro.eyebrow, clientsIntro.lead, 'mood-riyadh',
-    lang === 'ar' ? 'مشهد جوي للرياض عند الغروب' : 'Aerial view of Riyadh at sunset')}
+  ${pageHeader(route, lang, A, clientsIntro.eyebrow, clientsIntro.lead, 'mood-city',
+    lang === 'ar' ? 'مشهد جوي لمدينة سعودية عند الغسق' : 'Aerial view of a Saudi city at dusk')}
 
   <section class="section">
     <div class="container">
@@ -368,8 +368,8 @@ export function contactPage(route, lang, A) {
     description: `${t(brand.name, lang)} — ${contact.phone} · ${contact.email}`,
     body: `
   <section class="hero" style="min-block-size:clamp(22rem,58vh,34rem)">
-    <div class="hero__media">${img(route, lang, 'mood-fireworks', {
-      alt: lang === 'ar' ? 'ألعاب نارية فوق حدث جماهيري' : 'Fireworks over a public event',
+    <div class="hero__media">${img(route, lang, 'mood-riyadh', {
+      alt: lang === 'ar' ? 'مشهد جوي للرياض عند الغروب' : 'Aerial view of Riyadh at sunset',
       sizes: '100vw', eager: true })}</div>
     <div class="hero__scrim"></div>
     <div class="container hero__body">
