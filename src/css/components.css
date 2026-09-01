@@ -219,6 +219,22 @@
 }
 .roster__name { font-size: var(--fs-h4); font-weight: 600; color: var(--text-strong); line-height: 1.4; }
 .roster__name-en { display: block; font-size: var(--fs-micro); font-weight: 400; color: var(--text-muted); margin-block-start: var(--sp-1); }
+.roster__caption { display: block; font-size: var(--fs-micro); color: var(--text-faint); margin-block-start: var(--sp-2); }
+/* A linked name needs to look linkable before you hover it: its caption takes
+   the accent colour and a leading arrow, so the roster reads as a second index
+   into the work rather than a flat list with hidden behaviour. */
+.roster__link .roster__caption { color: var(--sage-300); }
+.roster__link .roster__caption::before {
+  content: '↳';
+  margin-inline-end: var(--sp-2);
+  color: var(--lime-400);
+}
+.roster__link { display: block; transition: color var(--dur-fast) var(--ease); }
+.roster__link:hover { color: var(--lime-400); }
+.roster__link:hover .roster__name-en { color: var(--lime-400); }
+/* A linked name earns the signature rule as its affordance. */
+.roster__item:has(.roster__link) { border-inline-start: 2px solid transparent; padding-inline-start: var(--sp-3); transition: border-color var(--dur-fast) var(--ease); }
+.roster__item:has(.roster__link:hover) { border-inline-start-color: var(--lime-400); }
 
 /* ── Sector pills ────────────────────────────────────────────────────── */
 .sectors { display: flex; flex-wrap: wrap; gap: var(--sp-3); }

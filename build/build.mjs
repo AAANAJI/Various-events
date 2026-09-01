@@ -8,7 +8,7 @@ import { mkdirSync, writeFileSync, readFileSync, cpSync, rmSync, existsSync } fr
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
-import { LANGS, DIR, outDir, rootFrom, linkTo, esc, t, indexImages, walk } from './lib.mjs'
+import { LANGS, DIR, outDir, rootFrom, linkTo, esc, t, indexImages, widthsFor, walk } from './lib.mjs'
 import { nav, ui, brand, contact } from '../content/site.mjs'
 import { projects } from '../content/projects.mjs'
 import * as P from './pages.mjs'
@@ -47,7 +47,7 @@ mkdirSync(join(DIST, 'js'), { recursive: true })
 cpSync(join(ROOT, 'src/js/site.js'), join(DIST, 'js/site.js'))
 
 /** Wrap a page's body in the full document shell. */
-function document_({ route, lang, title, description, body }) {
+function document_({ route, lang, title, description, body, heroImage, heroSizes }) {
   const up = rootFrom(route, lang)
   const other = lang === 'ar' ? 'en' : 'ar'
   return `<!doctype html>
@@ -69,11 +69,13 @@ function document_({ route, lang, title, description, body }) {
 <link rel="preload" href="${esc(up)}assets/fonts/IBMPlexSansArabic-400.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="${esc(up)}assets/fonts/IBMPlexSansArabic-700.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="${esc(up)}css/site.css">
+${heroImage ? preloadHero(up, heroImage, heroSizes) : ''}
 </head>
 <body>
 <a class="skip-link" href="#main">${esc(t(ui.skipToContent, lang))}</a>
 ${masthead(route, lang)}
 <main id="main">
+<div data-top-sentinel aria-hidden="true"></div>
 ${body}
 </main>
 ${footer(route, lang, { contact, ui })}
@@ -81,6 +83,19 @@ ${footer(route, lang, { contact, ui })}
 </body>
 </html>
 `
+}
+
+/**
+ * Preload the above-the-fold photograph. It is the largest-contentful paint on
+ * every page, and it is discovered late because it sits inside the body markup.
+ */
+function preloadHero(up, name, sizes = '100vw') {
+  const ws = widthsFor(name)
+  if (!ws.length) return ''
+  const srcset = ws.map(w => `${up}assets/img/${name}-${w}.jpg ${w}w`).join(', ')
+  // imagesizes MUST match the <img sizes> exactly, or the browser preloads one
+  // candidate and then fetches a different one — two downloads instead of none.
+  return `<link rel="preload" as="image" imagesrcset="${esc(srcset)}" imagesizes="${esc(sizes)}" fetchpriority="high">`
 }
 
 /** Every route, for both languages. */

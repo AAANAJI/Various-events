@@ -2,7 +2,7 @@
 // handed the page's own `route` and `lang` so every link it emits is relative.
 
 import { esc, t, linkTo, img } from './lib.mjs'
-import { num, ui, brand, contact } from '../content/site.mjs'
+import { num, figure, ui, brand, contact } from '../content/site.mjs'
 import * as C from './components.mjs'
 import { about, founders, vision, mission, values, services, method, sectors, why, pauses } from '../content/pages.mjs'
 import { projects, additionalWorks, workIntro } from '../content/projects.mjs'
@@ -18,6 +18,7 @@ export function home(route, lang) {
   return {
     title: `${t(brand.name, lang)} — ${t(brand.tagline, lang)}`,
     description: t(about.body[0], lang),
+    heroImage: 'mood-line',
     body: `
   <section class="hero">
     <div class="hero__media">${img(route, lang, 'mood-line', {
@@ -115,6 +116,7 @@ export function about_(route, lang) {
   return {
     title: `${t(about.eyebrow, lang)} — ${t(brand.shortName, lang)}`,
     description: t(about.body[0], lang),
+    heroImage: 'team-crew',
     body: `
   ${pageHeader(route, lang, about.eyebrow, about.lead, 'team-crew',
     lang === 'ar' ? 'أحد أفراد فريق فاريوس في الموقع' : 'A VARIOUS crew member on site')}
@@ -189,6 +191,7 @@ export function servicesPage(route, lang) {
   return {
     title: `${t(services.eyebrow, lang)} — ${t(brand.shortName, lang)}`,
     description: t(services.lead, lang),
+    heroImage: 'saso',
     body: `
   ${pageHeader(route, lang, services.eyebrow, services.lead, 'saso',
     lang === 'ar' ? 'تفعيل تفاعلي نفّذته فاريوس في بوليفارد سيتي بالرياض'
@@ -227,6 +230,7 @@ export function work(route, lang) {
   return {
     title: `${t(workIntro.eyebrow, lang)} — ${t(brand.shortName, lang)}`,
     description: t(workIntro.lead, lang),
+    heroImage: 'mood-fireworks',
     body: `
   ${pageHeader(route, lang, workIntro.eyebrow, workIntro.lead, 'mood-fireworks',
     lang === 'ar' ? 'ألعاب نارية فوق حدث جماهيري' : 'Fireworks over a public event')}
@@ -273,6 +277,8 @@ export function project(route, lang, p, prev, next) {
   return {
     title: `${client ? client + ' — ' : ''}${title} — ${t(brand.shortName, lang)}`,
     description: t(p.text, lang),
+    heroImage: p.image,
+    heroSizes: '(min-width: 68rem) 56vw, 92vw',
     body: `
   <section class="section section--tight plate-section">
     ${C.watermark(route, lang)}
@@ -339,6 +345,7 @@ export function clientsPage(route, lang) {
   return {
     title: `${t(clientsIntro.eyebrow, lang)} — ${t(brand.shortName, lang)}`,
     description: t(clientsIntro.lead, lang),
+    heroImage: 'mood-city',
     body: `
   ${pageHeader(route, lang, clientsIntro.eyebrow, clientsIntro.lead, 'mood-city',
     lang === 'ar' ? 'مشهد جوي لمدينة سعودية عند الغسق' : 'Aerial view of a Saudi city at dusk')}
@@ -346,12 +353,19 @@ export function clientsPage(route, lang) {
   <section class="section">
     <div class="container">
       <ul class="roster">
-        ${clients.map((c, i) => `<li class="roster__item">
+        ${clients.map((c, i) => {
+          const rel = relatedWork(c)
+          const name = `${esc(t(c, lang))}<span class="roster__name-en">${C.echoSpan(c, lang)}</span>`
+          const label = rel.href
+            ? `<a class="roster__link" href="${esc(linkTo(route, lang, rel.href, lang))}">${name}</a>`
+            : name
+          return `<li class="roster__item">
           <span class="roster__num">${esc(num(i + 1, lang))}</span>
-          <span class="roster__name">${esc(t(c, lang))}
-            <span class="roster__name-en">${C.echoSpan(c, lang)}</span>
+          <span class="roster__name">${label}
+            ${rel.caption ? `<span class="roster__caption">${esc(rel.caption[lang])}</span>` : ''}
           </span>
-        </li>`).join('\n        ')}
+        </li>`
+        }).join('\n        ')}
       </ul>
     </div>
   </section>
@@ -370,11 +384,55 @@ export function clientsPage(route, lang) {
   }
 }
 
+/**
+ * Turn the client roster into a second index into the portfolio, using only
+ * what is already in the data — no curation, no invented links.
+ *
+ *  · exactly one project for this client  → link straight to it, named
+ *  · several                              → link to /work/, captioned with the count
+ *  · none, but listed in additionalWorks  → NOT a link (there is no page), captioned
+ *                                           with the work title, because naming the
+ *                                           work is honest and a link to nowhere is not
+ *  · otherwise                            → the name alone
+ */
+function relatedWork(client) {
+  const mine = projects.filter(p => p.client && p.client.ar === client.ar)
+  if (mine.length === 1) {
+    const p = mine[0]
+    return { href: `work/${p.slug}`, caption: { ar: p.title.ar, en: p.title.en } }
+  }
+  if (mine.length > 1) {
+    return {
+      href: 'work',
+      caption: { ar: arabicCount(mine.length), en: `${mine.length} projects` },
+    }
+  }
+  const listed = additionalWorks.filter(w => w.client.ar === client.ar)
+  if (listed.length === 1) return { href: null, caption: { ar: listed[0].title.ar, en: listed[0].title.en } }
+  if (listed.length > 1) {
+    return { href: null, caption: { ar: arabicCount(listed.length), en: `${listed.length} projects` } }
+  }
+  return { href: null, caption: null }
+}
+
+/**
+ * Arabic counts agree with their noun by magnitude, and the singular and dual
+ * carry the number inside the noun itself — «مشروعان» already means "two
+ * projects", so printing «٢ مشروعان» says "two two-projects".
+ */
+function arabicCount(n) {
+  if (n === 1) return 'مشروع'
+  if (n === 2) return 'مشروعان'
+  if (n <= 10) return `${figure(n, 'ar')} مشاريع`
+  return `${figure(n, 'ar')} مشروعًا`
+}
+
 /* ── Contact ──────────────────────────────────────────────────────────── */
 export function contactPage(route, lang) {
   return {
     title: `${t(ui.getInTouch, lang)} — ${t(brand.shortName, lang)}`,
     description: `${t(brand.name, lang)} — ${contact.phone} · ${contact.email}`,
+    heroImage: 'mood-riyadh',
     body: `
   <section class="hero" style="min-block-size:clamp(22rem,58vh,34rem)">
     <div class="hero__media">${img(route, lang, 'mood-riyadh', {

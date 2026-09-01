@@ -58,7 +58,30 @@ for (const f of html) {
   }
 }
 
-// 4. Every page declares lang and dir, and is marked noindex for staging.
+// 4. Logical properties only. One stylesheet serves both reading directions, so
+//    a single physical `margin-left` or `text-align: right` silently breaks the
+//    mirror on one edition only — the kind of bug nobody notices until a client
+//    does. This is what stops the discipline decaying as pages get added.
+const cssPath = join(DIST, 'css/site.css')
+if (existsSync(cssPath)) {
+  const css = readFileSync(cssPath, 'utf8')
+  const PHYSICAL = [
+    /(?:margin|padding)-(?:left|right)\s*:/g,
+    /border-(?:left|right)(?:-\w+)?\s*:/g,
+    /text-align\s*:\s*(?:left|right)\b/g,
+    /float\s*:\s*(?:left|right)\b/g,
+    // Bare offsets. `inset:` and `inset-inline-*` are direction-neutral and fine.
+    /(?:^|[;{]|\n)\s*(?:top|bottom|left|right)\s*:\s*[-\d]/g,
+  ]
+  for (const re of PHYSICAL) {
+    for (const m of css.matchAll(re)) {
+      const line = css.slice(0, m.index).split('\n').length
+      fail(`css/site.css:${line}: physical property "${m[0].trim().replace(/\s+/g, ' ')}" — use the logical equivalent (inset-inline-start, margin-inline-end, text-align: start/end)`)
+    }
+  }
+}
+
+// 5. Every page declares lang and dir, and is marked noindex for staging.
 for (const f of html) {
   const body = readFileSync(join(DIST, f), 'utf8')
   const tag = /<html[^>]*>/i.exec(body)?.[0] ?? ''
@@ -68,7 +91,7 @@ for (const f of html) {
   if (!/<title>[^<]+<\/title>/i.test(body)) fail(`${f}: missing or empty <title>`)
 }
 
-// 5. Both language editions exist for every route.
+// 6. Both language editions exist for every route.
 const arRoutes = html.filter(f => !f.startsWith('en/')).map(f => f.replace(/index\.html$/, ''))
 for (const r of arRoutes) {
   if (!existsSync(join(DIST, 'en', r, 'index.html'))) fail(`missing English edition for route "${r || '/'}"`)

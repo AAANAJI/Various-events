@@ -216,8 +216,16 @@ export function statsBlock(stats, lang) {
     const plus = known && s.plus ? (lang === 'ar' ? '+' : '+') : ''
     // A unit beside a pending em-dash reads as a broken value, so it waits for the number.
     const unit = s.unit && known ? `<span class="stat__unit">${esc(t(s.unit, lang))}</span>` : ''
+    // A screen reader announcing "dash, Years of experience" is meaningless.
+    // The dash is decoration; the pending state is said in words, but only to
+    // assistive technology — a visible "to be confirmed" would read as an
+    // unfinished document to a client.
+    const figureMarkup = known
+      ? `<span class="lt">${esc(plus)}${esc(shown)}</span>${unit}`
+      : `<span class="lt" aria-hidden="true">${esc(shown)}</span>` +
+        `<span class="visually-hidden">${esc(t(ui.toBeConfirmed, lang))}</span>`
     return `<li class="stat ${known ? 'stat--known' : 'stat--pending'}">
-        <p class="stat__value"><span class="lt">${esc(plus)}${esc(shown)}</span>${unit}</p>
+        <p class="stat__value">${figureMarkup}</p>
         <p class="stat__label">${esc(t(s.label, lang))}</p>
         <p class="stat__label-en">${echoSpan(s.label, lang)}</p>
       </li>`

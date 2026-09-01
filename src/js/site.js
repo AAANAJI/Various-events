@@ -6,6 +6,11 @@
 (function () {
   'use strict'
 
+  // Set first, so CSS can distinguish "JS is running" from "JS never arrived".
+  // Anything that would otherwise leave content hidden or unreadable is scoped
+  // to this class.
+  document.documentElement.classList.add('js')
+
   var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
   /* ── Mobile navigation ────────────────────────────────────────────────── */
@@ -37,19 +42,18 @@
     mq.addEventListener ? mq.addEventListener('change', reset) : mq.addListener(reset)
   }
 
-  /* ── Masthead: condense once the page has scrolled ────────────────────── */
+  /* ── Masthead: condense once the page has scrolled ─────────────────────
+     Driven by an IntersectionObserver on a 1px sentinel at the top of <main>
+     rather than a scroll listener, so the page ships with no scroll handler at
+     all and the browser does the work off the main thread. */
   var masthead = document.querySelector('[data-masthead]')
-  if (masthead) {
-    var lastState = null
-    var onScroll = function () {
-      var scrolled = window.scrollY > 24
-      if (scrolled !== lastState) {
-        masthead.toggleAttribute('data-scrolled', scrolled)
-        lastState = scrolled
-      }
-    }
-    onScroll()
-    window.addEventListener('scroll', onScroll, { passive: true })
+  var sentinel = document.querySelector('[data-top-sentinel]')
+  if (masthead && sentinel && 'IntersectionObserver' in window) {
+    new IntersectionObserver(function (entries) {
+      masthead.toggleAttribute('data-scrolled', !entries[0].isIntersecting)
+    }, { threshold: 0 }).observe(sentinel)
+  } else if (masthead) {
+    masthead.setAttribute('data-scrolled', '')
   }
 
   /* ── Reveal on scroll ─────────────────────────────────────────────────── */
