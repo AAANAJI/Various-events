@@ -58,12 +58,24 @@ jobs:
           if printf '%s' "$KEY" | grep -q -- '-----BEGIN'; then
             printf '%s\n' "$KEY" > ~/.ssh/id_ed25519
           else
-            printf '%s' "$KEY" | tr -d '[:space:]' | base64 -d > ~/.ssh/id_ed25519
+            # Take the longest run of base64 characters rather than the whole
+            # secret. Copying one line off a phone terminal easily picks up the
+            # surrounding banner text, and that is not worth a failed deploy and
+            # a re-copy: the key is the only long base64 run present either way.
+            printf '%s' "$KEY" \
+              | tr -d '[:space:]' \
+              | grep -oE '[A-Za-z0-9+/=]{64,}' \
+              | awk '{ if (length($0) > length(m)) m = $0 } END { print m }' \
+              | base64 -d > ~/.ssh/id_ed25519 2>/dev/null || true
           fi
           chmod 600 ~/.ssh/id_ed25519
           # Fail here with a clear message rather than later inside rsync.
           ssh-keygen -y -f ~/.ssh/id_ed25519 >/dev/null 2>&1 || {
-            echo "::error::SSH_PRIVATE_KEY is not a usable private key. Paste either the full PEM (including the BEGIN/END lines) or the single base64 line."
+            echo "::error::SSH_PRIVATE_KEY is not a usable private key."
+            # Counts only — never key material. Enough to tell an empty secret
+            # from a truncated one from the wrong thing pasted entirely.
+            echo "::error::Received ${#KEY} characters over $(printf '%s' "$KEY" | grep -c '' || true) line(s); decoded to $(wc -c < ~/.ssh/id_ed25519) bytes."
+            echo "::error::Re-run scripts/server-setup.sh on the server and copy ONLY the long unbroken line it prints."
             exit 1
           }
           ssh-keyscan -H "${{ secrets.SSH_HOST }}" >> ~/.ssh/known_hosts 2>/dev/null || true

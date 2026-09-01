@@ -73,13 +73,18 @@ cat <<EOF
    SSH_PRIVATE_KEY = the single line between the markers below
 ════════════════════════════════════════════════════════════════════
 
------ COPY FROM THE NEXT LINE -----
+Below is SSH_PRIVATE_KEY. It is ONE long unbroken line, with a blank
+line above and below it. Select just that line.
+
 EOF
 base64 -w0 < "$TMP/ci" 2>/dev/null || base64 < "$TMP/ci" | tr -d '\n'
 cat <<'EOF'
 
------ COPY TO THE LINE ABOVE -----
 
-That line is a private key. It is not saved anywhere on this server —
-if you lose it, re-run this script to issue a new one.
+That was the key. Nothing above or below it is part of it, and the
+deploy tolerates a little surrounding text if your terminal grabs some.
+
+It is a private key: it is not saved anywhere on this server, so if you
+lose it just re-run this script to issue a new one. Do not paste it into
+a chat or send it to anyone.
 EOF
