@@ -1,0 +1,277 @@
+/* ─────────────────────────────────────────────────────────────────────────
+   Components
+   ───────────────────────────────────────────────────────────────────────── */
+
+/* ── Bilingual heading pair ───────────────────────────────────────────────
+   Arabic leads at full size; English follows beneath, smaller and muted.
+   This pairing is the deck's core typographic idea and it repeats everywhere. */
+/* Role-named, deliberately NOT language-named: on the Arabic edition the lead
+   is Arabic and the echo English, and on the English edition they swap. Naming
+   these .pair__ar / .pair__en meant the English lead inherited echo styling. */
+.pair__lead { display: block; color: var(--text-strong); }
+.pair__echo {
+  display: block;
+  font-weight: 400;
+  font-size: 0.44em;
+  line-height: 1.4;
+  color: var(--text-muted);
+  margin-block-start: 0.6em;
+  letter-spacing: var(--ls-eyebrow);
+  text-transform: uppercase;
+}
+/* Arabic never takes tracking or a case transform — both break the script. */
+.pair__echo:lang(ar) { letter-spacing: normal; text-transform: none; font-size: 0.5em; }
+
+.display { font-size: var(--fs-display); font-weight: 700; line-height: var(--lh-tight); }
+.h1 { font-size: var(--fs-h1); font-weight: 700; line-height: var(--lh-tight); }
+.h2 { font-size: var(--fs-h2); font-weight: 600; }
+.h3 { font-size: var(--fs-h3); font-weight: 600; }
+.lead {
+  font-size: var(--fs-lead);
+  line-height: 1.6;
+  color: var(--text-accent);
+  max-inline-size: var(--measure);
+}
+.prose { max-inline-size: var(--measure); color: var(--text-body); }
+.prose p + p { margin-block-start: var(--sp-5); }
+.muted { color: var(--text-muted); }
+.faint { color: var(--text-faint); }
+.text-en { font-size: var(--fs-small); color: var(--text-muted); line-height: 1.7; }
+
+/* ── Buttons ─────────────────────────────────────────────────────────── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-4) var(--sp-6);
+  font-size: var(--fs-small);
+  font-weight: 600;
+  border-radius: var(--radius);
+  border: 1px solid transparent;
+  transition: background-color var(--dur-fast) var(--ease),
+              color var(--dur-fast) var(--ease),
+              border-color var(--dur-fast) var(--ease),
+              transform var(--dur-fast) var(--ease);
+}
+.btn:active { transform: translateY(1px); }
+.btn__arrow { transition: transform var(--dur) var(--ease); flex: none; }
+/* The arrow leans toward the reading direction, so it flips under RTL. */
+[dir='rtl'] .btn__arrow { transform: scaleX(-1); }
+.btn:hover .btn__arrow { transform: translateX(4px); }
+[dir='rtl'] .btn:hover .btn__arrow { transform: scaleX(-1) translateX(4px); }
+
+.btn--primary { background: var(--lime-400); color: var(--ink-900); }
+.btn--primary:hover { background: var(--pale-300); }
+.btn--ghost { border-color: var(--rule-strong); color: var(--text-strong); }
+.btn--ghost:hover { border-color: var(--lime-400); color: var(--lime-400); }
+
+.link-arrow {
+  display: inline-flex; align-items: center; gap: var(--sp-2);
+  font-size: var(--fs-small); font-weight: 600; color: var(--lime-400);
+}
+.link-arrow svg { transition: transform var(--dur) var(--ease); }
+[dir='rtl'] .link-arrow svg { transform: scaleX(-1); }
+.link-arrow:hover svg { transform: translateX(4px); }
+[dir='rtl'] .link-arrow:hover svg { transform: scaleX(-1) translateX(4px); }
+
+/* ── Hero ─────────────────────────────────────────────────────────────── */
+.hero {
+  position: relative;
+  min-block-size: clamp(30rem, 88vh, 52rem);
+  display: grid;
+  align-items: end;
+  overflow: hidden;
+  isolation: isolate;
+}
+.hero__media { position: absolute; inset: 0; z-index: -2; }
+.hero__media img { inline-size: 100%; block-size: 100%; object-fit: cover; }
+.hero__scrim { position: absolute; inset: 0; z-index: -1; background: var(--scrim-full); }
+.hero__body { padding-block: var(--sp-9) var(--sp-8); position: relative; }
+.hero__title { font-size: var(--fs-display); font-weight: 700; line-height: 1.1; }
+.hero__tagline {
+  font-size: var(--fs-h3); font-weight: 600; color: var(--pale-300);
+  line-height: var(--lh-head);
+  max-inline-size: 24ch;
+}
+.hero__actions { display: flex; flex-wrap: wrap; gap: var(--sp-4); margin-block-start: var(--sp-6); }
+
+/* ── Pause band ───────────────────────────────────────────────────────────
+   The deck's rhythm device: one sentence, large, over a landscape photograph. */
+.pause {
+  position: relative;
+  display: grid;
+  place-items: center;
+  min-block-size: clamp(24rem, 70vh, 40rem);
+  overflow: hidden;
+  isolation: isolate;
+  text-align: center;
+}
+.pause__media { position: absolute; inset: 0; z-index: -2; }
+.pause__media img { inline-size: 100%; block-size: 100%; object-fit: cover; }
+.pause__scrim { position: absolute; inset: 0; z-index: -1; background: rgba(10, 20, 31, 0.62); }
+.pause__text {
+  font-size: var(--fs-h1); font-weight: 600; line-height: 1.4;
+  max-inline-size: 22ch; margin-inline: auto; color: var(--white);
+}
+.pause .rule { margin-inline: auto; }
+
+/* ── Project cards ───────────────────────────────────────────────────── */
+.work-grid {
+  display: grid;
+  gap: var(--sp-6);
+  grid-template-columns: 1fr;
+}
+@media (min-width: 40rem) { .work-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (min-width: 68rem) { .work-grid { grid-template-columns: repeat(3, 1fr); gap: var(--sp-6) var(--sp-5); } }
+
+.card { position: relative; display: flex; flex-direction: column; }
+.card__media {
+  position: relative;
+  overflow: hidden;
+  background: var(--ink-700);
+  aspect-ratio: 4 / 3;
+  margin-block-end: var(--sp-4);
+}
+.card__media img {
+  inline-size: 100%; block-size: 100%; object-fit: cover;
+  transition: transform var(--dur-slow) var(--ease), filter var(--dur) var(--ease);
+  filter: saturate(0.92);
+}
+.card:hover .card__media img { transform: scale(1.04); filter: saturate(1.05); }
+.card__client {
+  font-size: var(--fs-micro); color: var(--text-eyebrow);
+  margin-block-end: var(--sp-2);
+}
+.card__title { font-size: var(--fs-h4); font-weight: 600; color: var(--text-strong); }
+.card__title-en { font-size: var(--fs-micro); color: var(--text-muted); margin-block-start: var(--sp-1); }
+/* The whole card is one hit target, but only the title is the link, so the
+   accessible name stays meaningful. */
+.card__link::after { content: ''; position: absolute; inset: 0; }
+.card__link:focus-visible { outline: none; }
+.card__link:focus-visible::after { outline: var(--focus-ring); outline-offset: var(--focus-offset); }
+
+.card__tags { display: flex; flex-wrap: wrap; gap: var(--sp-2); margin-block-start: var(--sp-3); }
+.tag {
+  font-size: var(--fs-micro);
+  padding: 2px var(--sp-3);
+  border: 1px solid var(--rule-hairline);
+  border-radius: var(--radius);
+  color: var(--text-muted);
+}
+
+/* Featured cards span two columns on wide screens, breaking the grid's rhythm
+   the way the deck alternates full-bleed and half-page project slides. */
+@media (min-width: 68rem) {
+  .card--featured { grid-column: span 2; }
+  .card--featured .card__media { aspect-ratio: 16 / 9; }
+  .card--featured .card__title { font-size: var(--fs-h3); }
+}
+
+/* ── Numbered list (values, method, why) ─────────────────────────────── */
+.numbered { display: grid; gap: var(--sp-6); }
+@media (min-width: 44rem) { .numbered { grid-template-columns: repeat(2, 1fr); gap: var(--sp-7) var(--sp-6); } }
+.numbered--five { }
+@media (min-width: 62rem) { .numbered--three { grid-template-columns: repeat(3, 1fr); } }
+
+.numbered__item { position: relative; padding-block-start: var(--sp-5); border-block-start: 1px solid var(--rule-hairline); }
+.numbered__num {
+  font-size: var(--fs-micro); font-weight: 700; color: var(--lime-400);
+  font-variant-numeric: tabular-nums; display: block; margin-block-end: var(--sp-3);
+}
+.numbered__title { font-size: var(--fs-h4); font-weight: 600; color: var(--text-strong); margin-block-end: var(--sp-3); }
+.numbered__title-en { font-size: var(--fs-micro); color: var(--text-eyebrow); font-weight: 400; display: block; margin-block-start: var(--sp-1); }
+.numbered__text { font-size: var(--fs-small); color: var(--text-body); line-height: 1.75; }
+.numbered__text-en { font-size: var(--fs-micro); color: var(--text-muted); margin-block-start: var(--sp-3); line-height: 1.65; }
+
+/* ── Stats ───────────────────────────────────────────────────────────── */
+.stats { display: grid; gap: var(--sp-5); grid-template-columns: repeat(2, 1fr); }
+@media (min-width: 52rem) { .stats { grid-template-columns: repeat(3, 1fr); gap: var(--sp-6); } }
+.stat { padding-block-start: var(--sp-4); border-block-start: 2px solid var(--rule-hairline); }
+.stat--known { border-block-start-color: var(--lime-400); }
+.stat__value {
+  font-size: clamp(2.25rem, 1.6rem + 2.6vw, 3.5rem);
+  font-weight: 700; line-height: 1; color: var(--text-strong);
+  font-variant-numeric: tabular-nums;
+  display: flex; align-items: baseline; gap: 0.1em;
+}
+.stat--pending .stat__value { color: var(--text-faint); font-weight: 300; }
+.stat__unit { font-size: 0.42em; font-weight: 600; color: var(--lime-400); }
+.stat__label { font-size: var(--fs-small); color: var(--text-body); margin-block-start: var(--sp-3); }
+.stat__label-en { font-size: var(--fs-micro); color: var(--text-muted); margin-block-start: var(--sp-1); }
+
+/* ── Client roster ───────────────────────────────────────────────────────
+   No logo files were supplied, so the names are set as a typographic roster —
+   a deliberate treatment rather than an empty logo grid. */
+.roster {
+  display: grid; grid-template-columns: 1fr;
+  border-block-start: 1px solid var(--rule-hairline);
+}
+@media (min-width: 40rem) { .roster { grid-template-columns: repeat(2, 1fr); } }
+@media (min-width: 64rem) { .roster { grid-template-columns: repeat(3, 1fr); } }
+.roster__item {
+  padding-block: var(--sp-5);
+  padding-inline-end: var(--sp-5);
+  border-block-end: 1px solid var(--rule-hairline);
+  display: flex; align-items: baseline; gap: var(--sp-4);
+}
+.roster__num {
+  font-size: var(--fs-micro); color: var(--lime-400); font-variant-numeric: tabular-nums;
+  flex: none; inline-size: 2.5ch;
+}
+.roster__name { font-size: var(--fs-h4); font-weight: 600; color: var(--text-strong); line-height: 1.4; }
+.roster__name-en { display: block; font-size: var(--fs-micro); font-weight: 400; color: var(--text-muted); margin-block-start: var(--sp-1); }
+
+/* ── Sector pills ────────────────────────────────────────────────────── */
+.sectors { display: flex; flex-wrap: wrap; gap: var(--sp-3); }
+.sector {
+  padding: var(--sp-3) var(--sp-5);
+  border: 1px solid var(--rule-strong);
+  border-radius: 100px;
+  font-size: var(--fs-small);
+  color: var(--text-body);
+  transition: border-color var(--dur-fast) var(--ease), color var(--dur-fast) var(--ease);
+}
+.sector:hover { border-color: var(--lime-400); color: var(--lime-400); }
+.sector__en { color: var(--text-faint); font-size: var(--fs-micro); margin-inline-start: var(--sp-2); }
+
+/* ── Project detail ──────────────────────────────────────────────────── */
+.project-hero { position: relative; overflow: hidden; isolation: isolate; }
+.project-hero__media { aspect-ratio: 16 / 9; max-block-size: 70vh; }
+.project-hero__media img { inline-size: 100%; block-size: 100%; object-fit: cover; }
+
+.meta { display: grid; gap: var(--sp-5); grid-template-columns: repeat(2, 1fr); }
+@media (min-width: 48rem) { .meta { grid-template-columns: repeat(4, 1fr); } }
+.meta__label {
+  font-size: var(--fs-micro); text-transform: uppercase; letter-spacing: var(--ls-eyebrow);
+  color: var(--text-eyebrow); margin-block-end: var(--sp-2);
+}
+.meta__value { font-size: var(--fs-small); color: var(--text-strong); font-weight: 600; }
+
+.pager { display: flex; justify-content: space-between; gap: var(--sp-5); flex-wrap: wrap; }
+.pager__link { display: flex; flex-direction: column; gap: var(--sp-2); max-inline-size: 22rem; }
+.pager__dir { font-size: var(--fs-micro); color: var(--text-eyebrow); }
+.pager__title { font-size: var(--fs-h4); font-weight: 600; color: var(--text-strong); }
+.pager__link:hover .pager__title { color: var(--lime-400); }
+
+/* ── Contact ─────────────────────────────────────────────────────────── */
+.contact-grid { display: grid; gap: var(--sp-6); grid-template-columns: 1fr; }
+@media (min-width: 48rem) { .contact-grid { grid-template-columns: repeat(2, 1fr); } }
+.contact-item { padding-block-start: var(--sp-4); border-block-start: 1px solid var(--rule-hairline); }
+.contact-item__label {
+  font-size: var(--fs-micro); text-transform: uppercase; letter-spacing: var(--ls-eyebrow);
+  color: var(--text-eyebrow); margin-block-end: var(--sp-3);
+}
+.contact-item__value { font-size: var(--fs-h4); font-weight: 600; color: var(--text-strong); }
+.contact-item a:hover { color: var(--lime-400); }
+
+/* ── Reveal on scroll ─────────────────────────────────────────────────────
+   Guarded three ways: the query, the js-reveal class the script adds, and the
+   reduced-motion reset in base.css. Content is never hidden by default. */
+@media (prefers-reduced-motion: no-preference) {
+  .js-reveal [data-reveal] {
+    opacity: 0;
+    transform: translateY(14px);
+    transition: opacity var(--dur-slow) var(--ease), transform var(--dur-slow) var(--ease);
+  }
+  .js-reveal [data-reveal][data-revealed] { opacity: 1; transform: none; }
+}

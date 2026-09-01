@@ -1,0 +1,121 @@
+#!/usr/bin/env node
+/**
+ * Static site generator. Emits one directory per route per language, so nginx's
+ * default directory-index resolves every URL with no server configuration —
+ * and an unknown URL returns an honest 404 rather than a 200 that lies.
+ */
+import { mkdirSync, writeFileSync, readFileSync, cpSync, rmSync, existsSync } from 'node:fs'
+import { dirname, join } from 'node:path'
+import { fileURLToPath } from 'node:url'
+
+import { LANGS, DIR, outDir, rootFrom, linkTo, esc, t, indexImages, walk } from './lib.mjs'
+import { nav, ui, brand, contact } from '../content/site.mjs'
+import { projects } from '../content/projects.mjs'
+import * as P from './pages.mjs'
+import { masthead, footer } from './components.mjs'
+
+const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..')
+const DIST = join(ROOT, 'dist')
+const ASSETS = join(ROOT, 'assets')
+
+// Staging only. A preview site carrying a client's name must not be indexable.
+const ROBOTS = 'noindex, nofollow'
+
+rmSync(DIST, { recursive: true, force: true })
+mkdirSync(DIST, { recursive: true })
+
+cpSync(ASSETS, join(DIST, 'assets'), { recursive: true })
+indexImages(join(ASSETS, 'img'))
+
+const A = {
+  mark:          readFileSync(join(ASSETS, 'logo/mark.svg'), 'utf8'),
+  wordmarkLight: readFileSync(join(ASSETS, 'logo/wordmark-light.svg'), 'utf8'),
+  wordmarkDark:  readFileSync(join(ASSETS, 'logo/wordmark-dark.svg'), 'utf8'),
+}
+
+// One stylesheet, concatenated in cascade order — fewer requests, no bundler.
+const css = ['tokens', 'base', 'layout', 'components']
+  .map(f => readFileSync(join(ROOT, 'src/css', `${f}.css`), 'utf8'))
+  .join('\n')
+mkdirSync(join(DIST, 'css'), { recursive: true })
+writeFileSync(join(DIST, 'css/site.css'), css)
+
+mkdirSync(join(DIST, 'js'), { recursive: true })
+cpSync(join(ROOT, 'src/js/site.js'), join(DIST, 'js/site.js'))
+
+/** Wrap a page's body in the full document shell. */
+function document_({ route, lang, title, description, body }) {
+  const up = rootFrom(route, lang)
+  const other = lang === 'ar' ? 'en' : 'ar'
+  return `<!doctype html>
+<html lang="${lang}" dir="${DIR[lang]}">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>${esc(title)}</title>
+<meta name="description" content="${esc(description)}">
+<meta name="robots" content="${ROBOTS}">
+<meta name="theme-color" content="#0f1b28">
+<meta property="og:type" content="website">
+<meta property="og:title" content="${esc(title)}">
+<meta property="og:description" content="${esc(description)}">
+<meta property="og:locale" content="${lang === 'ar' ? 'ar_SA' : 'en_US'}">
+<link rel="alternate" hreflang="${other}" href="${esc(linkTo(route, lang, route, other))}">
+<link rel="alternate" hreflang="${lang}" href="${esc(linkTo(route, lang, route, lang))}">
+<link rel="icon" href="${esc(up)}assets/logo/mark.svg" type="image/svg+xml">
+<link rel="preload" href="${esc(up)}assets/fonts/IBMPlexSansArabic-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="${esc(up)}assets/fonts/IBMPlexSansArabic-700.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="${esc(up)}css/site.css">
+</head>
+<body>
+<a class="skip-link" href="#main">${esc(t(ui.skipToContent, lang))}</a>
+${masthead(route, lang, A)}
+<main id="main">
+${body}
+</main>
+${footer(route, lang, A, { contact, ui })}
+<script src="${esc(up)}js/site.js" defer></script>
+</body>
+</html>
+`
+}
+
+/** Every route, for both languages. */
+function routes() {
+  const list = [
+    { route: '',         render: P.home },
+    { route: 'about',    render: P.about_ },
+    { route: 'services', render: P.servicesPage },
+    { route: 'work',     render: P.work },
+    { route: 'clients',  render: P.clientsPage },
+    { route: 'contact',  render: P.contactPage },
+    { route: '404',      render: P.notFound },
+  ]
+  projects.forEach((p, i) => {
+    list.push({
+      route: `work/${p.slug}`,
+      render: (route, lang, assets) =>
+        P.project(route, lang, assets, p, projects[i - 1] ?? null, projects[i + 1] ?? null),
+    })
+  })
+  return list
+}
+
+let count = 0
+for (const lang of LANGS) {
+  for (const { route, render } of routes()) {
+    const page = render(route, lang, A)
+    const dir = join(DIST, outDir(route, lang))
+    mkdirSync(dir, { recursive: true })
+    writeFileSync(join(dir, 'index.html'), document_({ route, lang, ...page }))
+    count++
+  }
+}
+
+// A crawler-facing robots.txt, belt and braces alongside the meta tag.
+writeFileSync(join(DIST, 'robots.txt'), 'User-agent: *\nDisallow: /\n')
+
+const files = walk(DIST)
+const bytes = files.reduce((s, f) => s + readFileSync(join(DIST, f)).length, 0)
+console.log(`Built ${count} pages (${LANGS.length} languages × ${routes().length} routes)`)
+console.log(`${files.length} files, ${(bytes / 1024 / 1024).toFixed(2)} MB → dist/`)

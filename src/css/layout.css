@@ -1,0 +1,231 @@
+/* ─────────────────────────────────────────────────────────────────────────
+   Shell: containers, masthead, footer, and the deck's signature devices
+   (the gradient rule, the eyebrow, the star watermark).
+   ───────────────────────────────────────────────────────────────────────── */
+
+.container {
+  width: 100%;
+  max-width: var(--maxw);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+.container--text { max-width: var(--maxw-text); }
+
+/* The watermark is deliberately larger than the page and bled off a corner, so
+   every section that can hold one must clip its own overflow. Without this the
+   document grows wider than the viewport — which under RTL shifts the whole
+   page sideways rather than just adding a scrollbar. `clip` is preferred over
+   `hidden` because it does not create a scroll container. */
+.section {
+  padding-block: var(--section-y);
+  position: relative;
+  overflow: hidden;
+  overflow: clip;
+}
+.section--tight { padding-block: var(--section-y-tight); }
+.section--dark  { background: var(--ink-900); }
+.section--raised{ background: var(--ink-700); }
+
+/* ── The eyebrow ──────────────────────────────────────────────────────────
+   Sage, uppercase in Latin, with the Arabic label leading and the English
+   trailing after a hairline — exactly the deck's header pairing. */
+.eyebrow {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  font-size: var(--fs-eyebrow);
+  font-weight: 600;
+  color: var(--text-eyebrow);
+  margin-block-end: var(--sp-5);
+}
+.eyebrow__en {
+  color: var(--text-muted);
+  font-weight: 400;
+  letter-spacing: var(--ls-eyebrow);
+  text-transform: uppercase;
+}
+.eyebrow__sep {
+  inline-size: 1px; block-size: 12px;
+  background: var(--rule-strong);
+  flex: none;
+}
+.eyebrow__num {
+  color: var(--lime-400);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── The signature rule: 56×3, lime → deep green ──────────────────────── */
+.rule {
+  inline-size: 56px;
+  block-size: 3px;
+  background: var(--grad-rule);
+  border: 0;
+  margin-block-end: var(--sp-5);
+}
+[dir='rtl'] .rule { background: var(--grad-rule-rtl); }
+.rule--wide { inline-size: 96px; }
+
+/* ── The star watermark ───────────────────────────────────────────────────
+   The deck's most distinctive move: the mark blown up enormous at ~3.5%
+   opacity, bleeding off a corner. Purely decorative, never announced to AT. */
+.watermark {
+  position: absolute;
+  inset-block-start: -12rem;
+  inset-inline-end: -16rem;
+  inline-size: min(72rem, 110%);
+  color: var(--white);
+  opacity: 0.035;
+  pointer-events: none;
+  z-index: 0;
+}
+.watermark img { inline-size: 100%; block-size: auto; }
+.watermark--start { inset-inline-end: auto; inset-inline-start: -16rem; }
+.watermark--bottom { inset-block-start: auto; inset-block-end: -18rem; }
+.section > .container { position: relative; z-index: 1; }
+
+@media (max-width: 48rem) {
+  .watermark { inline-size: 130%; inset-inline-end: -30%; inset-block-start: -6rem; }
+}
+
+/* ── Masthead ─────────────────────────────────────────────────────────── */
+.masthead {
+  position: sticky;
+  inset-block-start: 0;
+  z-index: 100;
+  padding-block: var(--sp-4);
+  transition: background-color var(--dur) var(--ease),
+              backdrop-filter var(--dur) var(--ease),
+              border-color var(--dur) var(--ease),
+              padding var(--dur) var(--ease);
+  border-block-end: 1px solid transparent;
+}
+.masthead[data-scrolled] {
+  background: rgba(10, 20, 31, 0.86);
+  backdrop-filter: blur(14px) saturate(1.2);
+  -webkit-backdrop-filter: blur(14px) saturate(1.2);
+  border-block-end-color: var(--rule-hairline);
+  padding-block: var(--sp-3);
+}
+.masthead__inner {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-5);
+}
+.masthead__brand {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-3);
+  flex: none;
+  margin-inline-end: auto;
+}
+.masthead__wordmark { block-size: 26px; inline-size: auto; }
+.masthead__mark { block-size: 30px; inline-size: auto; flex: none; }
+.site-footer__brand img { block-size: 30px; inline-size: auto; margin-block-end: var(--sp-4); }
+
+.nav { display: flex; align-items: center; gap: var(--sp-5); }
+.nav__link {
+  position: relative;
+  font-size: var(--fs-small);
+  color: var(--text-muted);
+  padding-block: var(--sp-2);
+  transition: color var(--dur-fast) var(--ease);
+}
+.nav__link:hover { color: var(--text-strong); }
+.nav__link[aria-current='page'] { color: var(--text-strong); font-weight: 600; }
+/* The active marker is the gradient rule again, shrunk. */
+.nav__link[aria-current='page']::after {
+  content: '';
+  position: absolute;
+  inset-block-end: 0;
+  inset-inline: 0;
+  block-size: 2px;
+  background: var(--grad-rule);
+}
+
+.lang-switch {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  font-size: var(--fs-micro);
+  font-weight: 600;
+  color: var(--text-body);
+  padding: var(--sp-2) var(--sp-4);
+  border: 1px solid var(--rule-strong);
+  border-radius: var(--radius);
+  transition: border-color var(--dur-fast) var(--ease),
+              color var(--dur-fast) var(--ease),
+              background-color var(--dur-fast) var(--ease);
+}
+.lang-switch:hover {
+  color: var(--ink-900);
+  background: var(--lime-400);
+  border-color: var(--lime-400);
+}
+
+.nav-toggle { display: none; flex: none; padding: var(--sp-2); color: var(--text-strong); }
+.nav-toggle svg { inline-size: 26px; block-size: 26px; }
+.nav-toggle__close { display: none; }
+.nav-toggle[aria-expanded='true'] .nav-toggle__open { display: none; }
+.nav-toggle[aria-expanded='true'] .nav-toggle__close { display: block; }
+
+@media (max-width: 60rem) {
+  .nav-toggle { display: block; order: 3; }
+  .lang-switch { order: 2; }
+  .nav {
+    position: fixed;
+    inset: 0;
+    inset-block-start: 0;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    gap: var(--sp-5);
+    padding: var(--sp-9) var(--gutter);
+    background: var(--ink-900);
+    /* Hidden from AT as well as sight when closed. */
+    visibility: hidden;
+    opacity: 0;
+    transition: opacity var(--dur) var(--ease), visibility var(--dur) var(--ease);
+  }
+  .nav[data-open] { visibility: visible; opacity: 1; }
+  .nav__link { font-size: var(--fs-h3); color: var(--text-body); }
+  .nav__link[aria-current='page']::after { inset-inline-end: auto; inline-size: 48px; }
+}
+
+/* ── Footer ───────────────────────────────────────────────────────────── */
+.site-footer {
+  background: var(--ink-900);
+  border-block-start: 1px solid var(--rule-hairline);
+  padding-block: var(--sp-8) var(--sp-6);
+  position: relative;
+  overflow: hidden;
+}
+.site-footer__grid {
+  display: grid;
+  gap: var(--sp-7);
+  grid-template-columns: 1fr;
+}
+@media (min-width: 48rem) {
+  .site-footer__grid { grid-template-columns: 1.4fr 1fr 1fr; gap: var(--sp-6); }
+}
+.site-footer h2 {
+  font-size: var(--fs-micro);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: var(--ls-eyebrow);
+  color: var(--text-eyebrow);
+  margin-block-end: var(--sp-4);
+}
+.site-footer li + li { margin-block-start: var(--sp-3); }
+.site-footer a { color: var(--text-body); transition: color var(--dur-fast) var(--ease); }
+.site-footer a:hover { color: var(--lime-400); }
+.site-footer__legal {
+  margin-block-start: var(--sp-7);
+  padding-block-start: var(--sp-5);
+  border-block-start: 1px solid var(--rule-hairline);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-3) var(--sp-5);
+  font-size: var(--fs-micro);
+  color: var(--text-faint);
+}
