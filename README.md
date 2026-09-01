@@ -191,18 +191,29 @@ Two bidi rules the code depends on:
 
 ### Verified
 
+`build/check.mjs` enforces six invariants and fails the build on any of them:
+no root-absolute URLs, no dead links, no dead `srcset` candidates, no physical
+CSS properties (see the bidi note above — one stylesheet serves both
+directions), `lang`/`dir`/`noindex`/`<title>` on every page, and both language
+editions of every route.
+
 Against a real browser, on every page in both languages:
 
 - 40 pages crawled: no console errors, no failed requests, no broken images, no
-  horizontal overflow, exactly one `h1` each
-- Zero root-absolute links, zero dead links, zero dead `srcset` candidates
-- All text meets WCAG AA contrast (the alphas in `tokens.css` are set from
-  measured ratios, not by eye)
-- Skip link takes the first Tab; mobile menu opens, closes on Escape and returns
-  focus to its trigger
+  horizontal overflow, exactly one `h1` each, no skipped heading levels
+- Fourteen viewport widths from 320px to 1920px: no overflow, no text under 12px
+- All text meets WCAG AA contrast — the alphas in `tokens.css` are set from
+  measured ratios, not by eye
+- No photograph renders above 1.3× its real pixel width at any viewport
+- Skip link takes the first Tab; the mobile menu opens, closes on Escape and
+  returns focus to its trigger
 - Every image carries alt text and intrinsic dimensions, so nothing shifts as
-  photographs load
-- Total HTML across all 42 pages: 0.47 MB
+  photographs load; the above-the-fold image is preloaded with `imagesizes`
+  matched to its `sizes`, so nothing is fetched twice
+- Works with JavaScript blocked and with `prefers-reduced-motion`: nothing is
+  hidden in either case, and the masthead is opaque rather than transparent
+- No scroll handlers ship at all
+- Total HTML across all 42 pages: 0.48 MB
 
 ### Staging hygiene
 
