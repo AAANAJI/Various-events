@@ -102,9 +102,21 @@ export function widthsFor(name) {
  * relative src, a srcset across the generated widths, explicit dimensions where
  * known, and lazy/async decoding unless it is the page's LCP image.
  */
-export function img(route, lang, name, { alt, sizes, className, eager = false, ratio } = {}) {
+/**
+ * `fullBleed: true` asserts the image has the pixels to span a wide viewport.
+ * Without this the failure is silent: a 1000px master stretched across a 1920px
+ * screen is 1.9x upscaled and visibly soft, and nothing in the build complains.
+ */
+export function img(route, lang, name, { alt, sizes, className, eager = false, ratio, fullBleed = false } = {}) {
   const ws = widthsFor(name)
   if (!ws.length) throw new Error(`No generated widths for image "${name}"`)
+  const widest = ws[ws.length - 1]
+  if (fullBleed && widest < 1600) {
+    throw new Error(
+      `"${name}" is used full-bleed but its largest variant is only ${widest}px. ` +
+      `At a 1920px viewport that is ${(1920 / widest).toFixed(2)}x upscaled. ` +
+      `Use an image with a 1600px+ master, or drop fullBleed and constrain its column.`)
+  }
   const up = rootFrom(route, lang)
   const src = `${up}assets/img/${name}-${ws[ws.length - 1]}.jpg`
   const srcset = ws.map(w => `${up}assets/img/${name}-${w}.jpg ${w}w`).join(', ')

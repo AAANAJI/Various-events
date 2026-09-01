@@ -22,7 +22,7 @@ export function home(route, lang) {
   <section class="hero">
     <div class="hero__media">${img(route, lang, 'mood-line', {
       alt: lang === 'ar' ? 'مشهد جوي لمشروع ذا لاين في نيوم' : 'Aerial view of The Line, NEOM',
-      sizes: '100vw', eager: true })}</div>
+      sizes: '100vw', eager: true, fullBleed: true })}</div>
     <div class="hero__scrim"></div>
     <div class="container hero__body">
       ${C.eyebrow({ ar: 'الملف التعريفي — ٢٠٢٦', en: 'Company Profile — 2026' }, lang, null, { tag: 'p' })}
@@ -190,8 +190,9 @@ export function servicesPage(route, lang) {
     title: `${t(services.eyebrow, lang)} — ${t(brand.shortName, lang)}`,
     description: t(services.lead, lang),
     body: `
-  ${pageHeader(route, lang, services.eyebrow, services.lead, 'saudi-cup',
-    lang === 'ar' ? 'ممر مقوّس ينفذه فريق فاريوس' : 'An arched colonnade built by the VARIOUS team')}
+  ${pageHeader(route, lang, services.eyebrow, services.lead, 'saso',
+    lang === 'ar' ? 'تفعيل تفاعلي نفّذته فاريوس في بوليفارد سيتي بالرياض'
+                  : 'An interactive activation built by VARIOUS at Boulevard City, Riyadh')}
 
   <section class="section">
     <div class="container">
@@ -273,21 +274,29 @@ export function project(route, lang, p, prev, next) {
     title: `${client ? client + ' — ' : ''}${title} — ${t(brand.shortName, lang)}`,
     description: t(p.text, lang),
     body: `
-  <section class="project-hero">
-    <div class="project-hero__media">${img(route, lang, p.image, {
-      alt: [client, title].filter(Boolean).join(' — '), sizes: '100vw', eager: true })}</div>
+  <section class="section section--tight plate-section">
+    ${C.watermark(route, lang)}
+    <div class="container">
+      <p style="margin-block-end:var(--sp-6)">
+        <a class="link-arrow" href="${esc(linkTo(route, lang, 'work', lang))}">${esc(t(ui.backToWork, lang))}${C.ARROW}</a>
+      </p>
+      <div class="plate">
+        <div class="plate__media">${img(route, lang, p.image, {
+          alt: [client, title].filter(Boolean).join(' — '),
+          sizes: '(min-width: 68rem) 56vw, 92vw', eager: true })}</div>
+        <div class="plate__body">
+          ${C.eyebrow({ ar: 'مشروع', en: 'Project' }, lang, null, { tag: 'p' })}
+          ${client ? `<p class="plate__client">${esc(client)}</p>` : ''}
+          <h1 class="h1">${esc(title)}</h1>
+          <p class="text-en" style="margin-block-start:.75rem;font-size:var(--fs-lead)">${C.echoSpan(p.title, lang)}</p>
+          ${C.rule('rule--wide')}
+        </div>
+      </div>
+    </div>
   </section>
 
   <section class="section section--tight">
-    ${C.watermark(route, lang)}
-    <div class="container">
-      <p style="margin-block-end:1.5rem">
-        <a class="link-arrow" href="${esc(linkTo(route, lang, 'work', lang))}">${esc(t(ui.backToWork, lang))}${C.ARROW}</a>
-      </p>
-      ${C.eyebrow({ ar: 'مشروع', en: 'Project' }, lang, null, { tag: 'p' })}
-      <h1 class="h1">${esc(title)}</h1>
-      <p class="text-en" style="margin-block-start:.75rem;font-size:var(--fs-lead)">${C.echoSpan(p.title, lang)}</p>
-      ${C.rule('rule--wide')}
+    <div class="container container--text">
       <div class="prose" style="font-size:var(--fs-lead);color:var(--text-accent)">
         <p>${esc(t(p.text, lang))}</p>
       </div>
@@ -370,7 +379,7 @@ export function contactPage(route, lang) {
   <section class="hero" style="min-block-size:clamp(22rem,58vh,34rem)">
     <div class="hero__media">${img(route, lang, 'mood-riyadh', {
       alt: lang === 'ar' ? 'مشهد جوي للرياض عند الغروب' : 'Aerial view of Riyadh at sunset',
-      sizes: '100vw', eager: true })}</div>
+      sizes: '100vw', eager: true, fullBleed: true })}</div>
     <div class="hero__scrim"></div>
     <div class="container hero__body">
       ${C.eyebrow({ ar: 'الخاتمة وبيانات التواصل', en: 'Contact' }, lang, null, { tag: 'p' })}
@@ -435,7 +444,7 @@ export function notFound(route, lang) {
 /* ── Shared blocks ────────────────────────────────────────────────────── */
 function pageHeader(route, lang, eyebrowPair, lead, image, alt) {
   return `<section class="hero" style="min-block-size:clamp(24rem,62vh,38rem)">
-    <div class="hero__media">${img(route, lang, image, { alt, sizes: '100vw', eager: true })}</div>
+    <div class="hero__media">${img(route, lang, image, { alt, sizes: '100vw', eager: true, fullBleed: true })}</div>
     <div class="hero__scrim"></div>
     <div class="container hero__body">
       ${C.pair(eyebrowPair, lang, { tag: 'h1', className: 'h1' })}

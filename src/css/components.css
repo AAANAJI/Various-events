@@ -233,13 +233,21 @@
 .sector:hover { border-color: var(--lime-400); color: var(--lime-400); }
 .sector__en { color: var(--text-faint); font-size: var(--fs-micro); margin-inline-start: var(--sp-2); }
 
-/* ── Project detail ──────────────────────────────────────────────────── */
-.project-hero { position: relative; overflow: hidden; isolation: isolate; }
-/* An explicit height rather than aspect-ratio + max-block-size: those two
-   fight, shrinking the box below the container width, which under RTL leaves a
-   gap on the inline-start edge instead of centring. */
-.project-hero__media { inline-size: 100%; block-size: clamp(18rem, 58vh, 42rem); }
-.project-hero__media img { inline-size: 100%; block-size: 100%; object-fit: cover; }
+/* ── Project detail ────────────────────────────────────────────────────
+   The masthead is a split plate rather than a full-bleed band. Every project
+   master is between 899px and 1280px wide, so spanning the viewport upscaled
+   them 1.4x-3.2x. Here the media column is ~780px at the site's max width,
+   which every master covers at 1x or better — and the title and client sit
+   beside the photograph instead of below the fold. */
+.plate { display: grid; gap: var(--sp-6); align-items: center; }
+@media (min-width: 68rem) {
+  .plate { grid-template-columns: 1.35fr 1fr; gap: var(--sp-8); }
+}
+.plate__media { overflow: hidden; background: var(--ink-700); aspect-ratio: 4 / 3; }
+.plate__media img { inline-size: 100%; block-size: 100%; object-fit: cover; }
+.plate__client {
+  font-size: var(--fs-small); color: var(--text-eyebrow); margin-block-end: var(--sp-3);
+}
 
 /* Flex, not a fixed grid: most projects have only two of the four fields
    confirmed, and a 4-column grid strands the rest as empty cells. The width cap

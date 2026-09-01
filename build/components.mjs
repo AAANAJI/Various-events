@@ -156,7 +156,7 @@ export function footer(route, lang, { contact, ui: u }) {
 /** A "pause" band — one sentence over a landscape photograph. */
 export function pauseBand(route, lang, image, text, alt) {
   return `<section class="pause">
-    <div class="pause__media">${img(route, lang, image, { alt: alt || '', sizes: '100vw' })}</div>
+    <div class="pause__media">${img(route, lang, image, { alt: alt || '', sizes: '100vw', fullBleed: true })}</div>
     <div class="pause__scrim"></div>
     <div class="container">
       ${rule()}
