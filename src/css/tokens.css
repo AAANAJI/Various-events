@@ -26,9 +26,12 @@
 
   /* Semantic text colours */
   --text-strong:  var(--white);
-  --text-body:    rgba(228, 238, 246, 0.78);
-  --text-muted:   rgba(228, 238, 246, 0.56);
-  --text-faint:   rgba(228, 238, 246, 0.38);
+  /* Alphas set from measured contrast against --ink-800, not by eye. At 13px
+     everything here must clear 4.5:1; the old --text-faint sat at 3.21:1.
+     0.72 is also what the source deck used for its secondary English lines. */
+  --text-body:    rgba(228, 238, 246, 0.82);   /* ~9.6:1 */
+  --text-muted:   rgba(228, 238, 246, 0.68);   /* ~7.5:1 */
+  --text-faint:   rgba(228, 238, 246, 0.52);   /* ~4.9:1 */
   --text-accent:  var(--pale-300);
   --text-eyebrow: var(--sage-300);
 
