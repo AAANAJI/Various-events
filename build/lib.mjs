@@ -3,7 +3,7 @@
 // a root-absolute "/..." URL. Every href and src is a "../" ladder computed from
 // the emitting page's own depth. `npm run check` fails the build if one slips in.
 
-import { readdirSync, statSync } from 'node:fs'
+import { readdirSync, statSync, readFileSync, openSync, readSync, closeSync } from 'node:fs'
 
 export const LANGS = ['ar', 'en']
 export const DIR = { ar: 'rtl', en: 'ltr' }
@@ -49,8 +49,34 @@ export function t(v, lang) {
   return typeof v === 'string' ? v : (v[lang] ?? v.ar ?? '')
 }
 
-/** Widths actually generated for each image, discovered from disk. */
+/**
+ * Read a JPEG's pixel dimensions from its SOF marker. Only the first ~64KB is
+ * read, which always covers the header. Used to emit width/height on every
+ * <img> so the browser reserves the right box and the page does not shift as
+ * photographs load.
+ */
+function jpegSize(path) {
+  const fd = openSync(path, 'r')
+  const buf = Buffer.alloc(65536)
+  const n = readSync(fd, buf, 0, buf.length, 0)
+  closeSync(fd)
+  let i = 2
+  while (i < n - 9) {
+    if (buf[i] !== 0xff) { i++; continue }
+    const marker = buf[i + 1]
+    // SOF0..SOF15, excluding DHT(C4), JPG(C8) and DAC(CC)
+    if (marker >= 0xc0 && marker <= 0xcf && marker !== 0xc4 && marker !== 0xc8 && marker !== 0xcc) {
+      return { height: buf.readUInt16BE(i + 5), width: buf.readUInt16BE(i + 7) }
+    }
+    if (marker === 0xd8 || marker === 0xd9 || (marker >= 0xd0 && marker <= 0xd7)) { i += 2; continue }
+    i += 2 + buf.readUInt16BE(i + 2)
+  }
+  return null
+}
+
+/** Widths actually generated for each image, plus its intrinsic aspect ratio. */
 const imgWidths = new Map()
+const imgRatio = new Map()
 export function indexImages(assetsImgDir) {
   for (const f of readdirSync(assetsImgDir)) {
     const m = /^(.+)-(\d+)\.jpg$/.exec(f)
@@ -58,6 +84,10 @@ export function indexImages(assetsImgDir) {
     const [, name, w] = m
     if (!imgWidths.has(name)) imgWidths.set(name, [])
     imgWidths.get(name).push(Number(w))
+    if (!imgRatio.has(name)) {
+      const size = jpegSize(`${assetsImgDir}/${f}`)
+      if (size) imgRatio.set(name, size.height / size.width)
+    }
   }
   for (const arr of imgWidths.values()) arr.sort((a, b) => a - b)
   return imgWidths
@@ -78,11 +108,17 @@ export function img(route, lang, name, { alt, sizes, className, eager = false, r
   const up = rootFrom(route, lang)
   const src = `${up}assets/img/${name}-${ws[ws.length - 1]}.jpg`
   const srcset = ws.map(w => `${up}assets/img/${name}-${w}.jpg ${w}w`).join(', ')
+  // Intrinsic dimensions of the largest variant, so the browser reserves the
+  // correct box before the photograph arrives (no layout shift).
+  const wMax = ws[ws.length - 1]
+  const r = imgRatio.get(name)
   const attrs = [
     `src="${esc(src)}"`,
     `srcset="${esc(srcset)}"`,
     `sizes="${esc(sizes || '100vw')}"`,
     `alt="${esc(alt || '')}"`,
+    `width="${wMax}"`,
+    r ? `height="${Math.round(wMax * r)}"` : '',
     className ? `class="${esc(className)}"` : '',
     eager ? 'fetchpriority="high" decoding="async"' : 'loading="lazy" decoding="async"',
     ratio ? `style="aspect-ratio:${esc(ratio)}"` : '',

@@ -25,7 +25,7 @@ export function home(route, lang, A) {
       sizes: '100vw', eager: true })}</div>
     <div class="hero__scrim"></div>
     <div class="container hero__body">
-      ${C.eyebrow({ ar: 'الملف التعريفي — ٢٠٢٦', en: 'Company Profile — 2026' }, lang)}
+      ${C.eyebrow({ ar: 'الملف التعريفي — ٢٠٢٦', en: 'Company Profile — 2026' }, lang, null, { tag: 'p' })}
       <h1 class="hero__title">
         <span class="pair__lead">${esc(t(brand.name, lang))}</span>
       </h1>
@@ -144,12 +144,12 @@ export function about_(route, lang, A) {
     <div class="container">
       <div class="numbered numbered--three" style="gap:var(--sp-7)">
         <div class="numbered__item" style="border-block-start-color:var(--lime-400);border-block-start-width:2px">
-          ${C.eyebrow(vision.eyebrow, lang)}
+          ${C.eyebrow(vision.eyebrow, lang, null, { tag: 'h3' })}
           <p class="lead" style="color:var(--text-strong)">${esc(t(vision.text, lang))}</p>
           <p class="text-en" style="margin-block-start:1rem">${C.echoSpan(vision.text, lang)}</p>
         </div>
         <div class="numbered__item" style="border-block-start-color:var(--lime-400);border-block-start-width:2px">
-          ${C.eyebrow(mission.eyebrow, lang)}
+          ${C.eyebrow(mission.eyebrow, lang, null, { tag: 'h3' })}
           <p class="lead" style="color:var(--text-strong)">${esc(t(mission.text, lang))}</p>
           <p class="text-en" style="margin-block-start:1rem">${C.echoSpan(mission.text, lang)}</p>
         </div>
@@ -284,7 +284,7 @@ export function project(route, lang, A, p, prev, next) {
       <p style="margin-block-end:1.5rem">
         <a class="link-arrow" href="${esc(linkTo(route, lang, 'work', lang))}">${esc(t(ui.backToWork, lang))}${C.ARROW}</a>
       </p>
-      ${C.eyebrow({ ar: 'مشروع', en: 'Project' }, lang)}
+      ${C.eyebrow({ ar: 'مشروع', en: 'Project' }, lang, null, { tag: 'p' })}
       <h1 class="h1">${esc(title)}</h1>
       <p class="text-en" style="margin-block-start:.75rem;font-size:var(--fs-lead)">${C.echoSpan(p.title, lang)}</p>
       ${C.rule('rule--wide')}
@@ -373,7 +373,7 @@ export function contactPage(route, lang, A) {
       sizes: '100vw', eager: true })}</div>
     <div class="hero__scrim"></div>
     <div class="container hero__body">
-      ${C.eyebrow({ ar: 'الخاتمة وبيانات التواصل', en: 'Contact' }, lang)}
+      ${C.eyebrow({ ar: 'الخاتمة وبيانات التواصل', en: 'Contact' }, lang, null, { tag: 'p' })}
       <h1 class="hero__title" style="font-size:var(--fs-h1)">${esc(t(pauses.closing, lang))}</h1>
       <p class="text-en" style="margin-block-start:.75rem">${C.echoSpan(pauses.closing, lang)}</p>
     </div>
@@ -418,7 +418,7 @@ export function notFound(route, lang, A) {
   <section class="section" style="min-block-size:60vh;display:grid;align-items:center">
     ${C.watermark(route, lang)}
     <div class="container">
-      ${C.eyebrow({ ar: 'خطأ ٤٠٤', en: 'Error 404' }, lang)}
+      ${C.eyebrow({ ar: 'خطأ ٤٠٤', en: 'Error 404' }, lang, null, { tag: 'p' })}
       <h1 class="h1">${esc(lang === 'ar' ? 'الصفحة غير موجودة' : 'Page not found')}</h1>
       ${C.rule()}
       <p class="lead">${esc(lang === 'ar'
@@ -438,8 +438,7 @@ function pageHeader(route, lang, A, eyebrowPair, lead, image, alt) {
     <div class="hero__media">${img(route, lang, image, { alt, sizes: '100vw', eager: true })}</div>
     <div class="hero__scrim"></div>
     <div class="container hero__body">
-      ${C.eyebrow(eyebrowPair, lang)}
-      <h1 class="h1">${esc(t(eyebrowPair, lang))}</h1>
+      ${C.pair(eyebrowPair, lang, { tag: 'h1', className: 'h1' })}
       ${C.rule('rule--wide')}
       <p class="lead">${esc(t(lead, lang))}</p>
       <p class="text-en" style="margin-block-start:.75rem;max-inline-size:var(--measure)">${C.echoSpan(lead, lang)}</p>
@@ -456,7 +455,7 @@ function ctaBand(route, lang, A) {
       <p class="text-en" style="margin-block-start:.75rem">${C.echoSpan(ui.getInTouch, lang)}</p>
       <div style="margin-block-start:2rem;display:flex;gap:1rem;justify-content:center;flex-wrap:wrap">
         ${C.btn(linkTo(route, lang, 'contact', lang), t(ui.startConversation, lang))}
-        ${C.btn(`tel:${contact.phoneHref}`, contact.phone, { variant: 'ghost', arrow: false })}
+        ${C.btn(`tel:${contact.phoneHref}`, contact.phone, { variant: 'ghost', arrow: false, isolate: true })}
       </div>
     </div>
   </section>`

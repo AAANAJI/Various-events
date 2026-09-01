@@ -236,11 +236,16 @@
 
 /* ── Project detail ──────────────────────────────────────────────────── */
 .project-hero { position: relative; overflow: hidden; isolation: isolate; }
-.project-hero__media { aspect-ratio: 16 / 9; max-block-size: 70vh; }
+/* An explicit height rather than aspect-ratio + max-block-size: those two
+   fight, shrinking the box below the container width, which under RTL leaves a
+   gap on the inline-start edge instead of centring. */
+.project-hero__media { inline-size: 100%; block-size: clamp(18rem, 58vh, 42rem); }
 .project-hero__media img { inline-size: 100%; block-size: 100%; object-fit: cover; }
 
-.meta { display: grid; gap: var(--sp-5); grid-template-columns: repeat(2, 1fr); }
-@media (min-width: 48rem) { .meta { grid-template-columns: repeat(4, 1fr); } }
+/* Flex, not a fixed grid: most projects have only two of the four fields
+   confirmed, and a 4-column grid strands the rest as empty cells. */
+.meta { display: flex; flex-wrap: wrap; gap: var(--sp-5) var(--sp-8); }
+.meta > li { min-inline-size: 11rem; flex: 0 1 auto; }
 .meta__label {
   font-size: var(--fs-micro); text-transform: uppercase; letter-spacing: var(--ls-eyebrow);
   color: var(--text-eyebrow); margin-block-end: var(--sp-2);

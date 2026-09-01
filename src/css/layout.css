@@ -29,8 +29,11 @@
 /* ── The eyebrow ──────────────────────────────────────────────────────────
    Sage, uppercase in Latin, with the Arabic label leading and the English
    trailing after a hairline — exactly the deck's header pairing. */
+/* Rendered as a heading element for document structure; the visual treatment
+   is deliberately small, so the inherited h2 sizing has to be reset. */
 .eyebrow {
   display: flex;
+  font-family: inherit;
   align-items: center;
   gap: var(--sp-3);
   font-size: var(--fs-eyebrow);

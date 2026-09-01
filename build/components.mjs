@@ -2,20 +2,26 @@
 // it can compute its own relative links — nothing here ever emits "/...".
 
 import { esc, t, linkTo, rootFrom, img } from './lib.mjs'
-import { num, ui, nav, brand } from '../content/site.mjs'
+import { num, figure, ui, nav, brand } from '../content/site.mjs'
 
 export const ARROW = '<svg class="btn__arrow" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M1 8h13M9 3l5 5-5 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>'
 
-/** Eyebrow: Arabic label, hairline, English label. Optionally numbered. */
-export function eyebrow(pair, lang, n) {
+/**
+ * Eyebrow: primary label, hairline, secondary label. Optionally numbered.
+ *
+ * `tag` defaults to h2 because this IS the section's heading — the numbered
+ * items beneath it are h3s, and without it the document skips a level. A small
+ * visual treatment does not make it a lesser heading.
+ */
+export function eyebrow(pair, lang, n, { tag = 'h2' } = {}) {
   const lead = t(pair, lang)
   const echo = lang === 'ar' ? pair.en : pair.ar
-  return `<p class="eyebrow">
+  return `<${tag} class="eyebrow">
       ${n ? `<span class="eyebrow__num">${esc(num(n, lang))}</span><span class="eyebrow__sep"></span>` : ''}
       <span>${esc(lead)}</span>
       <span class="eyebrow__sep"></span>
       <span class="eyebrow__en"${lang === 'ar' ? ' lang="en" dir="ltr"' : ' lang="ar" dir="rtl"'}>${esc(echo)}</span>
-    </p>`
+    </${tag}>`
 }
 
 /** A heading whose primary language leads and whose other language echoes below. */
@@ -58,9 +64,17 @@ export function watermark(route, lang, extra = '') {
     </div>`
 }
 
-export function btn(href, label, { variant = 'primary', arrow = true, attrs = '' } = {}) {
+/**
+ * `isolate: true` wraps the label in an LTR-isolated span. Required for any
+ * Latin-numeral run inside an RTL page — a phone number left to the bidi
+ * algorithm renders "+966 55 051 1403" as "1403 051 55 966+".
+ */
+export function btn(href, label, { variant = 'primary', arrow = true, attrs = '', isolate = false } = {}) {
+  const inner = isolate
+    ? `<span class="lt" dir="ltr">${esc(label)}</span>`
+    : `<span>${esc(label)}</span>`
   return `<a class="btn btn--${variant}" href="${esc(href)}"${attrs ? ' ' + attrs : ''}>
-      <span>${esc(label)}</span>${arrow ? ARROW : ''}
+      ${inner}${arrow ? ARROW : ''}
     </a>`
 }
 
@@ -196,7 +210,7 @@ export function numberedList(items, lang, { columns = 2 } = {}) {
 export function statsBlock(stats, lang) {
   const body = stats.map(s => {
     const known = s.value != null
-    const shown = known ? num(s.value, lang).replace(/^0(?=\d)/, '') : '—'
+    const shown = known ? figure(s.value, lang) : '—'
     const plus = known && s.plus ? (lang === 'ar' ? '+' : '+') : ''
     // A unit beside a pending em-dash reads as a broken value, so it waits for the number.
     const unit = s.unit && known ? `<span class="stat__unit">${esc(t(s.unit, lang))}</span>` : ''

@@ -60,10 +60,22 @@ export const ui = {
   pageOf:        { ar: 'من',                      en: 'of' },
 }
 
-// Arabic-Indic numerals — the deck numbers its sections ٠١ ٠٢ ٠٣.
-// Latin digits are kept for the English edition.
+const ARABIC_INDIC = '٠١٢٣٤٥٦٧٨٩'
+
+/**
+ * Section numbering — zero-padded to two digits, as the deck sets it: ٠١ ٠٢ ٠٣.
+ * The English edition keeps Latin digits.
+ */
 export function num(n, lang) {
   const s = String(n).padStart(2, '0')
-  if (lang !== 'ar') return s
-  return s.replace(/\d/g, d => '٠١٢٣٤٥٦٧٨٩'[Number(d)])
+  return lang === 'ar' ? s.replace(/\d/g, d => ARABIC_INDIC[Number(d)]) : s
+}
+
+/**
+ * A quantity, not a label — so no zero padding, and grouped in thousands.
+ * Arabic uses U+066C (٬) as its thousands separator, not the Latin comma.
+ */
+export function figure(n, lang) {
+  const grouped = String(n).replace(/\B(?=(\d{3})+(?!\d))/g, lang === 'ar' ? '\u066C' : ',')
+  return lang === 'ar' ? grouped.replace(/\d/g, d => ARABIC_INDIC[Number(d)]) : grouped
 }
