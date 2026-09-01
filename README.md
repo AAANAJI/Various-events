@@ -67,6 +67,36 @@ runs unattended. The workflow probes the directory before letting `rsync
 --delete` near it, so a missing directory reports itself rather than failing
 with a bare permission error.
 
+### After the first deploy
+
+Status codes cannot be fully trusted on this host — some prefixes have an nginx
+SPA fallback that answers missing files with `200` and a small HTML shell. This
+site's prefix should *not* have one (it needs no rewrite), so confirm that first:
+
+```sh
+curl -s -o /dev/null -w '%{http_code} %{size_download}b %{content_type}\n' \
+  "https://staging.shfrah.com/various/this-does-not-exist-$RANDOM"
+# expect: 404 — status codes on this prefix are then trustworthy
+```
+
+Then check the two things that fail silently:
+
+```sh
+# Fonts. A wrong type still renders on most browsers but falls back to a system
+# font on some, with nothing in the console.
+curl -sI https://staging.shfrah.com/various/assets/fonts/IBMPlexSansArabic-400.woff2 | grep -i content-type
+# expect: font/woff2
+
+# The stylesheet actually arrived. If this returns text/html, the page will
+# render as unstyled black-on-white Times New Roman.
+curl -s -o /dev/null -w '%{http_code} %{size_download}b %{content_type}\n' \
+  https://staging.shfrah.com/various/css/site.css
+# expect: 200, ~32000b, text/css
+```
+
+Finally, open `/various/` and `/various/en/work/saudi-cup/` and confirm both
+render fully styled, in the right reading direction.
+
 ---
 
 ## Content still awaiting confirmation
