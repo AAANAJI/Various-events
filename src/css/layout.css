@@ -40,21 +40,6 @@
   color: var(--text-eyebrow);
   margin-block-end: var(--sp-5);
 }
-.eyebrow__en {
-  color: var(--text-muted);
-  font-weight: 400;
-  letter-spacing: var(--ls-eyebrow);
-  text-transform: uppercase;
-}
-.eyebrow__sep {
-  inline-size: 1px; block-size: 12px;
-  background: var(--rule-strong);
-  flex: none;
-}
-.eyebrow__num {
-  color: var(--lime-400);
-  font-variant-numeric: tabular-nums;
-}
 
 /* ── The signature rule: 56×3, lime → deep green ──────────────────────── */
 .rule {

@@ -69,6 +69,24 @@ The workflow probes the directory before letting `rsync --delete` near it, so a
 missing or unwritable directory reports itself rather than failing with a bare
 permission error.
 
+### Motion
+
+GSAP 3.15 with ScrollTrigger, self-hosted in `assets/js/` rather than pulled
+from a CDN — no third-party request, and the checksum sweep can verify it like
+any other file. 123KB, about 46KB over the wire once gzipped.
+
+It is strictly a layer on top. Three guards have to hold before anything is
+hidden: the visitor has not asked for reduced motion, an inline script has set
+`js` on `<html>` before first paint, and `site.js` has confirmed GSAP actually
+loaded — it removes `js` again if it did not. A blocked script, a failed asset
+and a reduced-motion preference therefore all land on the same outcome:
+everything visible, nothing animated.
+
+One trap worth recording. Because the stylesheet pre-hides the animated
+elements, `gsap.from()` is wrong here — it animates *from* a value *to whatever
+the element currently is*, which is `opacity: 0`, so it animates 0 → 0 and the
+page stays blank. Every tween states its end values explicitly with `fromTo()`.
+
 ### Verified on the live server
 
 Measured after the first successful deploy (run #11):
@@ -240,6 +258,18 @@ Arabic RTL at the root, English LTR under `/en/`. Every route exists in both;
 properties throughout, so a single stylesheet serves both directions with no
 mirrored overrides.
 
+**Each edition is single-language.** The deck sets Arabic and English together
+on every slide, because a printed profile has to serve both readers at once. A
+website with a language switcher does not: the Arabic edition is Arabic, the
+English edition is English. The only cross-language elements left are the
+`hreflang` metadata and the switcher itself, which is deliberately labelled in
+the language it leads to.
+
+**No section numbering.** The deck numbers its sections ٠١ ٠٢ ٠٣ because slides
+are a sequence. Web sections are destinations reached in any order, so the
+numbers are gone — except on `/process/`, where the five steps genuinely are
+ordered and the numbering carries meaning.
+
 Two bidi rules the code depends on:
 
 - The `dir` attribute goes on an **inline span**, never on the block. A block
@@ -248,6 +278,24 @@ Two bidi rules the code depends on:
 - Latin numeral runs — phone numbers, the CR number — need explicit LTR
   isolation, or the bidi algorithm moves the leading `+` to the end and
   `+966 55 051 1403` renders as `1403 051 55 966+`.
+
+### Motion
+
+GSAP 3.15 with ScrollTrigger, self-hosted in `assets/js/` rather than pulled
+from a CDN — no third-party request, and the checksum sweep can verify it like
+any other file. 123KB, about 46KB over the wire once gzipped.
+
+It is strictly a layer on top. Three guards have to hold before anything is
+hidden: the visitor has not asked for reduced motion, an inline script has set
+`js` on `<html>` before first paint, and `site.js` has confirmed GSAP actually
+loaded — it removes `js` again if it did not. A blocked script, a failed asset
+and a reduced-motion preference therefore all land on the same outcome:
+everything visible, nothing animated.
+
+One trap worth recording. Because the stylesheet pre-hides the animated
+elements, `gsap.from()` is wrong here — it animates *from* a value *to whatever
+the element currently is*, which is `opacity: 0`, so it animates 0 → 0 and the
+page stays blank. Every tween states its end values explicitly with `fromTo()`.
 
 ### Verified
 

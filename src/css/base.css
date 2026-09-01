@@ -64,9 +64,6 @@ body {
 
 /* Latin headings get a touch of negative tracking; Arabic never does —
    letter-spacing breaks Arabic joining. */
-:lang(en) h1, :lang(en) h2, :lang(en) h3, :lang(en) .display {
-  letter-spacing: var(--ls-latin-head);
-}
 :lang(ar) * { letter-spacing: normal !important; }
 :lang(ar) .eyebrow { letter-spacing: normal !important; }
 

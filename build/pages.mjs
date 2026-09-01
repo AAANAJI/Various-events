@@ -10,9 +10,6 @@ import { projects, additionalWorks, workIntro } from '../content/projects.mjs'
 import { clients, clientsIntro } from '../content/clients.mjs'
 import { stats, statsIntro } from '../content/stats.mjs'
 
-const echoP = (v, lang, style = '') =>
-  `<p class="text-en"${style ? ` style="${style}"` : ''}>${C.echoSpan(v, lang)}</p>`
-
 /* ── Home ─────────────────────────────────────────────────────────────────
    Short by design. It says what VARIOUS is, shows six services and three
    projects, and sends the visitor into the right section. The detail lives on
@@ -24,18 +21,17 @@ export function home(route, lang) {
     description: t(homeCopy.intro.body, lang).slice(0, 155),
     heroImage: 'mood-line',
     body: `
-  <section class="hero">
+  <section class="hero" data-hero>
     <div class="hero__media">${img(route, lang, 'mood-line', {
       alt: lang === 'ar' ? 'مشهد جوي لمشروع ذا لاين في نيوم' : 'Aerial view of The Line, NEOM',
       sizes: '100vw', eager: true, fullBleed: true })}</div>
     <div class="hero__scrim"></div>
     <div class="container hero__body">
-      ${C.eyebrow({ ar: 'صناعة الفعاليات وأجنحة المعارض', en: 'Events & exhibition stands' }, lang, null, { tag: 'p' })}
-      <h1 class="hero__title"><span class="pair__lead">${esc(t(brand.tagline, lang))}</span></h1>
-      ${echoP(brand.tagline, lang, 'margin-block-start:.75rem;font-size:var(--fs-lead)')}
+      <div data-hero-item>${C.eyebrow({ ar: 'صناعة الفعاليات وأجنحة المعارض', en: 'Events & exhibition stands' }, lang, { tag: 'p' })}</div>
+      <h1 class="hero__title" data-hero-item>${esc(t(brand.tagline, lang))}</h1>
       ${C.rule('rule--wide')}
-      <p class="hero__sub">${esc(t(brand.name, lang))}</p>
-      <div class="hero__actions">
+      <p class="hero__sub" data-hero-item>${esc(t(brand.name, lang))}</p>
+      <div class="hero__actions" data-hero-item>
         ${C.btn(linkTo(route, lang, 'work', lang), t(ui.seeWork, lang), { variant: 'primary' })}
         ${C.btn(linkTo(route, lang, 'services', lang), t(ui.allServices, lang), { variant: 'ghost', arrow: false })}
       </div>
@@ -45,9 +41,8 @@ export function home(route, lang) {
   <section class="section">
     ${C.watermark(route, lang)}
     <div class="container container--text">
-      ${C.eyebrow(homeCopy.intro.eyebrow, lang, 1)}
-      <p class="statement">${esc(t(homeCopy.intro.headline, lang))}</p>
-      ${echoP(homeCopy.intro.headline, lang, 'margin-block-start:1rem;max-inline-size:52ch')}
+      ${C.eyebrow(homeCopy.intro.eyebrow, lang)}
+      <p class="statement" data-animate>${esc(t(homeCopy.intro.headline, lang))}</p>
       <div class="prose" style="margin-block-start:2.5rem">
         <p>${esc(t(homeCopy.intro.body, lang))}</p>
       </div>
@@ -59,12 +54,11 @@ export function home(route, lang) {
 
   <section class="section section--dark">
     <div class="container">
-      ${C.eyebrow(homeCopy.servicesTeaser.eyebrow, lang, 2)}
-      <p class="statement">${esc(t(homeCopy.servicesTeaser.headline, lang))}</p>
-      <ul class="tiles" style="margin-block-start:3rem">
-        ${services.map((s, i) => `<li class="tile">
+      ${C.eyebrow(homeCopy.servicesTeaser.eyebrow, lang)}
+      <p class="statement" data-animate>${esc(t(homeCopy.servicesTeaser.headline, lang))}</p>
+      <ul class="tiles" style="margin-block-start:3rem" data-animate-group>
+        ${services.map(s => `<li class="tile">
           <a class="tile__link" href="${esc(linkTo(route, lang, `services/${s.slug}`, lang))}">
-            <span class="tile__num">${esc(num(i + 1, lang))}</span>
             <span class="tile__title">${esc(t(s.title, lang))}</span>
             <span class="tile__lead">${esc(t(s.lead, lang))}</span>
           </a>
@@ -75,10 +69,10 @@ export function home(route, lang) {
 
   <section class="section">
     <div class="container">
-      ${C.eyebrow(homeCopy.workTeaser.eyebrow, lang, 3)}
-      <p class="statement">${esc(t(homeCopy.workTeaser.headline, lang))}</p>
+      ${C.eyebrow(homeCopy.workTeaser.eyebrow, lang)}
+      <p class="statement" data-animate>${esc(t(homeCopy.workTeaser.headline, lang))}</p>
       <p class="muted" style="margin-block-start:1rem;max-inline-size:var(--measure)">${esc(t(homeCopy.workTeaser.body, lang))}</p>
-      <div class="work-grid" style="margin-block-start:3rem">
+      <div class="work-grid" style="margin-block-start:3rem" data-animate-group>
         ${featured.map(p => C.projectCard(route, lang, p)).join('\n        ')}
       </div>
       <p style="margin-block-start:2.5rem">
@@ -93,7 +87,7 @@ export function home(route, lang) {
   <section class="section">
     ${C.watermark(route, lang, 'watermark--start')}
     <div class="container">
-      ${C.eyebrow(homeCopy.whyTeaser.eyebrow, lang, 4)}
+      ${C.eyebrow(homeCopy.whyTeaser.eyebrow, lang)}
       <div style="margin-block-start:2.5rem">${C.numberedList(why.items, lang)}</div>
     </div>
   </section>
@@ -115,7 +109,7 @@ export function aboutIndex(route, lang, sectionItem) {
 
   <section class="section">
     <div class="container container--text">
-      <div class="prose prose--lead">
+      <div class="prose prose--lead" data-animate>
         ${about.body.map(p => `<p>${esc(t(p, lang))}</p>`).join('\n        ')}
       </div>
     </div>
@@ -125,7 +119,7 @@ export function aboutIndex(route, lang, sectionItem) {
     ${C.watermark(route, lang)}
     <div class="container container--text">
       ${C.eyebrow(about.model.eyebrow, lang)}
-      <p class="statement">${esc(t(about.model.headline, lang))}</p>
+      <p class="statement" data-animate>${esc(t(about.model.headline, lang))}</p>
       ${C.rule()}
       <div class="prose">
         ${about.model.body.map(p => `<p>${esc(t(p, lang))}</p>`).join('\n        ')}
@@ -149,9 +143,8 @@ export function aboutIndex(route, lang, sectionItem) {
 
 export function aboutVision(route, lang, sectionItem) {
   const card = (item) => `<div class="statement-card">
-      ${C.eyebrow(item.label, lang, null, { tag: 'h2' })}
+      ${C.eyebrow(item.label, lang, { tag: 'h2' })}
       <p class="statement-card__text">${esc(t(item.text, lang))}</p>
-      ${echoP(item.text, lang, 'margin-block-start:1.25rem')}
     </div>`
   return {
     title: `${t(vision.eyebrow, lang)} — ${t(brand.shortName, lang)}`,
@@ -165,7 +158,7 @@ export function aboutVision(route, lang, sectionItem) {
   <section class="section">
     ${C.watermark(route, lang)}
     <div class="container">
-      <div class="statement-pair">
+      <div class="statement-pair" data-animate-group>
         ${card(vision.visionItem)}
         ${card(vision.missionItem)}
       </div>
@@ -175,7 +168,7 @@ export function aboutVision(route, lang, sectionItem) {
   <section class="section section--dark">
     <div class="container">
       ${C.eyebrow(values.eyebrow, lang)}
-      <p class="statement">${esc(t(values.lead, lang))}</p>
+      <p class="statement" data-animate>${esc(t(values.lead, lang))}</p>
       <p style="margin-block-start:2rem">
         <a class="link-arrow" href="${esc(linkTo(route, lang, 'about/values', lang))}">${esc(t(values.eyebrow, lang))}${C.ARROW}</a>
       </p>
@@ -200,13 +193,9 @@ export function aboutValues(route, lang, sectionItem) {
     ${C.watermark(route, lang)}
     <div class="container">
       <ul class="numbered">
-        ${values.items.map((v, i) => `<li class="numbered__item" data-reveal>
-          <span class="numbered__num">${esc(num(i + 1, lang))}</span>
-          <h2 class="numbered__title">${esc(t(v.title, lang))} · ${esc(t(v.strap, lang))}
-            <span class="numbered__title-en">${C.echoSpan(v.title, lang)} · ${C.echoSpan(v.strap, lang)}</span>
-          </h2>
+        ${values.items.map(v => `<li class="numbered__item">
+          <h2 class="numbered__title">${esc(t(v.title, lang))} · ${esc(t(v.strap, lang))}</h2>
           <p class="numbered__text">${esc(t(v.text, lang))}</p>
-          <p class="numbered__text-en">${C.echoSpan(v.text, lang)}</p>
         </li>`).join('\n        ')}
       </ul>
     </div>
@@ -230,11 +219,10 @@ export function aboutFounders(route, lang, sectionItem) {
     ${C.watermark(route, lang)}
     <div class="container container--text">
       ${C.rule('rule--wide')}
-      <blockquote class="quote">
+      <blockquote class="quote" data-animate>
         ${founders.quote.map(p => `<p>«${esc(t(p, lang))}»</p>`).join('\n        ')}
       </blockquote>
       <p class="quote__by">${esc(t(founders.attribution, lang))}</p>
-      ${echoP(founders.attribution, lang)}
     </div>
   </section>
 
@@ -256,25 +244,23 @@ export function servicesIndex(route, lang, sectionItem) {
 
   <section class="section">
     <div class="container container--text">
-      <div class="prose prose--lead"><p>${esc(t(servicesIntro.body, lang))}</p></div>
+      <div class="prose prose--lead" data-animate><p>${esc(t(servicesIntro.body, lang))}</p></div>
     </div>
   </section>
 
   <section class="section section--tight">
     ${C.watermark(route, lang, 'watermark--start')}
     <div class="container">
-      <ul class="service-list">
-        ${services.map((s, i) => `<li class="service-row" data-reveal>
+      <ul class="service-list" data-animate-group>
+        ${services.map(s => `<li class="service-row">
           <div class="service-row__media">
             ${img(route, lang, s.image, { alt: t(s.title, lang),
               sizes: '(min-width: 62rem) 34vw, 92vw' })}
           </div>
           <div class="service-row__body">
-            <span class="service-row__num">${esc(num(i + 1, lang))}</span>
             <h2 class="service-row__title">
               <a href="${esc(linkTo(route, lang, `services/${s.slug}`, lang))}">${esc(t(s.title, lang))}</a>
             </h2>
-            <p class="service-row__title-en">${C.echoSpan(s.title, lang)}</p>
             <p class="service-row__lead">${esc(t(s.lead, lang))}</p>
             <p class="link-arrow" style="margin-block-start:1.25rem">${esc(t(ui.readMore, lang))}${C.ARROW}</p>
           </div>
@@ -307,9 +293,8 @@ export function servicePage(route, lang, service, prev, next, sectionItem) {
         <div class="plate__media">${img(route, lang, service.image, {
           alt: t(service.title, lang), sizes: '(min-width: 68rem) 56vw, 92vw', eager: true })}</div>
         <div class="plate__body">
-          ${C.eyebrow(servicesIntro.eyebrow, lang, null, { tag: 'p' })}
+          ${C.eyebrow(servicesIntro.eyebrow, lang, { tag: 'p' })}
           <h1 class="h1">${esc(t(service.title, lang))}</h1>
-          ${echoP(service.title, lang, 'margin-block-start:.75rem;font-size:var(--fs-lead)')}
           ${C.rule('rule--wide')}
           <p class="plate__lead">${esc(t(service.lead, lang))}</p>
         </div>
@@ -319,7 +304,7 @@ export function servicePage(route, lang, service, prev, next, sectionItem) {
 
   <section class="section section--tight">
     <div class="container container--text">
-      <div class="prose prose--lead">
+      <div class="prose prose--lead" data-animate>
         ${service.body.map(p => `<p>${esc(t(p, lang))}</p>`).join('\n        ')}
       </div>
     </div>
@@ -328,10 +313,10 @@ export function servicePage(route, lang, service, prev, next, sectionItem) {
   <section class="section section--dark">
     <div class="container">
       ${C.eyebrow(ui.whatWeDo, lang)}
-      <ul class="caps">
+      <ul class="caps" data-animate-group>
         ${service.capabilities.map(c => `<li class="cap">
           <span class="cap__mark" aria-hidden="true"></span>
-          <span>${esc(t(c, lang))}<span class="cap__en">${C.echoSpan(c, lang)}</span></span>
+          <span>${esc(t(c, lang))}</span>
         </li>`).join('\n        ')}
       </ul>
     </div>
@@ -340,7 +325,7 @@ export function servicePage(route, lang, service, prev, next, sectionItem) {
   ${related.length ? `<section class="section">
     <div class="container">
       ${C.eyebrow(ui.relatedWork, lang)}
-      <div class="work-grid" style="margin-block-start:2.5rem">
+      <div class="work-grid" style="margin-block-start:2.5rem" data-animate-group>
         ${related.map(p => C.projectCard(route, lang, p)).join('\n        ')}
       </div>
     </div>
@@ -377,19 +362,18 @@ export function process(route, lang) {
 
   <section class="section section--tight">
     <div class="container container--text">
-      <div class="prose prose--lead"><p>${esc(t(method.body, lang))}</p></div>
+      <div class="prose prose--lead" data-animate><p>${esc(t(method.body, lang))}</p></div>
     </div>
   </section>
 
   <section class="section">
     ${C.watermark(route, lang)}
     <div class="container">
-      <ol class="steps">
-        ${method.steps.map((s, i) => `<li class="step" data-reveal>
+      <ol class="steps" data-animate-group>
+        ${method.steps.map((s, i) => `<li class="step">
           <span class="step__num">${esc(num(i + 1, lang))}</span>
           <div class="step__body">
             <h2 class="step__title">${esc(t(s.title, lang))}
-              <span class="step__title-en">${C.echoSpan(s.title, lang)}</span>
             </h2>
             <p class="step__text">${esc(t(s.text, lang))}</p>
             <p class="step__detail">${esc(t(s.detail, lang))}</p>
@@ -417,7 +401,7 @@ export function work(route, lang, sectionItem) {
   <section class="section">
     <div class="container">
       <p class="muted" style="max-inline-size:var(--measure)">${esc(t(workIntro.note, lang))}</p>
-      <div class="work-grid" style="margin-block-start:3rem">
+      <div class="work-grid" style="margin-block-start:3rem" data-animate-group>
         ${projects.map((p, i) => C.projectCard(route, lang, p, { featured: i === 0 })).join('\n        ')}
       </div>
     </div>
@@ -427,11 +411,9 @@ export function work(route, lang, sectionItem) {
     ${C.watermark(route, lang, 'watermark--start')}
     <div class="container">
       ${C.eyebrow({ ar: 'ومن أعمالنا أيضًا', en: 'Also from our work' }, lang)}
-      <ul class="roster" style="margin-block-start:2rem">
-        ${additionalWorks.map((w, i) => `<li class="roster__item">
-          <span class="roster__num">${esc(num(i + 1, lang))}</span>
+      <ul class="roster" data-animate-group style="margin-block-start:2rem">
+        ${additionalWorks.map(w => `<li class="roster__item">
           <span class="roster__name">${esc(t(w.client, lang))} — ${esc(t(w.title, lang))}
-            <span class="roster__name-en">${C.echoSpan(w.client, lang)} — ${C.echoSpan(w.title, lang)}</span>
           </span>
         </li>`).join('\n        ')}
       </ul>
@@ -469,10 +451,9 @@ export function project(route, lang, p, prev, next) {
           alt: [client, title].filter(Boolean).join(' — '),
           sizes: '(min-width: 68rem) 56vw, 92vw', eager: true })}</div>
         <div class="plate__body">
-          ${C.eyebrow({ ar: 'مشروع', en: 'Project' }, lang, null, { tag: 'p' })}
+          ${C.eyebrow({ ar: 'مشروع', en: 'Project' }, lang, { tag: 'p' })}
           ${client ? `<p class="plate__client">${esc(client)}</p>` : ''}
           <h1 class="h1">${esc(title)}</h1>
-          ${echoP(p.title, lang, 'margin-block-start:.75rem;font-size:var(--fs-lead)')}
           ${C.rule('rule--wide')}
         </div>
       </div>
@@ -481,14 +462,13 @@ export function project(route, lang, p, prev, next) {
 
   <section class="section section--tight">
     <div class="container container--text">
-      <div class="prose prose--lead"><p>${esc(t(p.text, lang))}</p></div>
-      ${echoP(p.text, lang, 'margin-block-start:1.25rem;max-inline-size:var(--measure)')}
+      <div class="prose prose--lead" data-animate><p>${esc(t(p.text, lang))}</p></div>
     </div>
   </section>
 
   ${meta.length ? `<section class="section section--tight section--dark">
     <div class="container">
-      <ul class="meta">
+      <ul class="meta" data-animate-group>
         ${meta.map(m => `<li>
           <p class="meta__label">${esc(t(m.label, lang))}</p>
           <p class="meta__value">${esc(m.value)}</p>
@@ -530,11 +510,9 @@ export function sectorsPage(route, lang, sectionItem) {
   <section class="section">
     ${C.watermark(route, lang)}
     <div class="container">
-      <ul class="sector-grid">
-        ${sectors.items.map((s, i) => `<li class="sector-cell">
-          <span class="sector-cell__num">${esc(num(i + 1, lang))}</span>
+      <ul class="sector-grid" data-animate-group>
+        ${sectors.items.map(s => `<li class="sector-cell">
           <span class="sector-cell__name">${esc(t(s, lang))}
-            <span class="sector-cell__en">${C.echoSpan(s, lang)}</span>
           </span>
         </li>`).join('\n        ')}
       </ul>
@@ -557,15 +535,14 @@ export function clientsPage(route, lang) {
 
   <section class="section">
     <div class="container">
-      <ul class="roster">
-        ${clients.map((c, i) => {
+      <ul class="roster" data-animate-group>
+        ${clients.map(c => {
           const rel = relatedWork(c)
-          const name = `${esc(t(c, lang))}<span class="roster__name-en">${C.echoSpan(c, lang)}</span>`
+          const name = esc(t(c, lang))
           const label = rel.href
             ? `<a class="roster__link" href="${esc(linkTo(route, lang, rel.href, lang))}">${name}</a>`
             : name
           return `<li class="roster__item">
-          <span class="roster__num">${esc(num(i + 1, lang))}</span>
           <span class="roster__name">${label}
             ${rel.caption ? `<span class="roster__caption">${esc(rel.caption[lang])}</span>` : ''}
           </span>
@@ -615,22 +592,21 @@ export function contactPage(route, lang) {
     description: `${t(brand.name, lang)} — ${contact.phone} · ${contact.email}`,
     heroImage: 'mood-fireworks',
     body: `
-  <section class="hero hero--short">
+  <section class="hero hero--short" data-hero>
     <div class="hero__media">${img(route, lang, 'mood-fireworks', {
       alt: lang === 'ar' ? 'ألعاب نارية فوق حدث جماهيري' : 'Fireworks over a public event',
       sizes: '100vw', eager: true, fullBleed: true })}</div>
     <div class="hero__scrim"></div>
     <div class="container hero__body">
-      ${C.eyebrow({ ar: 'تواصل معنا', en: 'Contact' }, lang, null, { tag: 'p' })}
+      ${C.eyebrow({ ar: 'تواصل معنا', en: 'Contact' }, lang, { tag: 'p' })}
       <h1 class="h1">${esc(t(pauses.closing, lang))}</h1>
-      ${echoP(pauses.closing, lang, 'margin-block-start:.75rem')}
     </div>
   </section>
 
   <section class="section">
     ${C.watermark(route, lang)}
     <div class="container">
-      <ul class="contact-grid">
+      <ul class="contact-grid" data-animate-group>
         <li class="contact-item">
           <p class="contact-item__label">${esc(t(ui.callUs, lang))}</p>
           <p class="contact-item__value"><a href="tel:${esc(contact.phoneHref)}" class="lt">${esc(contact.phone)}</a></p>
@@ -666,7 +642,7 @@ export function notFound(route, lang) {
   <section class="section" style="min-block-size:60vh;display:grid;align-items:center">
     ${C.watermark(route, lang)}
     <div class="container">
-      ${C.eyebrow({ ar: 'خطأ ٤٠٤', en: 'Error 404' }, lang, null, { tag: 'p' })}
+      ${C.eyebrow({ ar: 'خطأ ٤٠٤', en: 'Error 404' }, lang, { tag: 'p' })}
       <h1 class="h1">${esc(lang === 'ar' ? 'الصفحة غير موجودة' : 'Page not found')}</h1>
       ${C.rule()}
       <p class="lead">${esc(lang === 'ar'
@@ -682,14 +658,13 @@ export function notFound(route, lang) {
 
 /* ── Shared blocks ────────────────────────────────────────────────────── */
 function pageHeader(route, lang, eyebrowPair, lead, image, alt, fullBleed = true) {
-  return `<section class="hero hero--page">
+  return `<section class="hero hero--page" data-hero>
     <div class="hero__media">${img(route, lang, image, { alt, sizes: '100vw', eager: true, fullBleed })}</div>
     <div class="hero__scrim"></div>
     <div class="container hero__body">
-      ${C.pair(eyebrowPair, lang, { tag: 'h1', className: 'h1' })}
+      ${C.pair(eyebrowPair, lang, { tag: 'h1', className: 'h1', attrs: 'data-hero-item' })}
       ${C.rule('rule--wide')}
-      <p class="lead">${esc(t(lead, lang))}</p>
-      ${echoP(lead, lang, 'margin-block-start:.75rem;max-inline-size:var(--measure)')}
+      <p class="lead" data-hero-item>${esc(t(lead, lang))}</p>
     </div>
   </section>`
 }
@@ -700,7 +675,6 @@ function ctaBand(route, lang) {
     <div class="container">
       <hr class="rule" style="margin-inline:auto">
       <h2 class="h2 cta__title">${esc(t(ui.getInTouch, lang))}</h2>
-      ${echoP(ui.getInTouch, lang, 'margin-block-start:.75rem')}
       <div class="cta__actions">
         ${C.btn(linkTo(route, lang, 'contact', lang), t(ui.talkToUs, lang))}
         ${C.btn(`tel:${contact.phoneHref}`, contact.phone, { variant: 'ghost', arrow: false, isolate: true })}

@@ -7,50 +7,16 @@ import { num, figure, ui, brand, copyrightYear } from '../content/site.mjs'
 export const ARROW = '<svg class="btn__arrow" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M1 8h13M9 3l5 5-5 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>'
 
 /**
- * Eyebrow: primary label, hairline, secondary label. Optionally numbered.
- *
- * `tag` defaults to h2 because this IS the section's heading — the numbered
- * items beneath it are h3s, and without it the document skips a level. A small
- * visual treatment does not make it a lesser heading.
+ * A section label. One language — the reader picked an edition — and no number:
+ * a slide is item N of a sequence, a web section is a destination.
  */
-export function eyebrow(label, lang, n, { tag = 'h2' } = {}) {
-  const lead = t(label, lang)
-  const echo = lang === 'ar' ? label.en : label.ar
-  return `<${tag} class="eyebrow">
-      ${n ? `<span class="eyebrow__num">${esc(num(n, lang))}</span><span class="eyebrow__sep"></span>` : ''}
-      <span>${esc(lead)}</span>
-      <span class="eyebrow__sep"></span>
-      <span class="eyebrow__en"${lang === 'ar' ? ' lang="en" dir="ltr"' : ' lang="ar" dir="rtl"'}>${esc(echo)}</span>
-    </${tag}>`
+export function eyebrow(label, lang, { tag = 'h2' } = {}) {
+  return `<${tag} class="eyebrow">${esc(t(label, lang))}</${tag}>`
 }
 
-/** A heading whose primary language leads and whose other language echoes below. */
-export function pair(value, lang, { tag = 'h2', className = '' } = {}) {
-  const lead = t(value, lang)
-  const other = lang === 'ar' ? 'en' : 'ar'
-  // `lang` is safe on the block and lets :lang() reach it; only `dir` has to
-  // stay on the inner span, since on a block it would flip text-align.
-  return `<${tag} class="${esc(className)}">
-      <span class="pair__lead">${esc(lead)}</span>
-      <span class="pair__echo" lang="${other}">${echoSpan(value, lang)}</span>
-    </${tag}>`
-}
-
-/**
- * The secondary-language echo.
- *
- * The `dir` attribute must sit on an INLINE span, never on the block that
- * holds it. A block carrying dir="ltr" inside an RTL page resolves
- * `text-align: start` to the LEFT edge, which tears the English line away from
- * the Arabic it belongs under. HTML's UA stylesheet already gives any element
- * with `dir` an implicit `unicode-bidi: isolate`, so an inline span is enough
- * to keep the run's punctuation in place while the block stays aligned with
- * its Arabic sibling.
- */
-export function echoSpan(value, lang) {
-  const other = lang === 'ar' ? 'en' : 'ar'
-  const text = typeof value === 'string' ? value : (lang === 'ar' ? value.en : value.ar)
-  return `<span lang="${other}" dir="${other === 'ar' ? 'rtl' : 'ltr'}">${esc(text)}</span>`
+/** A page heading. `attrs` carries hooks such as the motion layer's. */
+export function pair(value, lang, { tag = 'h2', className = '', attrs = '' } = {}) {
+  return `<${tag} class="${esc(className)}"${attrs ? ' ' + attrs : ''}>${esc(t(value, lang))}</${tag}>`
 }
 
 export function rule(extra = '') { return `<hr class="rule ${extra}">` }
@@ -213,7 +179,6 @@ export function pauseBand(route, lang, image, text, alt) {
     <div class="container">
       ${rule()}
       <p class="pause__text">${esc(t(text, lang))}</p>
-      <p class="text-en" style="margin-inline:auto;max-inline-size:40ch;margin-block-start:1rem">${echoSpan(text, lang)}</p>
     </div>
   </section>`
 }
@@ -227,7 +192,7 @@ export function projectCard(route, lang, project, { featured = false } = {}) {
   const tags = (project.tags || []).slice(0, 2)
     .map(tg => `<li class="tag">${esc(t(tg, lang))}</li>`).join('')
 
-  return `<article class="card${featured ? ' card--featured' : ''}" data-reveal>
+  return `<article class="card${featured ? ' card--featured' : ''}">
       <div class="card__media">
         ${img(route, lang, project.image, {
           alt,
@@ -238,26 +203,21 @@ export function projectCard(route, lang, project, { featured = false } = {}) {
       </div>
       ${client ? `<p class="card__client">${esc(client)}</p>` : ''}
       <h3 class="card__title"><a class="card__link" href="${esc(href)}">${esc(title)}</a></h3>
-      <p class="card__title-en">${echoSpan(project.title, lang)}</p>
       ${tags ? `<ul class="card__tags">${tags}</ul>` : ''}
     </article>`
 }
 
 /** Numbered blocks — values, methodology, why-us. */
 export function numberedList(items, lang, { columns = 2 } = {}) {
-  const body = items.map((item, i) => {
+  const body = items.map(item => {
     const title = t(item.title, lang)
     const text = t(item.text, lang)
-    return `<li class="numbered__item" data-reveal>
-        <span class="numbered__num">${esc(num(i + 1, lang))}</span>
-        <h3 class="numbered__title">${esc(title)}
-          <span class="numbered__title-en">${echoSpan(item.title, lang)}</span>
-        </h3>
+    return `<li class="numbered__item">
+        <h3 class="numbered__title">${esc(title)}</h3>
         <p class="numbered__text">${esc(text)}</p>
-        <p class="numbered__text-en">${echoSpan(item.text, lang)}</p>
       </li>`
   }).join('\n      ')
-  return `<ul class="numbered${columns === 3 ? ' numbered--three' : ''}">\n      ${body}\n    </ul>`
+  return `<ul class="numbered" data-animate-group>\n      ${body}\n    </ul>`
 }
 
 /** Stats. A stat with no value yet renders an em-dash and keeps its label. */
@@ -273,14 +233,13 @@ export function statsBlock(stats, lang) {
     // assistive technology — a visible "to be confirmed" would read as an
     // unfinished document to a client.
     const figureMarkup = known
-      ? `<span class="lt">${esc(plus)}${esc(shown)}</span>${unit}`
+      ? `<span class="lt" data-count="${esc(s.value)}"${plus ? ` data-count-suffix="${esc(plus)}"` : ''}>${esc(plus)}${esc(shown)}</span>${unit}`
       : `<span class="lt" aria-hidden="true">${esc(shown)}</span>` +
         `<span class="visually-hidden">${esc(t(ui.toBeConfirmed, lang))}</span>`
     return `<li class="stat ${known ? 'stat--known' : 'stat--pending'}">
         <p class="stat__value">${figureMarkup}</p>
         <p class="stat__label">${esc(t(s.label, lang))}</p>
-        <p class="stat__label-en">${echoSpan(s.label, lang)}</p>
       </li>`
   }).join('\n      ')
-  return `<ul class="stats">\n      ${body}\n    </ul>`
+  return `<ul class="stats" data-animate-group>\n      ${body}\n    </ul>`
 }

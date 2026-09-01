@@ -74,6 +74,11 @@ function document_({ route, lang, title, description, body, heroImage, heroSizes
 <link rel="preload" href="${esc(up)}assets/fonts/IBMPlexSansArabic-400.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="${esc(up)}assets/fonts/IBMPlexSansArabic-700.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="${esc(up)}css/site.css">
+<!-- Set synchronously, before first paint, so the stylesheet can hide the
+     elements the motion layer animates in without ever hiding them from a
+     visitor whose JavaScript never runs. site.js removes it again if GSAP
+     failed to load. -->
+<script>document.documentElement.classList.add('js')</script>
 ${heroImage ? preloadHero(up, heroImage, heroSizes) : ''}
 </head>
 <body>
@@ -84,6 +89,8 @@ ${masthead(route, lang, nav)}
 ${body}
 </main>
 ${footer(route, lang, { contact, ui, nav })}
+<script src="${esc(up)}assets/js/gsap.min.js" defer></script>
+<script src="${esc(up)}assets/js/ScrollTrigger.min.js" defer></script>
 <script src="${esc(up)}js/site.js" defer></script>
 </body>
 </html>
