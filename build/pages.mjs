@@ -13,7 +13,7 @@ import { stats, statsIntro } from '../content/stats.mjs'
 // `dir` attribute on an inline span so the block stays aligned with its sibling.
 
 /* ── Home ─────────────────────────────────────────────────────────────── */
-export function home(route, lang, A) {
+export function home(route, lang) {
   const featured = projects.filter(p => p.featured).slice(0, 5)
   return {
     title: `${t(brand.name, lang)} — ${t(brand.tagline, lang)}`,
@@ -106,17 +106,17 @@ export function home(route, lang, A) {
     </div>
   </section>
 
-  ${ctaBand(route, lang, A)}`,
+  ${ctaBand(route, lang)}`,
   }
 }
 
 /* ── About ────────────────────────────────────────────────────────────── */
-export function about_(route, lang, A) {
+export function about_(route, lang) {
   return {
     title: `${t(about.eyebrow, lang)} — ${t(brand.shortName, lang)}`,
     description: t(about.body[0], lang),
     body: `
-  ${pageHeader(route, lang, A, about.eyebrow, about.lead, 'team-crew',
+  ${pageHeader(route, lang, about.eyebrow, about.lead, 'team-crew',
     lang === 'ar' ? 'أحد أفراد فريق فاريوس في الموقع' : 'A VARIOUS crew member on site')}
 
   <section class="section">
@@ -180,17 +180,17 @@ export function about_(route, lang, A) {
     </div>
   </section>
 
-  ${ctaBand(route, lang, A)}`,
+  ${ctaBand(route, lang)}`,
   }
 }
 
 /* ── Services ─────────────────────────────────────────────────────────── */
-export function servicesPage(route, lang, A) {
+export function servicesPage(route, lang) {
   return {
     title: `${t(services.eyebrow, lang)} — ${t(brand.shortName, lang)}`,
     description: t(services.lead, lang),
     body: `
-  ${pageHeader(route, lang, A, services.eyebrow, services.lead, 'saudi-cup',
+  ${pageHeader(route, lang, services.eyebrow, services.lead, 'saudi-cup',
     lang === 'ar' ? 'ممر مقوّس ينفذه فريق فاريوس' : 'An arched colonnade built by the VARIOUS team')}
 
   <section class="section">
@@ -217,17 +217,17 @@ export function servicesPage(route, lang, A) {
     </div>
   </section>
 
-  ${ctaBand(route, lang, A)}`,
+  ${ctaBand(route, lang)}`,
   }
 }
 
 /* ── Work index ───────────────────────────────────────────────────────── */
-export function work(route, lang, A) {
+export function work(route, lang) {
   return {
     title: `${t(workIntro.eyebrow, lang)} — ${t(brand.shortName, lang)}`,
     description: t(workIntro.lead, lang),
     body: `
-  ${pageHeader(route, lang, A, workIntro.eyebrow, workIntro.lead, 'mood-fireworks',
+  ${pageHeader(route, lang, workIntro.eyebrow, workIntro.lead, 'mood-fireworks',
     lang === 'ar' ? 'ألعاب نارية فوق حدث جماهيري' : 'Fireworks over a public event')}
 
   <section class="section">
@@ -254,12 +254,12 @@ export function work(route, lang, A) {
     </div>
   </section>
 
-  ${ctaBand(route, lang, A)}`,
+  ${ctaBand(route, lang)}`,
   }
 }
 
 /* ── Project detail ───────────────────────────────────────────────────── */
-export function project(route, lang, A, p, prev, next) {
+export function project(route, lang, p, prev, next) {
   const client = p.client ? t(p.client, lang) : null
   const title = t(p.title, lang)
   const meta = [
@@ -321,17 +321,17 @@ export function project(route, lang, A, p, prev, next) {
     </div>
   </section>
 
-  ${ctaBand(route, lang, A)}`,
+  ${ctaBand(route, lang)}`,
   }
 }
 
 /* ── Clients ──────────────────────────────────────────────────────────── */
-export function clientsPage(route, lang, A) {
+export function clientsPage(route, lang) {
   return {
     title: `${t(clientsIntro.eyebrow, lang)} — ${t(brand.shortName, lang)}`,
     description: t(clientsIntro.lead, lang),
     body: `
-  ${pageHeader(route, lang, A, clientsIntro.eyebrow, clientsIntro.lead, 'mood-city',
+  ${pageHeader(route, lang, clientsIntro.eyebrow, clientsIntro.lead, 'mood-city',
     lang === 'ar' ? 'مشهد جوي لمدينة سعودية عند الغسق' : 'Aerial view of a Saudi city at dusk')}
 
   <section class="section">
@@ -357,12 +357,12 @@ export function clientsPage(route, lang, A) {
     </div>
   </section>
 
-  ${ctaBand(route, lang, A)}`,
+  ${ctaBand(route, lang)}`,
   }
 }
 
 /* ── Contact ──────────────────────────────────────────────────────────── */
-export function contactPage(route, lang, A) {
+export function contactPage(route, lang) {
   return {
     title: `${t(ui.getInTouch, lang)} — ${t(brand.shortName, lang)}`,
     description: `${t(brand.name, lang)} — ${contact.phone} · ${contact.email}`,
@@ -410,7 +410,7 @@ export function contactPage(route, lang, A) {
 }
 
 /* ── 404 ──────────────────────────────────────────────────────────────── */
-export function notFound(route, lang, A) {
+export function notFound(route, lang) {
   return {
     title: lang === 'ar' ? 'الصفحة غير موجودة' : 'Page not found',
     description: '',
@@ -433,7 +433,7 @@ export function notFound(route, lang, A) {
 }
 
 /* ── Shared blocks ────────────────────────────────────────────────────── */
-function pageHeader(route, lang, A, eyebrowPair, lead, image, alt) {
+function pageHeader(route, lang, eyebrowPair, lead, image, alt) {
   return `<section class="hero" style="min-block-size:clamp(24rem,62vh,38rem)">
     <div class="hero__media">${img(route, lang, image, { alt, sizes: '100vw', eager: true })}</div>
     <div class="hero__scrim"></div>
@@ -446,7 +446,7 @@ function pageHeader(route, lang, A, eyebrowPair, lead, image, alt) {
   </section>`
 }
 
-function ctaBand(route, lang, A) {
+function ctaBand(route, lang) {
   return `<section class="section section--dark" style="text-align:center">
     ${C.watermark(route, lang, 'watermark--start watermark--bottom')}
     <div class="container">

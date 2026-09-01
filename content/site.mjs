@@ -34,6 +34,12 @@ export const nav = [
 ]
 
 // Interface strings. Kept out of the templates so both editions stay in step.
+// Deliberately a constant rather than new Date().getFullYear(): the deployment
+// is verified by checksumming local files against the server, and a year that
+// changes with the build date would make every page report as differing on
+// 1 January. Update it here.
+export const copyrightYear = 2026
+
 export const ui = {
   skipToContent: { ar: 'تخطَّ إلى المحتوى',      en: 'Skip to content' },
   menu:          { ar: 'القائمة',                 en: 'Menu' },
@@ -57,6 +63,7 @@ export const ui = {
   copyright:     { ar: 'جميع الحقوق محفوظة',      en: 'All rights reserved' },
   crLabel:       { ar: 'س.ت',                     en: 'CR' },
   readMore:      { ar: 'اقرأ المزيد',             en: 'Read more' },
+  links:         { ar: 'روابط',                   en: 'Links' },
   pageOf:        { ar: 'من',                      en: 'of' },
 }
 

@@ -27,11 +27,14 @@ mkdirSync(DIST, { recursive: true })
 cpSync(ASSETS, join(DIST, 'assets'), { recursive: true })
 indexImages(join(ASSETS, 'img'))
 
-const A = {
-  mark:          readFileSync(join(ASSETS, 'logo/mark.svg'), 'utf8'),
-  wordmarkLight: readFileSync(join(ASSETS, 'logo/wordmark-light.svg'), 'utf8'),
-  wordmarkDark:  readFileSync(join(ASSETS, 'logo/wordmark-dark.svg'), 'utf8'),
-}
+// pattern.svg strokes with `currentColor` so it stays recolourable in the repo,
+// but it is referenced from an <img>, which cannot inherit colour. Bake the one
+// variant this dark-only site needs and ship that instead of both files.
+writeFileSync(
+  join(DIST, 'assets/logo/pattern-white.svg'),
+  readFileSync(join(ASSETS, 'logo/pattern.svg'), 'utf8').replaceAll('currentColor', '#ffffff'),
+)
+rmSync(join(DIST, 'assets/logo/pattern.svg'))
 
 // One stylesheet, concatenated in cascade order — fewer requests, no bundler.
 const css = ['tokens', 'base', 'layout', 'components']
@@ -69,11 +72,11 @@ function document_({ route, lang, title, description, body }) {
 </head>
 <body>
 <a class="skip-link" href="#main">${esc(t(ui.skipToContent, lang))}</a>
-${masthead(route, lang, A)}
+${masthead(route, lang)}
 <main id="main">
 ${body}
 </main>
-${footer(route, lang, A, { contact, ui })}
+${footer(route, lang, { contact, ui })}
 <script src="${esc(up)}js/site.js" defer></script>
 </body>
 </html>
@@ -94,8 +97,8 @@ function routes() {
   projects.forEach((p, i) => {
     list.push({
       route: `work/${p.slug}`,
-      render: (route, lang, assets) =>
-        P.project(route, lang, assets, p, projects[i - 1] ?? null, projects[i + 1] ?? null),
+      render: (route, lang) =>
+        P.project(route, lang, p, projects[i - 1] ?? null, projects[i + 1] ?? null),
     })
   })
   return list
@@ -104,7 +107,7 @@ function routes() {
 let count = 0
 for (const lang of LANGS) {
   for (const { route, render } of routes()) {
-    const page = render(route, lang, A)
+    const page = render(route, lang)
     const dir = join(DIST, outDir(route, lang))
     mkdirSync(dir, { recursive: true })
     writeFileSync(join(dir, 'index.html'), document_({ route, lang, ...page }))

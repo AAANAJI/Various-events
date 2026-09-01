@@ -2,7 +2,7 @@
 // it can compute its own relative links — nothing here ever emits "/...".
 
 import { esc, t, linkTo, rootFrom, img } from './lib.mjs'
-import { num, figure, ui, nav, brand } from '../content/site.mjs'
+import { num, figure, ui, nav, brand, copyrightYear } from '../content/site.mjs'
 
 export const ARROW = '<svg class="btn__arrow" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M1 8h13M9 3l5 5-5 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>'
 
@@ -13,9 +13,9 @@ export const ARROW = '<svg class="btn__arrow" width="16" height="16" viewBox="0 
  * items beneath it are h3s, and without it the document skips a level. A small
  * visual treatment does not make it a lesser heading.
  */
-export function eyebrow(pair, lang, n, { tag = 'h2' } = {}) {
-  const lead = t(pair, lang)
-  const echo = lang === 'ar' ? pair.en : pair.ar
+export function eyebrow(label, lang, n, { tag = 'h2' } = {}) {
+  const lead = t(label, lang)
+  const echo = lang === 'ar' ? label.en : label.ar
   return `<${tag} class="eyebrow">
       ${n ? `<span class="eyebrow__num">${esc(num(n, lang))}</span><span class="eyebrow__sep"></span>` : ''}
       <span>${esc(lead)}</span>
@@ -81,7 +81,7 @@ export function btn(href, label, { variant = 'primary', arrow = true, attrs = ''
     </a>`
 }
 
-export function masthead(route, lang, assets) {
+export function masthead(route, lang) {
   const other = lang === 'ar' ? 'en' : 'ar'
   const up = rootFrom(route, lang)
   const items = nav.map(item => {
@@ -115,8 +115,7 @@ export function masthead(route, lang, assets) {
   </header>`
 }
 
-export function footer(route, lang, assets, { contact, ui: u }) {
-  const year = 2026
+export function footer(route, lang, { contact, ui: u }) {
   const up = rootFrom(route, lang)
   const navLinks = nav.slice(1).map(item =>
     `<li><a href="${esc(linkTo(route, lang, item.path, lang))}">${esc(t(item, lang))}</a></li>`
@@ -131,13 +130,13 @@ export function footer(route, lang, assets, { contact, ui: u }) {
           <p class="text-en" style="max-inline-size:34ch">${esc(t(brand.tagline, lang))}</p>
         </div>
         <div>
-          <h2>${esc(lang === 'ar' ? 'روابط' : 'Links')}</h2>
+          <h2>${esc(t(u.links, lang))}</h2>
           <ul>
             ${navLinks}
           </ul>
         </div>
         <div>
-          <h2>${esc(t(nav[5], lang))}</h2>
+          <h2>${esc(t(nav.find(n => n.id === 'contact'), lang))}</h2>
           <ul>
             <li><a href="tel:${esc(contact.phoneHref)}" class="lt">${esc(contact.phone)}</a></li>
             <li><a href="mailto:${esc(contact.email)}" class="lt">${esc(contact.email)}</a></li>
@@ -146,7 +145,7 @@ export function footer(route, lang, assets, { contact, ui: u }) {
         </div>
       </div>
       <div class="site-footer__legal">
-        <span>© ${year} ${esc(t(brand.legalName, lang))}</span>
+        <span>© ${copyrightYear} ${esc(t(brand.legalName, lang))}</span>
         <span>${esc(t(u.crLabel, lang))} <span class="lt">${esc(brand.cr)}</span></span>
         <span>${esc(t(u.copyright, lang))}</span>
       </div>
