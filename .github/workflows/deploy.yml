@@ -2,7 +2,12 @@ name: Deploy to staging
 
 on:
   push:
-    branches: [ main ]
+    # This repository was created empty, so GitHub made the staging branch the
+    # default and there is no `main` yet. Both are listed so the deploy fires
+    # today and keeps working unchanged once `main` exists.
+    branches:
+      - main
+      - claude/events-site-design-staging-u5jac0
   workflow_dispatch:        # lets you redeploy without a commit
 
 # Two pushes in quick succession must not rsync over each other.
