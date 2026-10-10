@@ -1,35 +1,30 @@
-// Page content, written for the web.
+// Page content.
 //
-// The source is the 2026 company profile deck, but this is not a transcript of
-// it. Slide copy is written to be spoken over; web copy has to be read alone,
-// scanned before it is read, and arrive in the order a visitor asks for it. So
-// the sentences here are shorter and front-loaded, and the material is split
-// across pages rather than stacked on one.
+// The substance comes from the client's approved copy deck (2026 revision):
+// "Who we are", vision and mission, the five values, the five-step method,
+// and the five reasons to choose VARIOUS. Short connective lines — page leads,
+// teaser headlines — are written for the web from that same material and add
+// no claim the deck does not make.
 //
-// What has NOT changed is the substance: every fact, claim, client and figure
-// still traces to the deck. Nothing has been added that the company did not say
-// about itself.
+// Digits are Western in both languages, by the client's instruction.
 
 /* ── Home ─────────────────────────────────────────────────────────────────
    The homepage's job is to say what VARIOUS is, prove it once, and send the
    visitor into the right section. It is deliberately short. */
 export const home = {
+  heroEyebrow: { ar: 'خدمات المعارض والمؤتمرات والفعاليات', en: 'Exhibitions, conferences & events' },
   intro: {
     eyebrow: { ar: 'من نحن', en: 'Who we are' },
     headline: {
-      ar: 'نجمع تحت سقف واحد ما يتوزّع عادةً بين عدة شركاء.',
-      en: 'We hold under one roof what is usually split across several partners.',
-    },
-    body: {
-      ar: 'فاريوس مؤسسة سعودية متخصصة في صناعة الفعاليات وتصميم وتنفيذ أجنحة المعارض، تعمل من الرياض وتخدم عملاءها في مختلف مناطق المملكة. التخطيط والتصميم والتصنيع والإنتاج والتشغيل والتوثيق — كلها داخل فريق واحد، ومسؤولية واحدة واضحة.',
-      en: 'VARIOUS is a Saudi company specialised in event production and exhibition stand design and build, working from Riyadh and serving clients across the Kingdom. Planning, design, fabrication, production, operations and documentation — all inside one team, with one clear line of accountability.',
+      ar: 'جهة واحدة مسؤولة، من أول اجتماع إلى التقرير الختامي.',
+      en: 'One accountable party, from the first meeting to the final report.',
     },
   },
   servicesTeaser: {
     eyebrow: { ar: 'ما نقدمه', en: 'What we do' },
     headline: {
-      ar: 'ست خدمات، وفريق واحد يملك القرار في كل واحدة منها.',
-      en: 'Six services, and one team that owns the decision in each of them.',
+      ar: 'معارض ومؤتمرات ومهرجانات واحتفالات — بفريق يغطّي الحدث كاملًا.',
+      en: 'Exhibitions, conferences, festivals and ceremonies — by one team that covers the whole event.',
     },
   },
   workTeaser: {
@@ -37,10 +32,6 @@ export const home = {
     headline: {
       ar: 'من كأس السعودية إلى أجنحة الوزارات.',
       en: 'From the Saudi Cup to ministry pavilions.',
-    },
-    body: {
-      ar: 'كل مشروع في هذه الصفحات نُفِّذ بفريقنا الداخلي — تصميمًا وتصنيعًا وتشغيلًا.',
-      en: 'Every project on these pages was delivered by our in-house team — design, fabrication and operations.',
     },
   },
   whyTeaser: {
@@ -52,36 +43,19 @@ export const home = {
 export const about = {
   eyebrow: { ar: 'من نحن', en: 'Who We Are' },
   lead: {
-    ar: 'بمعيار واحد لا نساوم عليه: أن تكون كل فعالية تجربة تستحق أن تُروى.',
-    en: 'With one standard we never compromise: every event should be an experience worth telling.',
+    ar: 'شركة سعودية متخصصة في تقديم خدمات المعارض والمؤتمرات والفعاليات.',
+    en: 'A Saudi company specialized in services for exhibitions, conferences and events.',
   },
   body: [
     {
-      ar: 'فاريوس مؤسسة سعودية متخصصة في صناعة الفعاليات وتصميم وتنفيذ أجنحة المعارض. نعمل من الرياض، ونخدم عملاءنا في مختلف مناطق المملكة.',
-      en: 'VARIOUS is a Saudi company specialised in event production and exhibition stand design and build. We work from Riyadh and serve clients across the Kingdom.',
+      ar: '«فاريوس» شركة سعودية متخصصة في تقديم خدمات المعارض والمؤتمرات والفعاليات، مقرّها الرياض وتعمل في مختلف مناطق المملكة. نفّذنا منذ تأسيسنا أكثر من 160 فعالية ومعرضًا لأكثر من 100 عميل من الجهات الحكومية والشركات الرائدة.',
+      en: 'VARIOUS is a Saudi company specialized in services for exhibitions, conferences and events. Based in Riyadh, we work across the Kingdom. Since our founding we have delivered more than 160 events and exhibitions for over 100 clients across government and leading companies.',
     },
     {
-      ar: 'نفّذنا أعمالًا لوزارات وجهات حكومية وشركات رائدة في قطاعات الثقافة والمال والصحة والعقار والتقنية.',
-      en: 'We have delivered for ministries, government entities and leading companies across culture, finance, healthcare, real estate and technology.',
+      ar: 'نغطّي احتياج الحدث كاملًا — التخطيط والتصميم والتنفيذ والتشغيل — بما يمنح عملاءنا قرارًا أسرع، وجودة متسقة، وجهة واحدة مسؤولة من أول اجتماع إلى التقرير الختامي.',
+      en: "We cover an event's full requirement — planning, design, delivery, and operations — giving our clients faster decisions, consistent quality, and one accountable party from the first meeting to the final report.",
     },
   ],
-  model: {
-    eyebrow: { ar: 'كيف نعمل', en: 'How we are built' },
-    headline: {
-      ar: 'سقف واحد بدل عدة شركاء.',
-      en: 'One roof instead of several partners.',
-    },
-    body: [
-      {
-        ar: 'التخطيط، والتصميم الإبداعي، والتصنيع، والإنتاج الفني، والتشغيل الميداني، والتوثيق — تجتمع كلها داخل فاريوس.',
-        en: 'Planning, creative design, fabrication, technical production, on-site operations and documentation — all of it sits inside VARIOUS.',
-      },
-      {
-        ar: 'هذا التكامل يمنح عملاءنا ثلاثة أشياء: قرارات أسرع، وجودة متسقة، ومسؤولية واحدة واضحة — من الفكرة الأولى حتى إطفاء آخر ضوء في الموقع.',
-        en: 'That integration gives our clients three things: faster decisions, consistent quality, and a single clear line of accountability — from the first idea to the last light switched off on site.',
-      },
-    ],
-  },
 }
 
 export const vision = {
@@ -93,15 +67,15 @@ export const vision = {
   visionItem: {
     label: { ar: 'رؤيتنا', en: 'Our Vision' },
     text: {
-      ar: 'أن نكون الاسم الأول في صناعة الفعاليات والمعارض في المملكة، وعلامة سعودية يُقاس بها الإبداع ودقة التنفيذ.',
-      en: 'To be the first name in events and exhibitions in Saudi Arabia — a Saudi mark by which creativity and precision of delivery are measured.',
+      ar: 'أن نرتقي بخدمات المعارض والمؤتمرات والفعاليات في المملكة إلى المستوى الذي يليق بطموح رؤية 2030، وأن نكون المعيار الذي يُقاس به الإبداع ودقة التنفيذ.',
+      en: 'To raise exhibition, conference and event services in the Kingdom to the level Vision 2030 aspires to, and to be the benchmark by which creativity and precision of delivery are measured.',
     },
   },
   missionItem: {
     label: { ar: 'رسالتنا', en: 'Our Mission' },
     text: {
-      ar: 'نحوّل أهداف عملائنا إلى تجارب حيّة متقنة التفاصيل، بفريق متكامل يجمع التصميم والتصنيع والإنتاج والتشغيل، وبالتزام لا يقبل التأجيل.',
-      en: "We turn our clients' goals into finely crafted live experiences — one integrated team across design, fabrication, production and operations, with a commitment that accepts no delay.",
+      ar: 'نقدّم حلولًا متكاملة تجمع بين الإبداع والجودة والتقنيات الحديثة، لنصنع تجارب استثنائية وحضورًا يترك أثرًا.',
+      en: 'We deliver integrated solutions combining creativity, quality and modern technology, to create exceptional experiences and a presence that leaves a mark.',
     },
   },
 }
@@ -109,78 +83,54 @@ export const vision = {
 export const values = {
   eyebrow: { ar: 'قيمنا', en: 'Our Values' },
   lead: {
-    ar: 'أربع قواعد تحكم القرار حين يصعب القرار.',
-    en: 'Four rules that decide things when a decision is hard.',
+    ar: 'خمس قيم تحكم طريقة عملنا في كل مشروع.',
+    en: 'Five values that govern how we work on every project.',
   },
   items: [
     {
-      title: { ar: 'الإتقان', en: 'Craft' },
-      strap: { ar: 'التفاصيل أولًا', en: 'Details first' },
+      title: { ar: 'الإبداع', en: 'Creativity' },
       text: {
-        ar: 'كل مقاس وخامة ولحظة عرض محسوبة؛ الجودة عندنا قرار هندسي قبل أن تكون شعارًا.',
-        en: 'Every measurement, material and show moment is engineered; quality here is a decision, not a slogan.',
+        ar: 'نبتكر أفكارًا وتجارب مختلفة، ونحوّلها إلى حضور لافت يميّز صاحبه.',
+        en: 'We create distinctive ideas and experiences, and turn them into a striking presence that sets our client apart.',
       },
     },
     {
-      title: { ar: 'الابتكار', en: 'Innovation' },
-      strap: { ar: 'لا نكرّر أنفسنا', en: 'Never on repeat' },
+      title: { ar: 'الجودة', en: 'Quality' },
       text: {
-        ar: 'لكل عميل قصة مختلفة، فنصمم لكل حدث تجربة لا تشبه سواها.',
-        en: 'Every client has a different story, so every event gets an experience of its own.',
+        ar: 'نلتزم بأعلى معايير الجودة في التخطيط والتنفيذ، ونهتم بالتفاصيل التي تصنع الفرق.',
+        en: 'We hold to the highest quality standards in planning and delivery, attending to the details that make the difference.',
       },
     },
     {
-      title: { ar: 'الشراكة', en: 'Partnership' },
-      strap: { ar: 'نجاحنا بنجاحكم', en: 'We succeed when you do' },
+      title: { ar: 'السرعة', en: 'Speed' },
       text: {
-        ar: 'نعمل امتدادًا لفريق عملائنا: شفافية في القرار، ووضوح في التكلفة، وهدف واحد.',
-        en: 'We work as an extension of your team: transparent decisions, clear costs, one goal.',
+        ar: 'نستجيب بسرعة، ونُنجز في المواعيد الضيقة بالجودة نفسها.',
+        en: 'We respond fast and deliver to tight deadlines at the same quality.',
       },
     },
     {
-      title: { ar: 'الالتزام', en: 'Reliability' },
-      strap: { ar: 'الموعد وعدٌ', en: 'Deadlines are promises' },
+      title: { ar: 'المرونة', en: 'Agility' },
       text: {
-        ar: 'نَعِد بما نقدر على تنفيذه، وننفّذ ما وعدنا به — بالجودة نفسها وفي الوقت نفسه.',
-        en: 'We promise what we can deliver, and deliver what we promised — same quality, on time.',
+        ar: 'نتكيّف مع احتياجات كل مشروع ومتغيّراته، ونقدّم حلولًا عملية تحافظ على مستوى التنفيذ.',
+        en: "We adapt to each project's needs and changes, offering practical solutions that hold the standard.",
+      },
+    },
+    {
+      title: { ar: 'الشفافية', en: 'Transparency' },
+      text: {
+        ar: 'وضوح في النطاق والتكلفة والجدول من أول عرض، ومتابعة تُطلع العميل على كل مرحلة.',
+        en: 'Clear scope, cost and schedule from the first proposal, with reporting that keeps the client across every stage.',
       },
     },
   ],
-}
-
-export const founders = {
-  eyebrow: { ar: 'كلمة المؤسسين', en: 'From the Founders' },
-  lead: {
-    ar: 'لماذا أُسِّست فاريوس، وعلى أي قناعة.',
-    en: 'Why VARIOUS was founded, and on what conviction.',
-  },
-  quote: [
-    {
-      ar: 'أسّسنا فاريوس على قناعة بسيطة: الفعالية الناجحة ليست تجهيزات تُركَّب ثم تُفكَّك، بل قصة تُصنع بإتقان لتبقى في ذاكرة كل من عاشها.',
-      en: 'We founded VARIOUS on a simple conviction: a successful event is not equipment assembled and dismantled — it is a story, crafted with care to stay with everyone who lived it.',
-    },
-    {
-      ar: 'لهذا بنينا فريقًا يجلس فيه المصمم والمهندس والمنتج ومدير الموقع إلى طاولة واحدة، وجعلنا التوثيق جزءًا من كل مشروع — لنقيس الأثر، لا الإنجاز فقط.',
-      en: 'That is why we built a team that puts the designer, the engineer, the producer and the site manager at one table, and made documentation part of every project — so we measure impact, not just completion.',
-    },
-    {
-      ar: 'نشكر عملاءنا على ثقتهم، وشركاءنا على عطائهم، ونَعِد الجميع بما وعدنا به أنفسنا منذ اليوم الأول: عملٌ يليق بطموح المملكة.',
-      en: "We thank our clients for their trust and our partners for their dedication, and we promise everyone what we promised ourselves on day one: work worthy of the Kingdom's ambition.",
-    },
-  ],
-  // Flagged «تأكيد الأسماء والمسميات» (confirm names/titles) in the source deck.
-  attribution: {
-    ar: 'أحمد ماهر — عبدالله الفريح، المؤسسان',
-    en: 'Ahmad Maher — Abdullah Alfraih, Co-Founders',
-  },
 }
 
 /* ── How we work ──────────────────────────────────────────────────────── */
 export const method = {
   eyebrow: { ar: 'منهجية العمل', en: 'How We Work' },
   lead: {
-    ar: 'خمس خطوات. لا تُختصر ولا تُقفز.',
-    en: 'Five steps. None skipped, none shortened.',
+    ar: 'خمس خطوات متصلة، لا تُختصر ولا تُقفز.',
+    en: 'Five connected steps. None skipped, none shortened.',
   },
   body: {
     ar: 'الترتيب نفسه في كل مشروع، سواء كان جناح معرض أو حفلًا وطنيًا. ما يتغيّر هو حجم كل خطوة، لا وجودها.',
@@ -188,80 +138,40 @@ export const method = {
   },
   steps: [
     {
-      title: { ar: 'نستمع', en: 'Discover' },
+      title: { ar: 'نستمع', en: 'Listen' },
       text: {
-        ar: 'هدف واضح قبل أي تصميم: نفهم الجمهور والرسالة ومؤشرات النجاح.',
-        en: 'A clear goal before any design: we establish the audience, the message, and what success looks like.',
-      },
-      detail: {
-        ar: 'لا يبدأ القلم قبل أن نتفق على ما يعنيه نجاح هذا الحدث تحديدًا.',
-        en: 'Nothing is drawn until we agree what success means for this particular event.',
+        ar: 'نفهم الجمهور والرسالة ومؤشرات النجاح قبل أي تصميم.',
+        en: 'We understand the audience, the message and the success measures before any design.',
       },
     },
     {
       title: { ar: 'نصمّم', en: 'Design' },
       text: {
-        ar: 'مفهوم إبداعي وتصاميم ثلاثية الأبعاد ومخططات تنفيذية — تُعتمد قبل بدء التصنيع.',
-        en: 'A creative concept, 3D visuals and technical drawings — approved before fabrication begins.',
-      },
-      detail: {
-        ar: 'ترون ما ستحصلون عليه قبل أن تُقطع أول خامة.',
-        en: 'You see what you are getting before the first material is cut.',
+        ar: 'مفهوم إبداعي وتصاميم ثلاثية الأبعاد ومخططات تنفيذية وحسابات أحمال، تُعتمد قبل بدء التصنيع.',
+        en: 'A creative concept, 3D visuals, technical drawings and load calculations — approved before fabrication begins.',
       },
     },
     {
       title: { ar: 'نصنّع', en: 'Build' },
       text: {
-        ar: 'تصنيع وتجهيز بمعايير هندسية، مع فحص جودة في كل مرحلة.',
+        ar: 'تصنيع وتجهيز بمعايير هندسية، وفحص جودة في كل مرحلة.',
         en: 'Fabrication and staging to engineering standards, with quality checks at every stage.',
-      },
-      detail: {
-        ar: 'التصنيع داخل فاريوس، فالتعديل لا يمر عبر طرف ثالث.',
-        en: 'Fabrication happens inside VARIOUS, so a change does not travel through a third party.',
       },
     },
     {
-      title: { ar: 'نشغّل', en: 'Deliver' },
+      title: { ar: 'نشغّل', en: 'Operate' },
       text: {
-        ar: 'فريق ميداني يدير التركيب والتشغيل ويوم الحدث لحظة بلحظة.',
-        en: 'A field team manages installation, operations and show day — minute by minute.',
-      },
-      detail: {
-        ar: 'الأشخاص الذين صمّموا ونفّذوا هم أنفسهم من يقفون في الموقع.',
-        en: 'The people who designed and built it are the people standing on site.',
+        ar: 'فريق ميداني يدير التركيب ويوم الحدث لحظة بلحظة، حتى الفك وتسليم الموقع.',
+        en: 'A field team runs the build-up and show day minute by minute, through to tear-down and site handover.',
       },
     },
     {
       title: { ar: 'نوثّق', en: 'Document' },
       text: {
-        ar: 'نسلّم أرشيفًا كاملًا للحدث: صورةً وفيلمًا وقياسَ أثر.',
-        en: 'We hand over a complete record of the event: photography, film and impact measurement.',
-      },
-      detail: {
-        ar: 'ينتهي الحدث ويبقى لديكم ما يثبته.',
-        en: 'The event ends and you still hold the proof of it.',
+        ar: 'أرشيف كامل للحدث صورةً وفيلمًا، وتقرير ختامي يقيس الأثر.',
+        en: 'A complete archive in stills and film, and a closing report that measures impact.',
       },
     },
-  ],
-}
-
-/* ── Sectors ──────────────────────────────────────────────────────────── */
-export const sectors = {
-  eyebrow: { ar: 'القطاعات التي نخدمها', en: 'Sectors We Serve' },
-  lead: {
-    ar: 'تسعة قطاعات، ولكل منها متطلباته في البروتوكول والسلامة وإيقاع العمل.',
-    en: 'Nine sectors, each with its own demands on protocol, safety and pace.',
-  },
-  items: [
-    { ar: 'الثقافة والترفيه', en: 'Culture & Entertainment' },
-    { ar: 'الجهات الحكومية والوزارات', en: 'Government & Ministries' },
-    { ar: 'المال والمصارف', en: 'Banking & Finance' },
-    { ar: 'الصحة', en: 'Healthcare' },
-    { ar: 'العقار', en: 'Real Estate' },
-    { ar: 'التجزئة والمجمعات التجارية', en: 'Retail & Malls' },
-    { ar: 'التقنية والأمن السيبراني', en: 'Technology & Cybersecurity' },
-    { ar: 'الضيافة والسياحة', en: 'Hospitality & Tourism' },
-    { ar: 'التعليم', en: 'Education' },
   ],
 }
 
@@ -272,32 +182,47 @@ export const why = {
     {
       title: { ar: 'فريق واحد من الفكرة إلى التسليم', en: 'One team, idea to handover' },
       text: {
-        ar: 'لا وسطاء ولا مسؤولية موزّعة: التصميم والتصنيع والتشغيل داخل فاريوس.',
-        en: 'No middlemen, no split accountability: design, fabrication and operations in-house.',
+        ar: 'لا وسطاء ولا مسؤولية موزّعة: التصميم والتصنيع والتشغيل داخل فاريوس — نتيجة أسرع وأدق.',
+        en: 'No middlemen, no split accountability: design, fabrication, and operations in-house — faster and more precise.',
       },
     },
     {
       title: { ar: 'خبرة بمستوى المهام الوطنية', en: 'National-grade experience' },
       text: {
         ar: 'نفّذنا لوزارات وبنوك وجهات وطنية؛ نعرف متطلبات البروتوكول والسلامة والجودة في أعلى مستوياتها.',
-        en: 'We have delivered for ministries, banks and national entities; we know protocol, safety and quality at their highest bar.',
+        en: 'We have delivered for ministries, banks, and national entities; we know protocol, safety, and quality at their highest bar.',
       },
     },
     {
       title: { ar: 'استوديو يوثّق كل مشروع', en: 'A studio behind every project' },
       text: {
-        ar: 'كل مشروع يخرج بأرشيف بصري وفيلم توثيقي — دليل عمل، لا مجرد وعود.',
-        en: 'Each delivery comes with a visual archive and a documentary film — proof of work, not promises.',
+        ar: 'كل مشروع يخرج بأرشيف بصري وفيلم توثيقي.',
+        en: 'Each delivery comes with a visual archive and a documentary film.',
       },
     },
     {
       title: { ar: 'التزام تشهد له مواعيدنا', en: 'Deadlines we are known for' },
       text: {
-        ar: 'مواعيد التسليم عندنا التزام تعاقدي وثقافة فريق — لا بند تفاوض.',
-        en: 'Delivery dates are a contractual commitment and a team culture — not a negotiation.',
+        ar: 'مواعيد التسليم عندنا التزام تعاقدي وثقافة فريق.',
+        en: 'Delivery dates are a contractual commitment and a team culture.',
+      },
+    },
+    {
+      title: { ar: 'تقنيات عرض نادرة في السوق', en: 'Display technology rarely found in the market' },
+      text: {
+        ar: 'أنفاق تفاعلية وشاشات شفافة وجدران لمس ومكعبات تدشين وأنابيب عرض مجسّم — تجهيزات لا تتوفّر لدى أغلب المنافسين، ونشغّلها بأنفسنا.',
+        en: 'Interactive tunnels, transparent screens, touch walls, launch cubes, and holographic tubes — equipment most competitors cannot offer, and we operate it ourselves.',
       },
     },
   ],
+  // The one independent recognition on record.
+  award: {
+    label: { ar: 'جائزة أفضل جناح', en: 'Best Booth' },
+    text: {
+      ar: 'منتدى العمرة والزيارة 2026 — عن جناح فنادق سنود، تصميمًا وتنفيذًا.',
+      en: 'Umrah & Ziyarah Forum 2026 — for the Snood Hotels stand, designed and built by VARIOUS.',
+    },
+  },
 }
 
 /* ── The deck's «وقفة / PAUSE» sentences, used as breathing room. ─────── */

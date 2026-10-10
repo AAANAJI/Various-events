@@ -2,80 +2,103 @@
 // link and asset reference it emits is relative to where the page will live.
 
 import { esc, t, linkTo, img } from './lib.mjs'
-import { num, ui, brand, contact } from '../content/site.mjs'
+import { ui, brand, contact } from '../content/site.mjs'
 import * as C from './components.mjs'
-import { home as homeCopy, about, vision, values, founders, method, sectors, why, pauses } from '../content/pages.mjs'
-import { services, servicesIntro } from '../content/services.mjs'
-import { projects, additionalWorks, workIntro } from '../content/projects.mjs'
+import { home as homeCopy, about, vision, values, method, why, pauses } from '../content/pages.mjs'
+import {
+  servicesIntro, eventTypes, frameworkAgreements,
+  solutionsIntro, solutions, ownersIntro, ownerServices,
+} from '../content/services.mjs'
+import { projects, categories, workIntro } from '../content/projects.mjs'
 import { clients, clientsIntro } from '../content/clients.mjs'
-import { stats, statsIntro } from '../content/stats.mjs'
+import { stats } from '../content/stats.mjs'
+
+const typeHref = (route, lang, link) => linkTo(route, lang, link.route, lang) + (link.hash ? `#${link.hash}` : '')
 
 /* ── Home ─────────────────────────────────────────────────────────────────
-   Short by design. It says what VARIOUS is, shows six services and three
+   Short by design. It says what VARIOUS is, shows what it does and three
    projects, and sends the visitor into the right section. The detail lives on
    the pages that own it. */
 export function home(route, lang) {
   const featured = projects.filter(p => p.featured).slice(0, 3)
   return {
     title: `${t(brand.name, lang)} — ${t(brand.tagline, lang)}`,
-    description: t(homeCopy.intro.body, lang).slice(0, 155),
+    description: t(about.body[0], lang).slice(0, 155),
     heroImage: 'mood-line',
     body: `
-  <section class="hero" data-hero>
+  <section class="hero scope-dark" data-hero>
     <div class="hero__media">${img(route, lang, 'mood-line', {
       alt: lang === 'ar' ? 'مشهد جوي لمشروع ذا لاين في نيوم' : 'Aerial view of The Line, NEOM',
       sizes: '100vw', eager: true, fullBleed: true })}</div>
     <div class="hero__scrim"></div>
     <div class="container hero__body">
-      <div data-hero-item>${C.eyebrow({ ar: 'صناعة الفعاليات وأجنحة المعارض', en: 'Events & exhibition stands' }, lang, { tag: 'p' })}</div>
-      <h1 class="hero__title" data-hero-item>${esc(t(brand.tagline, lang))}</h1>
-      ${C.rule('rule--wide')}
-      <p class="hero__sub" data-hero-item>${esc(t(brand.name, lang))}</p>
+      <div class="tb">
+        <div data-hero-item>${C.eyebrow(homeCopy.heroEyebrow, lang, { tag: 'p' })}</div>
+        <h1 class="hero__title" data-hero-item>${esc(t(brand.tagline, lang))}</h1>
+        ${C.rule('rule--wide')}
+        <p class="hero__sub" data-hero-item>${esc(t(brand.name, lang))}</p>
+      </div>
       <div class="hero__actions" data-hero-item>
         ${C.btn(linkTo(route, lang, 'work', lang), t(ui.seeWork, lang), { variant: 'primary' })}
         ${C.btn(linkTo(route, lang, 'services', lang), t(ui.allServices, lang), { variant: 'ghost', arrow: false })}
       </div>
     </div>
+    <a class="scroll-cue" href="#intro" aria-label="${esc(t(homeCopy.intro.eyebrow, lang))}">${C.ARROW_DOWN}</a>
   </section>
 
-  <section class="section">
+  <section class="section" id="intro">
     ${C.watermark(route, lang)}
-    <div class="container container--text">
-      ${C.eyebrow(homeCopy.intro.eyebrow, lang)}
-      <p class="statement" data-animate>${esc(t(homeCopy.intro.headline, lang))}</p>
-      <div class="prose" style="margin-block-start:2.5rem">
-        <p>${esc(t(homeCopy.intro.body, lang))}</p>
+    <div class="container">
+      <div class="split">
+        <div class="tb">
+          ${C.eyebrow(homeCopy.intro.eyebrow, lang)}
+          <p class="statement" data-animate>${esc(t(homeCopy.intro.headline, lang))}</p>
+          <div class="prose" style="margin-block-start:var(--sp-6)">
+            <p>${esc(t(about.body[0], lang))}</p>
+          </div>
+          <p style="margin-block-start:var(--sp-6)">
+            <a class="link-arrow" href="${esc(linkTo(route, lang, 'about', lang))}">${esc(t(ui.aboutUs, lang))}${C.ARROW}</a>
+          </p>
+        </div>
+        <div class="split__aside">${C.statsBlock(stats, lang)}</div>
       </div>
-      <p style="margin-block-start:2rem">
-        <a class="link-arrow" href="${esc(linkTo(route, lang, 'about', lang))}">${esc(t(ui.aboutUs, lang))}${C.ARROW}</a>
+    </div>
+  </section>
+
+  <section class="section section--alt">
+    <div class="container">
+      <div class="tb">
+        ${C.eyebrow(homeCopy.servicesTeaser.eyebrow, lang)}
+        <p class="statement" data-animate>${esc(t(homeCopy.servicesTeaser.headline, lang))}</p>
+      </div>
+      <ul class="tiles" style="margin-block-start:var(--sp-7)" data-animate-group>
+        ${eventTypes.map(s => `<li class="tile">
+          <a class="tile__link" href="${esc(typeHref(route, lang, s.link))}">
+            <span class="tile__title">${esc(t(s.title, lang))}</span>
+          </a>
+        </li>`).join('\n        ')}
+        <li class="tile">
+          <a class="tile__link" href="${esc(linkTo(route, lang, 'contact', lang))}">
+            <span class="tile__title">${esc(t(frameworkAgreements.title, lang))}</span>
+          </a>
+        </li>
+      </ul>
+      <p style="margin-block-start:var(--sp-6)">
+        <a class="link-arrow" href="${esc(linkTo(route, lang, 'services/solutions', lang))}">${esc(t(ui.solutions, lang))}${C.ARROW}</a>
       </p>
     </div>
   </section>
 
-  <section class="section section--dark">
-    <div class="container">
-      ${C.eyebrow(homeCopy.servicesTeaser.eyebrow, lang)}
-      <p class="statement" data-animate>${esc(t(homeCopy.servicesTeaser.headline, lang))}</p>
-      <ul class="tiles" style="margin-block-start:3rem" data-animate-group>
-        ${services.map(s => `<li class="tile">
-          <a class="tile__link" href="${esc(linkTo(route, lang, `services/${s.slug}`, lang))}">
-            <span class="tile__title">${esc(t(s.title, lang))}</span>
-            <span class="tile__lead">${esc(t(s.lead, lang))}</span>
-          </a>
-        </li>`).join('\n        ')}
-      </ul>
-    </div>
-  </section>
-
   <section class="section">
     <div class="container">
-      ${C.eyebrow(homeCopy.workTeaser.eyebrow, lang)}
-      <p class="statement" data-animate>${esc(t(homeCopy.workTeaser.headline, lang))}</p>
-      <p class="muted" style="margin-block-start:1rem;max-inline-size:var(--measure)">${esc(t(homeCopy.workTeaser.body, lang))}</p>
-      <div class="work-grid" style="margin-block-start:3rem" data-animate-group>
+      <div class="tb">
+        ${C.eyebrow(homeCopy.workTeaser.eyebrow, lang)}
+        <p class="statement" data-animate>${esc(t(homeCopy.workTeaser.headline, lang))}</p>
+      </div>
+      <div class="work-grid" style="margin-block-start:var(--sp-7)" data-animate-group>
         ${featured.map(p => C.projectCard(route, lang, p)).join('\n        ')}
       </div>
-      <p style="margin-block-start:2.5rem">
+      <p style="margin-block-start:var(--sp-6)">
         <a class="link-arrow" href="${esc(linkTo(route, lang, 'work', lang))}">${esc(t(ui.allWork, lang))}${C.ARROW}</a>
       </p>
     </div>
@@ -88,7 +111,8 @@ export function home(route, lang) {
     ${C.watermark(route, lang, 'watermark--start')}
     <div class="container">
       ${C.eyebrow(homeCopy.whyTeaser.eyebrow, lang)}
-      <div style="margin-block-start:2.5rem">${C.numberedList(why.items, lang)}</div>
+      <div style="margin-block-start:var(--sp-6)">${C.numberedList(why.items, lang)}</div>
+      <div style="margin-block-start:var(--sp-7)">${C.awardStrip(why.award, lang)}</div>
     </div>
   </section>
 
@@ -98,6 +122,11 @@ export function home(route, lang) {
 
 /* ── About ────────────────────────────────────────────────────────────── */
 export function aboutIndex(route, lang, sectionItem) {
+  const explore = [
+    { path: 'about/vision', label: vision.eyebrow, text: vision.lead },
+    { path: 'about/values', label: values.eyebrow, text: values.lead },
+    { path: 'process', label: method.eyebrow, text: method.lead },
+  ]
   return {
     title: `${t(about.eyebrow, lang)} — ${t(brand.shortName, lang)}`,
     description: t(about.body[0], lang),
@@ -108,32 +137,28 @@ export function aboutIndex(route, lang, sectionItem) {
   ${C.sectionNav(route, lang, sectionItem)}
 
   <section class="section">
-    <div class="container container--text">
-      <div class="prose prose--lead" data-animate>
-        ${about.body.map(p => `<p>${esc(t(p, lang))}</p>`).join('\n        ')}
-      </div>
-    </div>
-  </section>
-
-  <section class="section section--dark">
     ${C.watermark(route, lang)}
-    <div class="container container--text">
-      ${C.eyebrow(about.model.eyebrow, lang)}
-      <p class="statement" data-animate>${esc(t(about.model.headline, lang))}</p>
-      ${C.rule()}
-      <div class="prose">
-        ${about.model.body.map(p => `<p>${esc(t(p, lang))}</p>`).join('\n        ')}
+    <div class="container">
+      <div class="split">
+        <div class="prose prose--lead tb" data-animate>
+          ${about.body.map(p => `<p>${esc(t(p, lang))}</p>`).join('\n          ')}
+        </div>
+        <div class="split__aside">${C.statsBlock(stats, lang)}</div>
       </div>
-      <p style="margin-block-start:2rem">
-        <a class="link-arrow" href="${esc(linkTo(route, lang, 'process', lang))}">${esc(t(method.eyebrow, lang))}${C.ARROW}</a>
-      </p>
     </div>
   </section>
 
-  <section class="section">
+  <section class="section section--alt">
     <div class="container">
-      ${C.eyebrow(statsIntro.eyebrow, lang)}
-      <div style="margin-block-start:2.5rem">${C.statsBlock(stats, lang)}</div>
+      ${C.eyebrow(ui.explore, lang)}
+      <ul class="tiles" data-animate-group>
+        ${explore.map(e => `<li class="tile">
+          <a class="tile__link" href="${esc(linkTo(route, lang, e.path, lang))}">
+            <span class="tile__title">${esc(t(e.label, lang))}</span>
+            <span class="tile__lead">${esc(t(e.text, lang))}</span>
+          </a>
+        </li>`).join('\n        ')}
+      </ul>
     </div>
   </section>
 
@@ -165,13 +190,15 @@ export function aboutVision(route, lang, sectionItem) {
     </div>
   </section>
 
-  <section class="section section--dark">
+  <section class="section section--alt">
     <div class="container">
-      ${C.eyebrow(values.eyebrow, lang)}
-      <p class="statement" data-animate>${esc(t(values.lead, lang))}</p>
-      <p style="margin-block-start:2rem">
-        <a class="link-arrow" href="${esc(linkTo(route, lang, 'about/values', lang))}">${esc(t(values.eyebrow, lang))}${C.ARROW}</a>
-      </p>
+      <div class="tb">
+        ${C.eyebrow(values.eyebrow, lang)}
+        <p class="statement" data-animate>${esc(t(values.lead, lang))}</p>
+        <p style="margin-block-start:var(--sp-6)">
+          <a class="link-arrow" href="${esc(linkTo(route, lang, 'about/values', lang))}">${esc(t(values.eyebrow, lang))}${C.ARROW}</a>
+        </p>
+      </div>
     </div>
   </section>
 
@@ -183,46 +210,21 @@ export function aboutValues(route, lang, sectionItem) {
   return {
     title: `${t(values.eyebrow, lang)} — ${t(brand.shortName, lang)}`,
     description: t(values.lead, lang),
-    heroImage: 'saudi-cup',
+    heroImage: 'kleija',
     body: `
-  ${pageHeader(route, lang, values.eyebrow, values.lead, 'saudi-cup',
-    lang === 'ar' ? 'ممر مقوّس نفّذه فريق فاريوس' : 'An arched colonnade built by the VARIOUS team', false)}
+  ${pageHeader(route, lang, values.eyebrow, values.lead, 'kleija',
+    lang === 'ar' ? 'جناح من تصميم فاريوس وتنفيذها في مهرجان الكليجا' : 'A stand designed and built by VARIOUS at the Kleija Festival')}
   ${C.sectionNav(route, lang, sectionItem)}
 
   <section class="section">
     ${C.watermark(route, lang)}
     <div class="container">
-      <ul class="numbered">
+      <ul class="numbered numbered--values" data-animate-group>
         ${values.items.map(v => `<li class="numbered__item">
-          <h2 class="numbered__title">${esc(t(v.title, lang))} · ${esc(t(v.strap, lang))}</h2>
+          <h2 class="numbered__title">${esc(t(v.title, lang))}</h2>
           <p class="numbered__text">${esc(t(v.text, lang))}</p>
         </li>`).join('\n        ')}
       </ul>
-    </div>
-  </section>
-
-  ${ctaBand(route, lang)}`,
-  }
-}
-
-export function aboutFounders(route, lang, sectionItem) {
-  return {
-    title: `${t(founders.eyebrow, lang)} — ${t(brand.shortName, lang)}`,
-    description: t(founders.quote[0], lang),
-    heroImage: 'mood-city',
-    body: `
-  ${pageHeader(route, lang, founders.eyebrow, founders.lead, 'mood-city',
-    lang === 'ar' ? 'مشهد جوي لمدينة سعودية عند الغسق' : 'Aerial view of a Saudi city at dusk')}
-  ${C.sectionNav(route, lang, sectionItem)}
-
-  <section class="section">
-    ${C.watermark(route, lang)}
-    <div class="container container--text">
-      ${C.rule('rule--wide')}
-      <blockquote class="quote" data-animate>
-        ${founders.quote.map(p => `<p>«${esc(t(p, lang))}»</p>`).join('\n        ')}
-      </blockquote>
-      <p class="quote__by">${esc(t(founders.attribution, lang))}</p>
     </div>
   </section>
 
@@ -235,37 +237,49 @@ export function servicesIndex(route, lang, sectionItem) {
   return {
     title: `${t(servicesIntro.eyebrow, lang)} — ${t(brand.shortName, lang)}`,
     description: t(servicesIntro.lead, lang),
-    heroImage: 'saso',
+    heroImage: 'cover-collage',
     body: `
-  ${pageHeader(route, lang, servicesIntro.eyebrow, servicesIntro.lead, 'saso',
-    lang === 'ar' ? 'تفعيل تفاعلي نفّذته فاريوس في بوليفارد سيتي بالرياض'
-                  : 'An interactive activation built by VARIOUS at Boulevard City, Riyadh')}
+  ${pageHeader(route, lang, servicesIntro.eyebrow, servicesIntro.lead, 'cover-collage',
+    lang === 'ar' ? 'مجموعة من أعمال فاريوس' : 'A collage of VARIOUS projects')}
   ${C.sectionNav(route, lang, sectionItem)}
 
   <section class="section">
-    <div class="container container--text">
-      <div class="prose prose--lead" data-animate><p>${esc(t(servicesIntro.body, lang))}</p></div>
-    </div>
-  </section>
-
-  <section class="section section--tight">
     ${C.watermark(route, lang, 'watermark--start')}
     <div class="container">
-      <ul class="service-list" data-animate-group>
-        ${services.map(s => `<li class="service-row">
-          <div class="service-row__media">
-            ${img(route, lang, s.image, { alt: t(s.title, lang),
-              sizes: '(min-width: 62rem) 34vw, 92vw' })}
-          </div>
-          <div class="service-row__body">
-            <h2 class="service-row__title">
-              <a href="${esc(linkTo(route, lang, `services/${s.slug}`, lang))}">${esc(t(s.title, lang))}</a>
-            </h2>
-            <p class="service-row__lead">${esc(t(s.lead, lang))}</p>
-            <p class="link-arrow" style="margin-block-start:1.25rem">${esc(t(ui.readMore, lang))}${C.ARROW}</p>
+      <ul class="type-grid" data-animate-group>
+        ${eventTypes.map(s => `<li class="type-card">
+          <div class="type-card__media">${img(route, lang, s.image, { alt: '',
+            sizes: '(min-width: 68rem) 31vw, (min-width: 40rem) 46vw, 92vw' })}</div>
+          <div class="type-card__body">
+            <h2 class="type-card__title"><a class="type-card__link" href="${esc(typeHref(route, lang, s.link))}">${esc(t(s.title, lang))}</a></h2>
+            <p class="type-card__more">${esc(t(ui.relatedService, lang))}${C.ARROW}</p>
           </div>
         </li>`).join('\n        ')}
       </ul>
+      <div class="band" data-animate>
+        <h2 class="band__title">${esc(t(frameworkAgreements.title, lang))}</h2>
+        ${C.btn(linkTo(route, lang, 'contact', lang), t(ui.talkToUs, lang), { variant: 'ghost' })}
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--alt">
+    <div class="container">
+      <div class="duo" data-animate-group>
+        ${[
+          { path: 'services/solutions', intro: solutionsIntro, groups: solutions },
+          { path: 'services/exhibition-owners', intro: ownersIntro, groups: ownerServices },
+        ].map(b => `<article class="duo__item">
+          ${C.eyebrow(b.intro.eyebrow, lang)}
+          <p class="duo__lead">${esc(t(b.intro.lead, lang))}</p>
+          <ul class="chips chips--quiet">
+            ${b.groups.map(g => `<li class="chip">${esc(t(g.title, lang))}</li>`).join('\n            ')}
+          </ul>
+          <p style="margin-block-start:var(--sp-6)">
+            <a class="link-arrow" href="${esc(linkTo(route, lang, b.path, lang))}">${esc(t(b.intro.eyebrow, lang))}${C.ARROW}</a>
+          </p>
+        </article>`).join('\n        ')}
+      </div>
     </div>
   </section>
 
@@ -273,81 +287,51 @@ export function servicesIndex(route, lang, sectionItem) {
   }
 }
 
-export function servicePage(route, lang, service, prev, next, sectionItem) {
-  // Related work is resolved from the project tags — no hand-curated list to drift.
-  const related = projects.filter(p =>
-    (p.tags || []).some(tg => service.matchTags.includes(tg.ar))).slice(0, 3)
+/** A catalogue page: the solutions, or the services for exhibition owners. */
+function catalogue(route, lang, sectionItem, { intro, groups, image, alt }) {
   return {
-    title: `${t(service.title, lang)} — ${t(brand.shortName, lang)}`,
-    description: t(service.lead, lang),
-    heroImage: service.image,
-    heroSizes: '(min-width: 68rem) 56vw, 92vw',
+    title: `${t(intro.eyebrow, lang)} — ${t(brand.shortName, lang)}`,
+    description: t(intro.lead, lang),
+    heroImage: image,
     body: `
-  <section class="section section--tight plate-section">
+  ${pageHeader(route, lang, intro.eyebrow, intro.lead, image, alt)}
+  ${C.sectionNav(route, lang, sectionItem)}
+
+  <section class="section section--tight">
+    <div class="container">
+      <nav class="jump" aria-label="${esc(t(ui.inThisPage, lang))}">
+        <ul class="chips">
+          ${groups.map(g => `<li><a class="chip chip--link" href="#${esc(g.id)}">${esc(t(g.title, lang))}</a></li>`).join('\n          ')}
+        </ul>
+      </nav>
+    </div>
+  </section>
+
+  <section class="section section--flush">
     ${C.watermark(route, lang)}
     <div class="container">
-      <p style="margin-block-end:var(--sp-6)">
-        <a class="link-arrow" href="${esc(linkTo(route, lang, 'services', lang))}">${esc(t(ui.allServices, lang))}${C.ARROW}</a>
-      </p>
-      <div class="plate">
-        <div class="plate__media">${img(route, lang, service.image, {
-          alt: t(service.title, lang), sizes: '(min-width: 68rem) 56vw, 92vw', eager: true })}</div>
-        <div class="plate__body">
-          ${C.eyebrow(servicesIntro.eyebrow, lang, { tag: 'p' })}
-          <h1 class="h1">${esc(t(service.title, lang))}</h1>
-          ${C.rule('rule--wide')}
-          <p class="plate__lead">${esc(t(service.lead, lang))}</p>
-        </div>
+      <div class="catalogue" data-animate-group>
+        ${groups.map(g => C.chipGroup(g, lang)).join('\n        ')}
       </div>
-    </div>
-  </section>
-
-  <section class="section section--tight">
-    <div class="container container--text">
-      <div class="prose prose--lead" data-animate>
-        ${service.body.map(p => `<p>${esc(t(p, lang))}</p>`).join('\n        ')}
-      </div>
-    </div>
-  </section>
-
-  <section class="section section--dark">
-    <div class="container">
-      ${C.eyebrow(ui.whatWeDo, lang)}
-      <ul class="caps" data-animate-group>
-        ${service.capabilities.map(c => `<li class="cap">
-          <span class="cap__mark" aria-hidden="true"></span>
-          <span>${esc(t(c, lang))}</span>
-        </li>`).join('\n        ')}
-      </ul>
-    </div>
-  </section>
-
-  ${related.length ? `<section class="section">
-    <div class="container">
-      ${C.eyebrow(ui.relatedWork, lang)}
-      <div class="work-grid" style="margin-block-start:2.5rem" data-animate-group>
-        ${related.map(p => C.projectCard(route, lang, p)).join('\n        ')}
-      </div>
-    </div>
-  </section>` : ''}
-
-  <section class="section section--tight">
-    <div class="container">
-      <nav class="pager" aria-label="${esc(lang === 'ar' ? 'تنقل بين الخدمات' : 'Service navigation')}">
-        ${prev ? `<a class="pager__link" href="${esc(linkTo(route, lang, `services/${prev.slug}`, lang))}">
-          <span class="pager__dir">${esc(t(ui.prevProject, lang))}</span>
-          <span class="pager__title">${esc(t(prev.title, lang))}</span>
-        </a>` : '<span></span>'}
-        ${next ? `<a class="pager__link" href="${esc(linkTo(route, lang, `services/${next.slug}`, lang))}" style="text-align:end">
-          <span class="pager__dir">${esc(t(ui.nextService, lang))}</span>
-          <span class="pager__title">${esc(t(next.title, lang))}</span>
-        </a>` : '<span></span>'}
-      </nav>
     </div>
   </section>
 
   ${ctaBand(route, lang)}`,
   }
+}
+
+export function solutionsPage(route, lang, sectionItem) {
+  return catalogue(route, lang, sectionItem, {
+    intro: solutionsIntro, groups: solutions, image: 'investment-forum',
+    alt: lang === 'ar' ? 'أعمال تجهيز نفّذتها فاريوس ضمن الملتقى الدولي للاستثمار' : 'Build works by VARIOUS at the International Investment Forum',
+  })
+}
+
+export function ownersPage(route, lang, sectionItem) {
+  return catalogue(route, lang, sectionItem, {
+    intro: ownersIntro, groups: ownerServices, image: 'nova-medical',
+    alt: lang === 'ar' ? 'جناح نفّذته فاريوس في أحد المعارض' : 'An exhibition stand built by VARIOUS',
+  })
 }
 
 /* ── How we work ──────────────────────────────────────────────────────── */
@@ -366,20 +350,10 @@ export function process(route, lang) {
     </div>
   </section>
 
-  <section class="section">
+  <section class="section section--flush-top">
     ${C.watermark(route, lang)}
     <div class="container">
-      <ol class="steps" data-animate-group>
-        ${method.steps.map((s, i) => `<li class="step">
-          <span class="step__num">${esc(num(i + 1, lang))}</span>
-          <div class="step__body">
-            <h2 class="step__title">${esc(t(s.title, lang))}
-            </h2>
-            <p class="step__text">${esc(t(s.text, lang))}</p>
-            <p class="step__detail">${esc(t(s.detail, lang))}</p>
-          </div>
-        </li>`).join('\n        ')}
-      </ol>
+      ${C.methodPath(method.steps, lang)}
     </div>
   </section>
 
@@ -392,69 +366,76 @@ export function work(route, lang, sectionItem) {
   return {
     title: `${t(workIntro.eyebrow, lang)} — ${t(brand.shortName, lang)}`,
     description: t(workIntro.lead, lang),
-    heroImage: 'bb-none',
+    heroImage: 'mood-city',
     body: `
   ${pageHeader(route, lang, workIntro.eyebrow, workIntro.lead, 'mood-city',
     lang === 'ar' ? 'مشهد جوي لمدينة سعودية عند الغسق' : 'Aerial view of a Saudi city at dusk')}
   ${C.sectionNav(route, lang, sectionItem)}
 
-  <section class="section">
+  ${categories.map((cat, ci) => {
+    const list = projects.filter(p => p.category === cat.id)
+    return `<section class="section${ci % 2 ? ' section--alt' : ''}" id="${esc(cat.id)}">
     <div class="container">
-      <p class="muted" style="max-inline-size:var(--measure)">${esc(t(workIntro.note, lang))}</p>
-      <div class="work-grid" style="margin-block-start:3rem" data-animate-group>
-        ${projects.map((p, i) => C.projectCard(route, lang, p, { featured: i === 0 })).join('\n        ')}
+      <div class="cat-head tb">
+        <h2 class="h2">${esc(t(cat.title, lang))}</h2>
+        ${cat.note ? `<p class="cat-head__note">${esc(t(cat.note, lang))}</p>` : ''}
+      </div>
+      <div class="work-grid" data-animate-group>
+        ${list.map(p => C.projectCard(route, lang, p)).join('\n        ')}
       </div>
     </div>
-  </section>
-
-  <section class="section section--dark">
-    ${C.watermark(route, lang, 'watermark--start')}
-    <div class="container">
-      ${C.eyebrow({ ar: 'ومن أعمالنا أيضًا', en: 'Also from our work' }, lang)}
-      <ul class="roster" data-animate-group style="margin-block-start:2rem">
-        ${additionalWorks.map(w => `<li class="roster__item">
-          <span class="roster__name">${esc(t(w.client, lang))} — ${esc(t(w.title, lang))}
-          </span>
-        </li>`).join('\n        ')}
-      </ul>
-    </div>
-  </section>
+  </section>`
+  }).join('\n\n  ')}
 
   ${ctaBand(route, lang)}`,
   }
 }
 
 export function project(route, lang, p, prev, next) {
-  const client = p.client ? t(p.client, lang) : null
-  const title = t(p.title, lang)
+  const { head, rest } = C.splitTitle(t(p.title, lang))
+  const cat = categories.find(c => c.id === p.category)
   const meta = [
-    client && { label: ui.client, value: client },
-    p.year && { label: ui.year, value: t(p.year, lang) },
-    p.location && { label: ui.location, value: t(p.location, lang) },
-    p.tags?.length && { label: ui.scope, value: p.tags.map(tg => t(tg, lang)).join('، ') },
+    head && { label: ui.client, value: head },
+    p.types?.length && { label: ui.types, value: p.types.map(tg => t(tg, lang)).join(lang === 'ar' ? '، ' : ', ') },
+    p.scope?.length && { label: ui.scope, value: p.scope.map(tg => t(tg, lang)).join(lang === 'ar' ? '، ' : ', ') },
   ].filter(Boolean)
+  const alt = t(p.title, lang)
+  const sizes = '(min-width: 68rem) 56vw, 92vw'
+
+  const parts = (p.parts || []).map((part, i) => `<li class="part${part.image ? ' part--media' : ''}">
+          ${part.image ? `<div class="part__media">${img(route, lang, part.image, {
+            alt: t(part.title, lang), sizes: '(min-width: 62rem) 40vw, 92vw' })}</div>` : ''}
+          <div class="part__body tb">
+            ${part.group ? `<p class="part__group">${esc(t(part.group, lang))}</p>` : ''}
+            <h3 class="part__title">${esc(t(part.title, lang))}</h3>
+            ${part.award ? `<p class="card__award">${esc(t(part.award, lang))}</p>` : ''}
+            ${part.text ? `<p class="part__text">${esc(t(part.text, lang))}</p>` : ''}
+            ${part.scope?.length ? `<ul class="card__tags">${part.scope.map(tg => `<li class="tag">${esc(t(tg, lang))}</li>`).join('')}</ul>` : ''}
+          </div>
+        </li>`).join('\n        ')
 
   return {
-    title: `${client ? client + ' — ' : ''}${title} — ${t(brand.shortName, lang)}`,
+    title: `${t(p.title, lang)} — ${t(brand.shortName, lang)}`,
     description: t(p.text, lang),
-    heroImage: p.image,
-    heroSizes: '(min-width: 68rem) 56vw, 92vw',
+    heroImage: p.image || null,
+    heroSizes: sizes,
     body: `
   <section class="section section--tight plate-section">
     ${C.watermark(route, lang)}
     <div class="container">
       <p style="margin-block-end:var(--sp-6)">
-        <a class="link-arrow" href="${esc(linkTo(route, lang, 'work', lang))}">${esc(t(ui.backToWork, lang))}${C.ARROW}</a>
+        <a class="link-arrow" href="${esc(linkTo(route, lang, 'work', lang) + '#' + p.category)}">${esc(t(ui.backToWork, lang))}${C.ARROW}</a>
       </p>
       <div class="plate">
-        <div class="plate__media">${img(route, lang, p.image, {
-          alt: [client, title].filter(Boolean).join(' — '),
-          sizes: '(min-width: 68rem) 56vw, 92vw', eager: true })}</div>
-        <div class="plate__body">
-          ${C.eyebrow({ ar: 'مشروع', en: 'Project' }, lang, { tag: 'p' })}
-          ${client ? `<p class="plate__client">${esc(client)}</p>` : ''}
-          <h1 class="h1">${esc(title)}</h1>
+        <div class="plate__media">${p.image
+          ? img(route, lang, p.image, { alt, sizes, eager: true })
+          : C.brandPanel(route, lang, head || rest)}</div>
+        <div class="plate__body tb">
+          ${C.eyebrow(cat.title, lang, { tag: 'p' })}
+          ${head ? `<p class="plate__client">${esc(head)}</p>` : ''}
+          <h1 class="h1">${esc(rest)}</h1>
           ${C.rule('rule--wide')}
+          ${p.award ? `<p class="card__award">${esc(t(p.award, lang))}</p>` : ''}
         </div>
       </div>
     </div>
@@ -466,7 +447,16 @@ export function project(route, lang, p, prev, next) {
     </div>
   </section>
 
-  ${meta.length ? `<section class="section section--tight section--dark">
+  ${parts ? `<section class="section section--tight">
+    <div class="container">
+      ${C.eyebrow(ui.partsLabel, lang)}
+      <ul class="parts" data-animate-group>
+        ${parts}
+      </ul>
+    </div>
+  </section>` : ''}
+
+  <section class="section section--tight section--alt">
     <div class="container">
       <ul class="meta" data-animate-group>
         ${meta.map(m => `<li>
@@ -475,7 +465,7 @@ export function project(route, lang, p, prev, next) {
         </li>`).join('\n        ')}
       </ul>
     </div>
-  </section>` : ''}
+  </section>
 
   <section class="section section--tight">
     <div class="container">
@@ -484,38 +474,11 @@ export function project(route, lang, p, prev, next) {
           <span class="pager__dir">${esc(t(ui.prevProject, lang))}</span>
           <span class="pager__title">${esc(t(prev.title, lang))}</span>
         </a>` : '<span></span>'}
-        ${next ? `<a class="pager__link" href="${esc(linkTo(route, lang, `work/${next.slug}`, lang))}" style="text-align:end">
+        ${next ? `<a class="pager__link pager__link--next" href="${esc(linkTo(route, lang, `work/${next.slug}`, lang))}">
           <span class="pager__dir">${esc(t(ui.nextProject, lang))}</span>
           <span class="pager__title">${esc(t(next.title, lang))}</span>
         </a>` : '<span></span>'}
       </nav>
-    </div>
-  </section>
-
-  ${ctaBand(route, lang)}`,
-  }
-}
-
-export function sectorsPage(route, lang, sectionItem) {
-  return {
-    title: `${t(sectors.eyebrow, lang)} — ${t(brand.shortName, lang)}`,
-    description: t(sectors.lead, lang),
-    heroImage: 'investment-forum',
-    heroSizes: '100vw',
-    body: `
-  ${pageHeader(route, lang, sectors.eyebrow, sectors.lead, 'investment-forum',
-    lang === 'ar' ? 'لافتات فعالية ليلًا' : 'Event signage at night', false)}
-  ${C.sectionNav(route, lang, sectionItem)}
-
-  <section class="section">
-    ${C.watermark(route, lang)}
-    <div class="container">
-      <ul class="sector-grid" data-animate-group>
-        ${sectors.items.map(s => `<li class="sector-cell">
-          <span class="sector-cell__name">${esc(t(s, lang))}
-          </span>
-        </li>`).join('\n        ')}
-      </ul>
     </div>
   </section>
 
@@ -561,18 +524,14 @@ export function clientsPage(route, lang) {
  * what is already in the data — no curation, no invented links.
  */
 function relatedWork(client) {
-  const mine = projects.filter(p => p.client && p.client.ar === client.ar)
+  const mine = projects.filter(p => p.client === client.ar)
   if (mine.length === 1) {
     const p = mine[0]
-    return { href: `work/${p.slug}`, caption: { ar: p.title.ar, en: p.title.en } }
+    const ar = C.splitTitle(p.title.ar), en = C.splitTitle(p.title.en)
+    return { href: `work/${p.slug}`, caption: { ar: ar.rest, en: en.rest } }
   }
   if (mine.length > 1) {
-    return { href: 'work', caption: { ar: arabicCount(mine.length), en: `${mine.length} projects` } }
-  }
-  const listed = additionalWorks.filter(w => w.client.ar === client.ar)
-  if (listed.length === 1) return { href: null, caption: { ar: listed[0].title.ar, en: listed[0].title.en } }
-  if (listed.length > 1) {
-    return { href: null, caption: { ar: arabicCount(listed.length), en: `${listed.length} projects` } }
+    return { href: `work/${mine[0].slug}`, caption: { ar: arabicCount(mine.length), en: `${mine.length} projects` } }
   }
   return { href: null, caption: null }
 }
@@ -581,8 +540,8 @@ function relatedWork(client) {
 function arabicCount(n) {
   if (n === 1) return 'مشروع'
   if (n === 2) return 'مشروعان'
-  if (n <= 10) return `${num(n, 'ar').replace(/^٠/, '')} مشاريع`
-  return `${num(n, 'ar').replace(/^٠/, '')} مشروعًا`
+  if (n <= 10) return `${n} مشاريع`
+  return `${n} مشروعًا`
 }
 
 /* ── Contact ──────────────────────────────────────────────────────────── */
@@ -592,14 +551,16 @@ export function contactPage(route, lang) {
     description: `${t(brand.name, lang)} — ${contact.phone} · ${contact.email}`,
     heroImage: 'mood-fireworks',
     body: `
-  <section class="hero hero--short" data-hero>
+  <section class="hero hero--short scope-dark" data-hero>
     <div class="hero__media">${img(route, lang, 'mood-fireworks', {
       alt: lang === 'ar' ? 'ألعاب نارية فوق حدث جماهيري' : 'Fireworks over a public event',
       sizes: '100vw', eager: true, fullBleed: true })}</div>
     <div class="hero__scrim"></div>
     <div class="container hero__body">
-      ${C.eyebrow({ ar: 'تواصل معنا', en: 'Contact' }, lang, { tag: 'p' })}
-      <h1 class="h1">${esc(t(pauses.closing, lang))}</h1>
+      <div class="tb">
+        <div data-hero-item>${C.eyebrow({ ar: 'تواصل معنا', en: 'Contact' }, lang, { tag: 'p' })}</div>
+        <h1 class="h1" data-hero-item>${esc(t(pauses.closing, lang))}</h1>
+      </div>
     </div>
   </section>
 
@@ -608,26 +569,27 @@ export function contactPage(route, lang) {
     <div class="container">
       <ul class="contact-grid" data-animate-group>
         <li class="contact-item">
-          <p class="contact-item__label">${esc(t(ui.callUs, lang))}</p>
-          <p class="contact-item__value"><a href="tel:${esc(contact.phoneHref)}" class="lt">${esc(contact.phone)}</a></p>
+          <p class="contact-item__label">${esc(t(ui.phoneWhatsapp, lang))}</p>
+          <p class="contact-item__value"><a href="tel:${esc(contact.phoneHref)}" class="lt" dir="ltr">${esc(contact.phone)}</a></p>
+          <p class="contact-item__extra"><a class="link-arrow" href="${esc(contact.whatsappHref)}" rel="noopener" target="_blank">${esc(t(ui.whatsapp, lang))}${C.ARROW}</a></p>
         </li>
         <li class="contact-item">
           <p class="contact-item__label">${esc(t(ui.emailUs, lang))}</p>
-          <p class="contact-item__value"><a href="mailto:${esc(contact.email)}" class="lt">${esc(contact.email)}</a></p>
+          <p class="contact-item__value"><a href="mailto:${esc(contact.email)}" class="lt" dir="ltr">${esc(contact.email)}</a></p>
         </li>
         <li class="contact-item">
-          <p class="contact-item__label">${esc(lang === 'ar' ? 'الموقع الإلكتروني' : 'Website')}</p>
-          <p class="contact-item__value"><a href="${esc(contact.websiteHref)}" class="lt" rel="noopener">${esc(contact.website)}</a></p>
+          <p class="contact-item__label">${esc(t(ui.website, lang))}</p>
+          <p class="contact-item__value"><a href="${esc(contact.websiteHref)}" class="lt" dir="ltr" rel="noopener">${esc(contact.website)}</a></p>
         </li>
         <li class="contact-item">
-          <p class="contact-item__label">${esc(t(ui.location, lang))}</p>
+          <p class="contact-item__label">${esc(t(ui.address, lang))}</p>
           <p class="contact-item__value">${esc(t(contact.address, lang))}</p>
         </li>
+        <li class="contact-item contact-item--wide">
+          <p class="contact-item__label">${esc(t(ui.followUs, lang))}</p>
+          ${C.socialLinks(lang, { withHandles: true })}
+        </li>
       </ul>
-      <div style="margin-block-start:3rem;padding-block-start:1.5rem;border-block-start:1px solid var(--rule-hairline)">
-        <p class="muted">${esc(t(brand.legalName, lang))}</p>
-        <p class="faint" style="font-size:var(--fs-micro);margin-block-start:.25rem">${esc(t(ui.crLabel, lang))} <span class="lt">${esc(brand.cr)}</span></p>
-      </div>
     </div>
   </section>`,
   }
@@ -642,13 +604,13 @@ export function notFound(route, lang) {
   <section class="section" style="min-block-size:60vh;display:grid;align-items:center">
     ${C.watermark(route, lang)}
     <div class="container">
-      ${C.eyebrow({ ar: 'خطأ ٤٠٤', en: 'Error 404' }, lang, { tag: 'p' })}
+      ${C.eyebrow({ ar: 'خطأ 404', en: 'Error 404' }, lang, { tag: 'p' })}
       <h1 class="h1">${esc(lang === 'ar' ? 'الصفحة غير موجودة' : 'Page not found')}</h1>
       ${C.rule()}
       <p class="lead">${esc(lang === 'ar'
         ? 'الرابط الذي طلبته غير متاح. يمكنك العودة إلى الصفحة الرئيسية.'
         : 'The page you asked for is not available. You can return to the homepage.')}</p>
-      <div style="margin-block-start:2rem">
+      <div style="margin-block-start:var(--sp-6)">
         ${C.btn(linkTo(route, lang, '', lang), lang === 'ar' ? 'الصفحة الرئيسية' : 'Homepage')}
       </div>
     </div>
@@ -658,22 +620,24 @@ export function notFound(route, lang) {
 
 /* ── Shared blocks ────────────────────────────────────────────────────── */
 function pageHeader(route, lang, eyebrowPair, lead, image, alt, fullBleed = true) {
-  return `<section class="hero hero--page" data-hero>
+  return `<section class="hero hero--page scope-dark" data-hero>
     <div class="hero__media">${img(route, lang, image, { alt, sizes: '100vw', eager: true, fullBleed })}</div>
     <div class="hero__scrim"></div>
     <div class="container hero__body">
-      ${C.pair(eyebrowPair, lang, { tag: 'h1', className: 'h1', attrs: 'data-hero-item' })}
-      ${C.rule('rule--wide')}
-      <p class="lead" data-hero-item>${esc(t(lead, lang))}</p>
+      <div class="tb">
+        ${C.pair(eyebrowPair, lang, { tag: 'h1', className: 'h1', attrs: 'data-hero-item' })}
+        ${C.rule('rule--wide')}
+        <p class="lead" data-hero-item>${esc(t(lead, lang))}</p>
+      </div>
     </div>
   </section>`
 }
 
 function ctaBand(route, lang) {
-  return `<section class="section section--dark cta" >
+  return `<section class="section cta scope-dark">
     ${C.watermark(route, lang, 'watermark--start watermark--bottom')}
     <div class="container">
-      <hr class="rule" style="margin-inline:auto">
+      <hr class="rule rule--center">
       <h2 class="h2 cta__title">${esc(t(ui.getInTouch, lang))}</h2>
       <div class="cta__actions">
         ${C.btn(linkTo(route, lang, 'contact', lang), t(ui.talkToUs, lang))}

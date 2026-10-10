@@ -30,7 +30,8 @@
       }
     })
     panel.addEventListener('click', function (e) { if (e.target.closest('a')) setOpen(false) })
-    var mq = window.matchMedia('(min-width: 68rem)')
+    // Must match the stylesheet's menu breakpoint (layout.css, 75rem).
+    var mq = window.matchMedia('(min-width: 75.0625rem)')
     var reset = function () { if (mq.matches) setOpen(false) }
     mq.addEventListener ? mq.addEventListener('change', reset) : mq.addListener(reset)
   }
@@ -48,13 +49,60 @@
     masthead.setAttribute('data-scrolled', '')
   }
 
-  /* ── Remember the reader's language choice ────────────────────────────── */
+  /* ── Light / dark ─────────────────────────────────────────────────────
+     The saved choice is applied by the inline script in <head>, before first
+     paint; this only handles the switch. */
+  var root = document.documentElement
+  var themeBtn = document.querySelector('[data-theme-toggle]')
+  var themeMeta = document.querySelector('meta[name="theme-color"]')
+  var syncTheme = function () {
+    var light = root.getAttribute('data-theme') === 'light'
+    if (themeBtn) themeBtn.setAttribute('aria-pressed', String(light))
+    if (themeMeta) themeMeta.setAttribute('content', light ? '#f6f7f2' : '#0f1b28')
+  }
+  syncTheme()
+  if (themeBtn) {
+    themeBtn.addEventListener('click', function () {
+      var next = root.getAttribute('data-theme') === 'light' ? 'dark' : 'light'
+      root.setAttribute('data-theme', next)
+      try { localStorage.setItem('various:theme', next) } catch (e) {}
+      syncTheme()
+    })
+  }
+
+  /* ── Language switch keeps your place ─────────────────────────────────
+     Both editions share one layout, so switching language should not throw
+     the reader back to the top. Remember which section was at the top of the
+     viewport, and how far into it, and restore that on the other edition. */
+  var KEY = 'various:switch'
+  var sections = function () { return Array.prototype.slice.call(document.querySelectorAll('main > section, main > nav')) }
   var langLink = document.querySelector('[data-lang-switch]')
   if (langLink) {
     langLink.addEventListener('click', function () {
       try { localStorage.setItem('various:lang', langLink.getAttribute('data-lang-target') || '') } catch (e) {}
+      var list = sections(), idx = 0
+      for (var i = 0; i < list.length; i++) { if (list[i].getBoundingClientRect().top <= 1) idx = i }
+      var el = list[idx]
+      var into = el ? Math.max(0, -el.getBoundingClientRect().top) / Math.max(1, el.offsetHeight) : 0
+      try {
+        sessionStorage.setItem(KEY, JSON.stringify({ to: langLink.href, idx: idx, into: into, y: window.scrollY }))
+      } catch (e) {}
     })
   }
+  try {
+    var saved = JSON.parse(sessionStorage.getItem(KEY) || 'null')
+    sessionStorage.removeItem(KEY)
+    if (saved && saved.to === location.href.split('#')[0] && saved.y > 0) {
+      var restore = function () {
+        var el = sections()[saved.idx]
+        if (!el) return
+        var top = el.getBoundingClientRect().top + window.scrollY + saved.into * el.offsetHeight
+        window.scrollTo({ top: top, behavior: 'instant' })
+      }
+      restore()
+      window.addEventListener('load', restore)
+    }
+  } catch (e) {}
 
   /* ── Motion ───────────────────────────────────────────────────────────── */
   initMotion()
@@ -79,6 +127,11 @@
 
     mm.add('(prefers-reduced-motion: no-preference)', function () {
       var EASE = 'power2.out'
+      // A rule grows from the edge its text starts at: the right in Arabic,
+      // and in an English text group, the left.
+      var edgeOf = function (i, el) {
+        return getComputedStyle(el.parentElement).direction === 'rtl' ? '100% 50%' : '0% 50%'
+      }
 
       /* Hero: the one deliberate entrance on the page. Staggered, and short —
          a visitor should not be waiting on choreography to read a headline. */
@@ -92,7 +145,7 @@
           .fromTo(bits, { y: 24, opacity: 0 }, { y: 0, opacity: 1, stagger: 0.09 })
           .fromTo(hero.querySelectorAll('.rule'),
             { scaleX: 0 },
-            { scaleX: 1, transformOrigin: 'inline-start center', duration: 0.5 }, '-=0.45')
+            { scaleX: 1, transformOrigin: edgeOf, duration: 0.5 }, '-=0.45')
 
         // A slow drift on the hero photograph. Scrubbed to scroll, so it is
         // never animating while the visitor is still.
@@ -122,10 +175,13 @@
         })
       })
 
-      /* The signature rule draws itself from the reading edge. */
+      /* The signature rule draws itself from the reading edge — the right, in
+         both editions, since they share one layout. A centred rule grows from
+         its middle. */
       gsap.utils.toArray('.section .rule').forEach(function (r) {
+        var origin = r.classList.contains('rule--center') ? '50% 50%' : edgeOf(0, r)
         gsap.fromTo(r, { scaleX: 0 }, {
-          scaleX: 1, transformOrigin: 'inline-start center', duration: 0.6, ease: EASE,
+          scaleX: 1, transformOrigin: origin, duration: 0.6, ease: EASE,
           scrollTrigger: { trigger: r, start: 'top 92%', once: true },
         })
       })
@@ -136,13 +192,24 @@
         var target = Number(el.getAttribute('data-count'))
         if (!isFinite(target) || target <= 0) return
         var suffix = el.getAttribute('data-count-suffix') || ''
-        var isArabic = document.documentElement.lang === 'ar'
         var obj = { v: 0 }
         gsap.to(obj, {
           v: target, duration: 1.4, ease: 'power1.out',
           scrollTrigger: { trigger: el, start: 'top 90%', once: true },
-          onUpdate: function () { el.textContent = suffix + format(Math.round(obj.v), isArabic) },
+          onUpdate: function () { el.textContent = format(Math.round(obj.v)) + suffix },
         })
+      })
+
+      /* The method path: each station lights up, then the line to the next
+         one draws down and the arrow lands on it. */
+      gsap.utils.toArray('[data-path] .path__step').forEach(function (step) {
+        var tl = gsap.timeline({ scrollTrigger: { trigger: step, start: 'top 78%', once: true } })
+        tl.fromTo(step.querySelector('.path__node'), { scale: 0.6, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.45, ease: 'back.out(2)' })
+          .fromTo(step.querySelector('.path__card'), { y: 18, opacity: 0 }, { y: 0, opacity: 1, duration: 0.55, ease: EASE }, '-=0.2')
+        var line = step.querySelector('.path__line')
+        var arrow = step.querySelector('.path__arrow')
+        if (line) tl.fromTo(line, { scaleY: 0 }, { scaleY: 1, transformOrigin: '50% 0%', duration: 0.7, ease: 'power1.inOut' }, '-=0.15')
+        if (arrow) tl.fromTo(arrow, { y: -10, opacity: 0 }, { y: 0, opacity: 1, duration: 0.3, ease: EASE }, '-=0.1')
       })
 
       /* The watermark drifts, very slightly, against the scroll. */
@@ -159,9 +226,8 @@
     window.addEventListener('load', function () { window.ScrollTrigger.refresh() })
   }
 
-  /** Group thousands, and render Arabic-Indic digits on the Arabic edition. */
-  function format(n, isArabic) {
-    var s = String(n).replace(/\B(?=(\d{3})+(?!\d))/g, isArabic ? '٬' : ',')
-    return isArabic ? s.replace(/\d/g, function (d) { return '٠١٢٣٤٥٦٧٨٩'[Number(d)] }) : s
+  /** Group thousands. Western digits in both editions, as in the profile. */
+  function format(n) {
+    return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ',')
   }
 })()

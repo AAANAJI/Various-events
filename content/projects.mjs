@@ -1,280 +1,501 @@
-// The portfolio, transcribed from the company profile deck.
+// The portfolio — 22 projects, from the client's approved copy deck.
 //
-// A note on `year` and `location`: the source deck carries the literal placeholder
-// «السنة» / «الموقع» / «الدورة» for many projects, alongside an explicit
-// «للاعتماد» (to be confirmed) marker. Those are recorded here as null rather than
-// guessed. The templates omit a null field entirely — nothing is invented, and
-// filling one in later is a one-line edit.
+// One file feeds both outputs: the website's work pages and the printed
+// profile. Two rules from the client's feedback are built into the data
+// rather than left to the templates:
+//
+//   • No project carries a year or a location field. A project is not tied to
+//     a date or a place; where an edition name includes one ("Global Health
+//     Exhibition 2024") it is part of the name, not metadata.
+//   • Every figure uses Western digits, in Arabic as well as English.
+//
+// `image: null` means no photograph has been supplied yet. Both outputs
+// render a branded panel in its place, so a missing photo never reads as a
+// broken layout; dropping a JPEG into assets/img and naming it here is the
+// whole fix.
+//
+// `client` is the roster name in content/clients.mjs, so the clients page can
+// link each name to its work. It is null where the copy deck does not name a
+// contracting client.
+
+export const categories = [
+  {
+    id: 'exhibitions',
+    title: { ar: 'المعارض والأجنحة', en: 'Exhibitions & Pavilions' },
+    note: {
+      ar: 'ثلاثة من هذه الأجنحة نُفِّذت في نسخة واحدة من معرض الصحة العالمي 2024 — لثلاث جهات مختلفة.',
+      en: 'Three of these stands were delivered at a single edition of the Global Health Exhibition 2024 — for three different clients.',
+    },
+  },
+  {
+    id: 'conferences',
+    title: { ar: 'المؤتمرات والاجتماعات', en: 'Conferences & Meetings' },
+  },
+  {
+    id: 'ceremonies',
+    title: { ar: 'الاحتفالات وفعاليات الشركات', en: 'Ceremonies & Corporate Events' },
+  },
+]
 
 export const projects = [
   {
-    slug: 'saudi-cup',
-    image: 'saudi-cup',
-    client: { ar: 'وزارة الثقافة', en: 'Ministry of Culture' },
-    title:  { ar: 'كأس السعودية للخيل', en: 'The Saudi Cup' },
-    year: null, location: null,
-    tags: [
-      { ar: 'تصميم',      en: 'Design' },
-      { ar: 'تصنيع',      en: 'Fabrication' },
-      { ar: 'إدارة حدث',  en: 'Event management' },
-    ],
+    slug: 'moh-nonprofit-pavilion',
+    image: null,
+    category: 'exhibitions',
+    client: "وزارة الصحة",
+    title: {
+      ar: "وزارة الصحة — جناح القطاع الصحي غير الربحي، معرض الصحة العالمي 2024",
+      en: "Ministry of Health — Non-Profit Healthcare Pavilion, Global Health Exhibition 2024",
+    },
     text: {
-      ar: 'كانت مشاركتنا في كأس السعودية شراكة متكاملة: صمّمنا وصنّعنا وأدرنا تجهيزات الحدث بالكامل، بتفاصيل خُطط لها ونُفِّذت بدقة جعلت التجربة استثنائية لجميع الحاضرين.',
-      en: 'Our role at the Saudi Cup was end-to-end: we designed, fabricated, and managed the event build in full — planned and executed to a level of detail that made the experience exceptional for every attendee.',
+      ar: "شاركت وزارة الصحة في معرض الصحة العالمي 2024 بالرياض بجناح القطاع الصحي غير الربحي، الذي أبرز المبادرات الصحية الهادفة لتعزيز الاستدامة. صمّمنا الجناح ونفّذناه، مع الضيافة والتغطية الإعلامية.",
+      en: "The Ministry of Health took part in the Global Health Exhibition 2024 in Riyadh with its Non-Profit Healthcare Sector pavilion, spotlighting purpose-driven health initiatives. We designed and delivered the pavilion, with hospitality and media coverage.",
     },
-    featured: true,
-  },
-  {
-    slug: 'book-fair',
-    image: 'book-fair',
-    client: { ar: 'وزارة الثقافة', en: 'Ministry of Culture' },
-    title:  { ar: 'معرض الكتاب', en: 'The Book Fair' },
-    year: null, location: null,
-    tags: [
-      { ar: 'جناح', en: 'Pavilion' },
-      { ar: 'تنفيذ', en: 'Build' },
-    ],
-    text: {
-      ar: 'نفّذنا حضور وزارة الثقافة في معرض الكتاب بمساحات تحتفي بالمحتوى وتُيسّر حركة الزوار وتترك للكتاب مساحة الصدارة.',
-      en: "We delivered the Ministry of Culture's presence at the Book Fair — spaces that celebrate content, ease visitor flow, and keep the books center stage.",
-    },
-    featured: true,
-  },
-  {
-    slug: 'kleija-festival',
-    image: 'kleija',
-    client: { ar: 'وزارة الثقافة', en: 'Ministry of Culture' },
-    title:  { ar: 'مهرجان الكليجا', en: 'Kleija Festival' },
-    year: null, location: null,
-    tags: [
-      { ar: 'تجهيز مهرجان', en: 'Festival build' },
-      { ar: 'صناعة مكان',   en: 'Placemaking' },
-    ],
-    text: {
-      ar: 'أعمال تصميم وتنفيذ لمهرجان الكليجا بهوية مكانية تحتفي بالموروث وتصنع تجربة عائلية متكاملة بين الأجنحة والمسرح ومناطق التفاعل.',
-      en: 'Design and build for the Kleija Festival — a sense of place that celebrates heritage across stalls, stage, and interaction zones for a complete family experience.',
-    },
-    featured: true,
-  },
-  {
-    slug: 'data-privacy-day',
-    image: 'data-privacy',
-    client: { ar: 'وزارة الثقافة', en: 'Ministry of Culture' },
-    title:  { ar: 'يوم خصوصية البيانات', en: 'Data Privacy Day' },
-    year: null, location: null,
-    tags: [
-      { ar: 'تفعيل توعوي',   en: 'Awareness activation' },
-      { ar: 'مناطق تفاعلية', en: 'Interactive zones' },
-    ],
-    text: {
-      ar: 'تجهيز فعالية يوم خصوصية البيانات بمناطق توعوية وتجارب تفاعلية تقرّب موضوعًا تقنيًا من جمهور واسع.',
-      en: 'An awareness build for Data Privacy Day — interactive zones that make a technical subject accessible to a broad audience.',
-    },
-  },
-  {
-    slug: 'sab-founding-day',
-    image: 'sab-founding-day',
-    client: { ar: 'البنك الأول', en: 'SAB' },
-    title:  { ar: 'يوم التأسيس', en: 'Founding Day' },
-    year: null, location: null,
-    tags: [
-      { ar: 'احتفالية',     en: 'Celebration' },
-      { ar: 'تصميم وتنفيذ', en: 'Design & build' },
-    ],
-    text: {
-      ar: 'احتفالية يوم التأسيس للبنك الأول: تصميم وتنفيذ تجربة تمزج الرموز التراثية بحضور العلامة، بتفاصيل ضيافة وتصوير تليق بالمناسبة.',
-      en: "SAB's Founding Day celebration: design and build of an experience weaving heritage symbols with the bank's brand presence, with hospitality and photo moments to match the occasion.",
-    },
-    featured: true,
-  },
-  {
-    slug: 'tahakom-ceos-meeting',
-    image: 'tahakom',
-    client: { ar: 'تحكم', en: 'Tahakom' },
-    title:  { ar: 'اجتماع الرؤساء التنفيذيين', en: 'CEOs Meeting' },
-    year: null, location: null,
-    tags: [
-      { ar: 'فعالية تنفيذية', en: 'Executive event' },
-      { ar: 'إنتاج',          en: 'Production' },
-    ],
-    text: {
-      ar: 'تجهيز وإدارة لقاء تنفيذي رفيع المستوى لشركة تحكم، ببيئة عرض وضيافة تليق بمقام الحضور وتراعي خصوصية الاجتماع.',
-      en: 'Build and management of a senior executive gathering for Tahakom — a presentation and hospitality environment to match the room, with the discretion the meeting requires.',
-    },
-  },
-  {
-    slug: 'saso-boulevard',
-    image: 'saso',
-    client: {
-      ar: 'الهيئة السعودية للمواصفات والمقاييس والجودة',
-      en: 'Saudi Standards, Metrology and Quality Organization (SASO)',
-    },
-    title:  { ar: 'البوليفارد', en: 'Boulevard City' },
-    year: null,
-    location: { ar: 'بوليفارد سيتي، الرياض', en: 'Boulevard City, Riyadh' },
-    tags: [
-      { ar: 'تفعيل جماهيري', en: 'Public activation' },
-      { ar: 'تفاعلي',        en: 'Interactive' },
-    ],
-    text: {
-      ar: 'حضور تفاعلي للهيئة السعودية للمواصفات والمقاييس والجودة في بوليفارد سيتي بالرياض، يوصل رسائل الجودة والمطابقة بأسلوب قريب من الزوار.',
-      en: 'An interactive presence for SASO at Boulevard City, Riyadh — quality and conformity messages delivered in a visitor-friendly way.',
-    },
-    featured: true,
+    types: [{ ar: "جناح معرض", en: "Exhibition stand" }],
+    scope: [{ ar: "تصميم", en: "Design" }, { ar: "تنفيذ", en: "Delivery" }, { ar: "ضيافة", en: "Hospitality" }, { ar: "تغطية إعلامية", en: "Media coverage" }],
   },
   {
     slug: 'health-endowment-fund',
     image: 'health-endowment',
-    client: { ar: 'صندوق الوقف الصحي', en: 'Health Endowment Fund' },
-    title:  { ar: 'برج الساعة', en: 'Clock Tower, Makkah' },
-    year: null,
-    location: { ar: 'برج الساعة، مكة المكرمة', en: 'Clock Tower, Makkah' },
-    tags: [
-      { ar: 'حضور علامة', en: 'Brand presence' },
-      { ar: 'تنفيذ',      en: 'Build' },
-    ],
-    text: {
-      ar: 'تجهيز حضور صندوق الوقف الصحي في برج الساعة بمكة المكرمة. ويمتد تعاوننا مع الصندوق إلى جناح تفاعلي في معرض الصحة العالمي ٢٠٢٤ أبرز الابتكار في القطاع الصحي.',
-      en: "The Fund's presence at the Clock Tower, Makkah. Our partnership extends to an interactive pavilion at the Global Health Exhibition 2024 spotlighting healthcare innovation.",
+    category: 'exhibitions',
+    client: "صندوق الوقف الصحي",
+    title: {
+      ar: "صندوق الوقف الصحي — مشروعان",
+      en: "Health Endowment Fund — Two Projects",
     },
+    text: {
+      ar: "مشروعان مع صندوق الوقف الصحي: جناح تفاعلي في معرض الصحة العالمي 2024 يبرز الابتكار في القطاع الصحي، وجناح في برج الساعة بمكة المكرمة. صمّمنا الاثنين ونفّذناهما.",
+      en: "Two projects with the Health Endowment Fund: an interactive stand at the Global Health Exhibition 2024 spotlighting innovation in the health sector, and a stand at the Clock Tower in Makkah. We designed and delivered both.",
+    },
+    types: [{ ar: "جناح معرض", en: "Exhibition stand" }, { ar: "جناح", en: "Stand" }],
+    scope: [{ ar: "تصميم", en: "Design" }, { ar: "تنفيذ", en: "Delivery" }, { ar: "ضيافة", en: "Hospitality" }, { ar: "هدايا", en: "Gifts" }, { ar: "تغطية إعلامية", en: "Media coverage" }],
+    parts: [
+      {
+        title: { ar: "معرض الصحة العالمي — الرياض", en: "Global Health Exhibition — Riyadh" },
+        text: {
+          ar: "جناح تفاعلي يبرز الابتكار في القطاع الصحي.",
+          en: "An interactive stand spotlighting innovation in the health sector.",
+        },
+        scope: [{ ar: "تصميم", en: "Design" }, { ar: "تنفيذ", en: "Delivery" }, { ar: "ضيافة", en: "Hospitality" }, { ar: "هدايا", en: "Gifts" }, { ar: "تغطية إعلامية", en: "Media coverage" }],
+      },
+      {
+        title: { ar: "برج الساعة — مكة المكرمة", en: "Clock Tower — Makkah" },
+        text: {
+          ar: "جناح في أحد أكثر المواقع ازدحامًا في المملكة، بمتطلبات تركيب وتشغيل خاصة.",
+          en: "A stand in one of the Kingdom's busiest locations, with its own installation and operating constraints.",
+        },
+        scope: [{ ar: "تصميم", en: "Design" }, { ar: "تنفيذ", en: "Delivery" }],
+      },
+    ],
   },
   {
-    slug: 'international-investment-forum',
-    image: 'investment-forum',
-    client: null,
-    title:  { ar: 'الملتقى الدولي للاستثمار في المملكة', en: 'International Investment Forum, KSA' },
-    year: null, location: null,
-    tags: [
-      { ar: 'تجهيز ملتقى', en: 'Forum build' },
-      { ar: 'تنفيذ',       en: 'Delivery' },
-    ],
-    text: {
-      ar: 'أعمال تجهيز وتنفيذ ضمن الملتقى الدولي للاستثمار في المملكة.',
-      en: 'Build and delivery works for the International Investment Forum in the Kingdom.',
+    slug: 'obeikan-health',
+    image: null,
+    category: 'exhibitions',
+    client: "العبيكان",
+    title: {
+      ar: "العبيكان الصحية — معرض الصحة العالمي 2024",
+      en: "Obeikan Health — Global Health Exhibition 2024",
     },
+    text: {
+      ar: "شاركت العبيكان الصحية في معرض الصحة العالمي 2024 بالرياض. صمّمنا جناحها ونفّذناه، مع الضيافة والتغطية الإعلامية — وهو ثالث جناح ننفّذه في النسخة نفسها.",
+      en: "Obeikan Health took part in the Global Health Exhibition 2024 in Riyadh. We designed and delivered their stand, with hospitality and media coverage — the third stand we built at that same edition.",
+    },
+    types: [{ ar: "جناح معرض", en: "Exhibition stand" }],
+    scope: [{ ar: "تصميم", en: "Design" }, { ar: "تنفيذ", en: "Delivery" }, { ar: "ضيافة", en: "Hospitality" }, { ar: "تغطية إعلامية", en: "Media coverage" }],
   },
   {
-    slug: 'media-excellence-award',
-    image: 'media-award',
-    client: null,
-    title:  { ar: 'جائزة التميز الإعلامي', en: 'Media Excellence Award' },
-    year: { ar: 'النسخة الخامسة', en: 'Fifth edition' },
-    location: null,
-    tags: [
-      { ar: 'حفل',  en: 'Ceremony' },
-      { ar: 'إنتاج', en: 'Production' },
-    ],
-    text: {
-      ar: 'جائزة سنوية تحتفي بالأعمال الإعلامية الإبداعية في مختلف المناسبات الوطنية والمجالات، أقيمت نسختها الخامسة بالشراكة مع برنامج تنمية القدرات البشرية — وتولّت فاريوس تنظيم الحفل وتجهيزاته وإنتاجه.',
-      en: "An annual award celebrating creative media work across national occasions and fields, its fifth edition delivered in partnership with the Human Capability Development Program — with VARIOUS behind the ceremony's organization, build, and production.",
+    slug: 'moe-education-exhibition',
+    image: null,
+    category: 'exhibitions',
+    client: "وزارة التعليم",
+    title: {
+      ar: "وزارة التعليم — معرض التعليم",
+      en: "Ministry of Education — Education Exhibition",
     },
+    text: {
+      ar: "شاركت وزارة التعليم في معرض التعليم بجناح متكامل استعرض أبرز مبادراتها وبرامجها والتقنيات الداعمة للعملية التعليمية. نفّذنا الجناح.",
+      en: "The Ministry of Education took part in the Education Exhibition with a full stand presenting its leading initiatives, programs, and the technologies behind them. We delivered the stand.",
+    },
+    types: [{ ar: "جناح معرض", en: "Exhibition stand" }],
+    scope: [{ ar: "تنفيذ", en: "Delivery" }],
+  },
+  {
+    slug: 'ministry-of-culture',
+    image: 'saudi-cup',
+    category: 'exhibitions',
+    client: "وزارة الثقافة",
+    title: {
+      ar: "وزارة الثقافة — أربعة مشاريع",
+      en: "Ministry of Culture — Four Projects",
+    },
+    text: {
+      ar: "أربعة مشاريع مع وزارة الثقافة عبر أربعة أنواع مختلفة من الأحداث — حدث رياضي ومعرض ومهرجان وفعالية.",
+      en: "Four projects with the Ministry of Culture across four different event types — a sporting event, an exhibition, a festival, and a corporate event.",
+    },
+    types: [{ ar: "حدث رياضي", en: "Sporting event" }, { ar: "جناح معرض", en: "Exhibition stand" }, { ar: "مهرجان", en: "Festival" }, { ar: "فعالية", en: "Event" }],
+    scope: [{ ar: "تصميم", en: "Design" }, { ar: "تنفيذ", en: "Delivery" }, { ar: "هدايا", en: "Gifts" }, { ar: "مضيفون", en: "Hosts" }],
+    featured: true,
+    parts: [
+      {
+        title: { ar: "كأس السعودية", en: "The Saudi Cup" },
+        image: 'saudi-cup',
+        text: {
+          ar: "أحد أبرز الأحداث الرياضية في المملكة. صمّمنا تجهيزات الحدث ونفّذناها بالكامل.",
+          en: "One of the Kingdom's landmark sporting events. We designed and delivered the full event build.",
+        },
+        scope: [{ ar: "حدث رياضي", en: "Sporting event" }, { ar: "تصميم", en: "Design" }, { ar: "تنفيذ", en: "Delivery" }],
+      },
+      {
+        title: { ar: "معرض الكتاب", en: "The Book Fair" },
+        image: 'book-fair',
+        text: {
+          ar: "جناح الوزارة في معرض الكتاب: مساحات تحتفي بالمحتوى وتُيسّر حركة الزوار. صمّمناه ونفّذناه، ووفّرنا الهدايا والمضيفين.",
+          en: "The Ministry's stand at the Book Fair: spaces that celebrate content and ease visitor flow. We designed and delivered it, and supplied gifts and hosts.",
+        },
+        scope: [{ ar: "جناح معرض", en: "Exhibition stand" }, { ar: "تصميم", en: "Design" }, { ar: "تنفيذ", en: "Delivery" }, { ar: "هدايا", en: "Gifts" }, { ar: "مضيفون", en: "Hosts" }],
+      },
+      {
+        title: { ar: "مهرجان الكليجا", en: "Kleija Festival" },
+        image: 'kleija',
+        text: {
+          ar: "مهرجان بهوية مكانية تحتفي بالموروث وتجربة عائلية تنتقل بين الأجنحة والمسرح ومناطق التفاعل. صمّمناه ونفّذناه، ووفّرنا الهدايا والمضيفين.",
+          en: "A festival with a sense of place that celebrates heritage, and a family experience moving between stalls, stage, and interaction zones. We designed and delivered it, and supplied gifts and hosts.",
+        },
+        scope: [{ ar: "مهرجان", en: "Festival" }, { ar: "تصميم", en: "Design" }, { ar: "تنفيذ", en: "Delivery" }, { ar: "هدايا", en: "Gifts" }, { ar: "مضيفون", en: "Hosts" }],
+      },
+      {
+        title: { ar: "يوم خصوصية البيانات", en: "Data Privacy Day" },
+        image: 'data-privacy',
+        text: {
+          ar: "فعالية توعوية بمناطق تفاعلية قرّبت موضوعًا تقنيًا من جمهور واسع. صمّمناها ونفّذناها.",
+          en: "An awareness event with interaction zones that made a technical subject accessible to a broad audience. We designed and delivered it.",
+        },
+        scope: [{ ar: "فعالية", en: "Event" }, { ar: "تصميم", en: "Design" }, { ar: "تنفيذ", en: "Delivery" }],
+      },
+    ],
+  },
+  {
+    slug: 'saso-boulevard-city',
+    image: 'saso',
+    category: 'exhibitions',
+    client: "الهيئة السعودية للمواصفات والمقاييس والجودة",
+    title: {
+      ar: "الهيئة السعودية للمواصفات — بوليفارد سيتي",
+      en: "SASO — Boulevard City",
+    },
+    text: {
+      ar: "حضرت الهيئة السعودية للمواصفات والمقاييس والجودة في بوليفارد سيتي بالرياض بجناح يوصل رسائل الجودة والمطابقة إلى جمهور عام. صمّمنا الجناح ونفّذناه — بناء في وجهة مفتوحة لا في قاعة معارض، بمتطلبات تركيب وسلامة مختلفة.",
+      en: "The Saudi Standards, Metrology and Quality Organization was present at Boulevard City, Riyadh, with a stand carrying quality and conformity messages to a general audience. We designed and delivered it — a build in an open destination rather than an exhibition hall, with a different set of installation and safety requirements.",
+    },
+    types: [{ ar: "جناح", en: "Stand" }],
+    scope: [{ ar: "تصميم", en: "Design" }, { ar: "تنفيذ", en: "Delivery" }],
     featured: true,
   },
   {
-    slug: 'hayat-mall',
-    image: 'hayat-mall',
-    client: { ar: 'حياة مول', en: 'Hayat Mall' },
-    title:  { ar: 'تفعيل موسمي', en: 'Seasonal Activation' },
-    year: null,
-    location: { ar: 'الرياض', en: 'Riyadh' },
-    tags: [
-      { ar: 'تفعيل تجاري', en: 'Retail activation' },
-      { ar: 'موسمي',       en: 'Seasonal' },
-    ],
-    text: {
-      ar: 'تفعيل موسمي في حياة مول بالرياض يجمع بين التصميم الجاذب وإدارة تدفق الزوار وتجربة عائلية آمنة وسلسة.',
-      en: 'A seasonal activation at Hayat Mall, Riyadh — attention-grabbing design with visitor-flow management for a safe, seamless family experience.',
+    slug: 'snood-hotels',
+    image: null,
+    category: 'exhibitions',
+    client: "فنادق سنود",
+    title: {
+      ar: "فنادق سنود — أربع مشاركات في ثلاث سنوات",
+      en: "Snood Hotels — Four Participations in Three Years",
     },
+    text: {
+      ar: "شراكة ممتدة مع فنادق سنود عبر أربع مشاركات في ثلاث سنوات، امتدّت عبر تغيير هوية العميل: نسختان من معرض الحج والعمرة بجدة سوبر دوم — تضمّنت نسخة 2025 تدشينًا — ونسختان من منتدى العمرة والزيارة. صمّمنا الأجنحة الأربعة ونفّذناها، ونال جناح 2026 جائزة أفضل جناح في المنتدى.",
+      en: "An extended partnership with Snood Hotels across four participations in three years, spanning a change in the client's brand identity: two editions of the Hajj & Umrah Expo at Jeddah Super Dome — the 2025 edition including a launch — and two editions of the Umrah & Ziyarah Forum. We designed and delivered all four stands, and the 2026 stand was awarded Best Booth at the forum.",
+    },
+    types: [{ ar: "جناح معرض", en: "Exhibition stand" }],
+    scope: [{ ar: "تصميم", en: "Design" }, { ar: "تنفيذ", en: "Delivery" }, { ar: "تدشين", en: "Launch" }],
+    award: { ar: "جائزة أفضل جناح · منتدى العمرة والزيارة 2026", en: 'Best Booth · Umrah & Ziyarah Forum 2026' },
+    parts: [
+      {
+        title: { ar: "معرض الحج والعمرة — جدة سوبر دوم", en: "Hajj & Umrah Expo — Jeddah Super Dome" },
+        group: { ar: "الهوية القديمة", en: "Previous identity" },
+        scope: [{ ar: "تصميم", en: "Design" }, { ar: "تنفيذ", en: "Delivery" }],
+      },
+      {
+        title: { ar: "منتدى العمرة والزيارة", en: "Umrah & Ziyarah Forum" },
+        scope: [{ ar: "تصميم", en: "Design" }, { ar: "تنفيذ", en: "Delivery" }],
+      },
+      {
+        title: { ar: "معرض الحج والعمرة — جدة سوبر دوم", en: "Hajj & Umrah Expo — Jeddah Super Dome" },
+        group: { ar: "الهوية الجديدة", en: "New identity" },
+        scope: [{ ar: "تصميم", en: "Design" }, { ar: "تنفيذ", en: "Delivery" }, { ar: "تدشين", en: "Launch" }],
+      },
+      {
+        title: { ar: "منتدى العمرة والزيارة", en: "Umrah & Ziyarah Forum" },
+        award: { ar: "جائزة أفضل جناح", en: "Best Booth" },
+        scope: [{ ar: "تصميم", en: "Design" }, { ar: "تنفيذ", en: "Delivery" }],
+      },
+    ],
   },
   {
-    slug: 'retal-annual-ceremony',
-    image: 'retal',
-    client: { ar: 'رتال العقارية', en: 'Retal' },
-    title:  { ar: 'الحفل السنوي', en: 'Annual Ceremony' },
-    year: null, location: null,
-    tags: [
-      { ar: 'فعالية شركات', en: 'Corporate event' },
-      { ar: 'متكامل',       en: 'End-to-end' },
-    ],
-    text: {
-      ar: 'تولّينا تصميم وتنفيذ وإدارة حفل رتال السنوي، بتخطيط دقيق لكل التفاصيل وتنفيذ صنع تجربة لا تُنسى للحضور.',
-      en: "We designed, delivered, and managed Retal's annual ceremony — planned in detail and executed to create a memorable experience for guests.",
+    slug: 'btc-networks-black-hat',
+    image: null,
+    category: 'exhibitions',
+    client: "بُعد للاتصالات",
+    title: {
+      ar: "بُعد للاتصالات — معرض Black Hat",
+      en: "BTC Networks — Black Hat MEA",
     },
-    featured: true,
+    text: {
+      ar: "شاركت بُعد للاتصالات في معرض Black Hat بالرياض، أكبر تجمّع للأمن السيبراني في المنطقة. صمّمنا جناحها ونفّذناه بشاشات منحنية، مع الضيافة والتغطية الإعلامية.",
+      en: "BTC Networks took part in Black Hat MEA in Riyadh, the region's largest cybersecurity gathering. We designed and delivered their stand with curved screens, plus hospitality and media coverage.",
+    },
+    types: [{ ar: "جناح معرض", en: "Exhibition stand" }],
+    scope: [{ ar: "تصميم", en: "Design" }, { ar: "تنفيذ", en: "Delivery" }, { ar: "ضيافة", en: "Hospitality" }, { ar: "تغطية إعلامية", en: "Media coverage" }, { ar: "شاشات منحنية", en: "Curved screens" }],
+  },
+  {
+    slug: 'mindware-black-hat',
+    image: null,
+    category: 'exhibitions',
+    client: "مايندوير",
+    title: {
+      ar: "مايندوير — معرض Black Hat",
+      en: "Mindware — Black Hat MEA",
+    },
+    text: {
+      ar: "شاركت مايندوير في معرض Black Hat 2023 بالرياض بجناح عرضت فيه حلولها في الأمن السيبراني. نفّذنا الجناح — ثاني جناح ننفّذه في هذا المعرض.",
+      en: "Mindware took part in Black Hat MEA 2023 in Riyadh with a stand presenting its cybersecurity solutions. We delivered it — the second stand we have built at this show.",
+    },
+    types: [{ ar: "جناح معرض", en: "Exhibition stand" }],
+    scope: [{ ar: "تنفيذ", en: "Delivery" }],
   },
   {
     slug: 'nova-medical',
     image: 'nova-medical',
-    client: { ar: 'نوفا الطبية', en: 'Nova Medical' },
-    title:  { ar: 'جناح معرض الطب التجميلي', en: 'Aesthetic Medicine Exhibition Stand' },
-    year: null, location: null,
-    tags: [{ ar: 'جناح معرض', en: 'Exhibition stand' }],
-    text: {
-      ar: 'جناح نوفا لطب الأسنان في معرض الطب التجميلي: استعراض أحدث تقنيات المجال بحلول عرض مبتكرة تعزز حضور العلامة.',
-      en: "Nova Dental's stand at the Aesthetic Medicine Exhibition: the field's latest techniques presented through inventive display solutions that elevate the brand.",
+    category: 'exhibitions',
+    client: "نوفا الطبية",
+    title: {
+      ar: "نوفا الطبية",
+      en: "Nova Medical",
     },
+    text: {
+      ar: "شاركت نوفا لطب الأسنان في معرض الطب التجميلي بجناح استعرضت فيه أحدث تقنيات المجال. نفّذنا الجناح.",
+      en: "Nova Dental took part in the Aesthetic Medicine Exhibition with a stand presenting the field's latest techniques. We delivered it.",
+    },
+    types: [{ ar: "جناح معرض", en: "Exhibition stand" }],
+    scope: [{ ar: "تنفيذ", en: "Delivery" }],
   },
   {
-    slug: 'sinclair-riyadh',
-    image: 'sinclair',
-    client: { ar: 'سنكلير', en: 'Sinclair' },
-    title:  { ar: 'مؤتمر الرياض', en: 'Riyadh Conference' },
-    year: null,
-    location: { ar: 'الرياض', en: 'Riyadh' },
-    tags: [
-      { ar: 'مؤتمر', en: 'Conference' },
-      { ar: 'تجهيز', en: 'Build' },
+    slug: 'sera-leap',
+    image: null,
+    category: 'exhibitions',
+    client: "سيرا",
+    title: {
+      ar: "سيرا — مؤتمر LEAP",
+      en: "Sera — LEAP",
+    },
+    text: {
+      ar: "شاركت سيرا في مؤتمر LEAP 2023 بمركز الرياض فرونت، وعرضت حلولها في السفر والسياحة. نفّذنا جناحها.",
+      en: "Sera took part in LEAP 2023 at Riyadh Front Exhibition Center, presenting its travel and tourism solutions. We delivered their stand.",
+    },
+    types: [{ ar: "جناح معرض", en: "Exhibition stand" }],
+    scope: [{ ar: "تنفيذ", en: "Delivery" }],
+  },
+  {
+    slug: 'trax',
+    image: null,
+    category: 'exhibitions',
+    client: "تراكس",
+    title: {
+      ar: "تراكس — أحد معارض الرياض",
+      en: "TRAX — Riyadh Exhibition",
+    },
+    text: {
+      ar: "شاركت تراكس في أحد معارض الرياض بجناح عرضت فيه حلولها في التحول الرقمي والاستشارات التقنية. نفّذنا الجناح.",
+      en: "TRAX took part in a Riyadh exhibition with a stand presenting its digital-transformation and technology-consulting solutions. We delivered it.",
+    },
+    types: [{ ar: "جناح معرض", en: "Exhibition stand" }],
+    scope: [{ ar: "تنفيذ", en: "Delivery" }],
+  },
+  {
+    slug: 'hayat-mall',
+    image: 'hayat-mall',
+    category: 'exhibitions',
+    client: "حياة مول",
+    title: {
+      ar: "حياة مول — مشروعان",
+      en: "Hayat Mall — Two Projects",
+    },
+    text: {
+      ar: "مشروعان مع إدارة حياة مول بالرياض: جناح موسمي، وتجهيزات رمضان. نفّذنا الاثنين.",
+      en: "Two projects with Hayat Mall management in Riyadh: a seasonal stand, and the Ramadan build. We delivered both.",
+    },
+    types: [{ ar: "جناح", en: "Stand" }],
+    scope: [{ ar: "تنفيذ", en: "Delivery" }],
+    parts: [
+      {
+        title: { ar: "جناح موسمي", en: "Seasonal stand" },
+        text: {
+          ar: "جناح بتخطيط لحركة الزوار يناسب مساحة تجارية مفتوحة.",
+          en: "A stand with visitor-flow planning suited to an open retail space.",
+        },
+        scope: [{ ar: "تنفيذ", en: "Delivery" }],
+      },
+      {
+        title: { ar: "تجهيزات رمضان", en: "Ramadan build" },
+        text: {
+          ar: "تجهيز المول لموسم رمضان.",
+          en: "The mall's Ramadan seasonal build.",
+        },
+        scope: [{ ar: "تنفيذ", en: "Delivery" }],
+      },
     ],
+  },
+  {
+    slug: 'regional-hq-dialogues',
+    image: null,
+    category: 'conferences',
+    client: "برنامج المقرات الإقليمية",
+    title: {
+      ar: "برنامج المقرات الإقليمية — الحوارات",
+      en: "Saudi Regional Headquarters Program — Dialogues",
+    },
     text: {
-      ar: 'مؤتمر متخصص لعلامة سنكلير في الرياض: جلسات وورش عمل وبيئة عرض أنيقة تليق بقطاع التجميل الطبي.',
-      en: 'A specialist conference for Sinclair in Riyadh — sessions, workshops, and a refined environment for the medical aesthetics sector.',
+      ar: "حوارات برنامج المقرات الإقليمية. نفّذنا الفعالية.",
+      en: "The Saudi Regional Headquarters Program Dialogues. We delivered the event.",
     },
-  },
-]
-
-// «ومن أعمالنا أيضًا» — additional works listed by title only in the deck.
-export const additionalWorks = [
-  {
-    client: { ar: 'فنادق سنود', en: 'Snood Hotels' },
-    title:  { ar: 'معرض الحج والعمرة، جدة سوبر دوم', en: 'Hajj & Umrah Expo, Jeddah Super Dome' },
+    types: [{ ar: "فعالية", en: "Event" }],
+    scope: [{ ar: "تنفيذ", en: "Delivery" }],
   },
   {
-    client: { ar: 'فنادق سنود', en: 'Snood Hotels' },
-    title:  { ar: 'منتدى العمرة والزيارة', en: 'Umrah & Ziyarah Forum' },
-  },
-  {
-    client: { ar: 'سيرا', en: 'Sera' },
-    title:  { ar: 'مؤتمر LEAP 2023', en: 'LEAP 2023' },
-  },
-  {
-    client: { ar: 'مايندوير', en: 'Mindware' },
-    title:  { ar: 'معرض Black Hat 2023', en: 'Black Hat 2023' },
-  },
-  {
-    client: { ar: 'وزارة الصحة', en: 'Ministry of Health' },
-    title:  {
-      ar: 'جناح القطاع غير الربحي، معرض الصحة العالمي 2024',
-      en: 'Non-Profit Sector Pavilion, Global Health Exhibition 2024',
+    slug: 'tahakom-ceos-meeting',
+    image: 'tahakom',
+    category: 'conferences',
+    client: "شركة تحكم التقنية",
+    title: {
+      ar: "شركة تحكم التقنية — اجتماع الرؤساء التنفيذيين",
+      en: "Technology Control Company — CEOs Meeting",
     },
+    text: {
+      ar: "عقدت شركة تحكم التقنية اجتماع رؤسائها التنفيذيين في لقاء رفيع المستوى. صمّمنا الاجتماع ونفّذناه وشغّلناه، بالضيافة والهدايا، وبتشغيل يراعي خصوصية اللقاء.",
+      en: "Technology Control Company held its CEOs Meeting as a senior-level gathering. We designed, delivered, and ran it, with hospitality and gifts, and ran it with the discretion the meeting required.",
+    },
+    types: [{ ar: "اجتماع", en: "Meeting" }],
+    scope: [{ ar: "تصميم", en: "Design" }, { ar: "تنفيذ", en: "Delivery" }, { ar: "تشغيل", en: "Operations" }, { ar: "ضيافة", en: "Hospitality" }, { ar: "هدايا", en: "Gifts" }],
   },
   {
-    client: { ar: 'وزارة التعليم', en: 'Ministry of Education' },
-    title:  { ar: 'معرض التعليم', en: 'Education Exhibition' },
+    slug: 'investment-forum',
+    image: 'investment-forum',
+    category: 'conferences',
+    client: null,
+    title: {
+      ar: "الملتقى الدولي للاستثمار",
+      en: "International Investment Forum",
+    },
+    text: {
+      ar: "الملتقى الدولي للاستثمار في المملكة. نفّذنا أعمال تجهيز ضمن الملتقى.",
+      en: "The International Investment Forum in the Kingdom. We delivered build works within the forum.",
+    },
+    types: [{ ar: "مؤتمر", en: "Conference" }],
+    scope: [{ ar: "تنفيذ", en: "Delivery" }],
   },
   {
-    client: { ar: 'تراكس', en: 'TRAX' },
-    title:  { ar: 'الرياض', en: 'Riyadh' },
+    slug: 'sinclair',
+    image: 'sinclair',
+    category: 'conferences',
+    client: "سنكلير",
+    title: {
+      ar: "سنكلير — الرياض",
+      en: "Sinclair — Riyadh",
+    },
+    text: {
+      ar: "عقدت سنكلير مؤتمرًا متخصصًا في الرياض بجلسات وورش عمل في مجال التجميل الطبي. نفّذنا المؤتمر: قاعة الجلسات وورش العمل وبيئة العرض والضيافة.",
+      en: "Sinclair held a specialist conference in Riyadh with sessions and workshops in medical aesthetics. We delivered it: the session hall, the workshops, the presentation environment, and hospitality.",
+    },
+    types: [{ ar: "مؤتمر", en: "Conference" }],
+    scope: [{ ar: "تنفيذ", en: "Delivery" }],
+  },
+  {
+    slug: 'passports-founding-day',
+    image: null,
+    category: 'ceremonies',
+    client: "المديرية العامة للجوازات",
+    title: {
+      ar: "المديرية العامة للجوازات — يوم التأسيس",
+      en: "General Directorate of Passports — Founding Day",
+    },
+    text: {
+      ar: "احتفت المديرية العامة للجوازات بيوم التأسيس. صمّمنا الاحتفاء ونفّذناه وشغّلناه.",
+      en: "The General Directorate of Passports marked Founding Day. We designed, delivered, and ran the celebration.",
+    },
+    types: [{ ar: "احتفالية", en: "Celebration" }],
+    scope: [{ ar: "تصميم", en: "Design" }, { ar: "تنفيذ", en: "Delivery" }, { ar: "تشغيل", en: "Operations" }],
+  },
+  {
+    slug: 'tahakom-great-place-to-work',
+    image: null,
+    category: 'ceremonies',
+    client: "شركة تحكم التقنية",
+    title: {
+      ar: "شركة تحكم التقنية — حفل أفضل بيئة عمل",
+      en: "Technology Control Company — Great Place to Work",
+    },
+    text: {
+      ar: "احتفلت شركة تحكم التقنية بحصولها على اعتماد أفضل بيئة عمل. صمّمنا الحفل ونفّذناه وشغّلناه، بالضيافة والهدايا — ثاني عمل ننفّذه للشركة بعد اجتماع الرؤساء التنفيذيين.",
+      en: "Technology Control Company celebrated its Great Place to Work certification. We designed, delivered, and ran the event, with hospitality and gifts — our second delivery for the company after the CEOs Meeting.",
+    },
+    types: [{ ar: "احتفالية", en: "Celebration" }],
+    scope: [{ ar: "تصميم", en: "Design" }, { ar: "تنفيذ", en: "Delivery" }, { ar: "تشغيل", en: "Operations" }, { ar: "ضيافة", en: "Hospitality" }, { ar: "هدايا", en: "Gifts" }],
+  },
+  {
+    slug: 'media-excellence-award',
+    image: 'media-award',
+    category: 'ceremonies',
+    client: null,
+    title: {
+      ar: "جائزة التميز الإعلامي",
+      en: "Media Excellence Award",
+    },
+    text: {
+      ar: "جائزة سنوية تحتفي بالأعمال الإعلامية الإبداعية وتكرّم المؤسسات والشخصيات ذات الأثر، أُقيمت نسختها الخامسة بالشراكة مع برنامج تنمية القدرات البشرية. نفّذنا الحفل.",
+      en: "An annual award celebrating creative media work and honoring institutions and individuals of distinctive impact, its fifth edition held in partnership with the Human Capability Development Program. We delivered the ceremony.",
+    },
+    types: [{ ar: "حفل جوائز", en: "Awards ceremony" }],
+    scope: [{ ar: "تنفيذ", en: "Delivery" }],
+  },
+  {
+    slug: 'retal-annual-ceremony',
+    image: 'retal',
+    category: 'ceremonies',
+    client: "رتال العقارية",
+    title: {
+      ar: "رتال العقارية — الحفل السنوي",
+      en: "Retal — Annual Ceremony",
+    },
+    text: {
+      ar: "أقامت رتال العقارية حفلها السنوي. نفّذنا الحفل.",
+      en: "Retal held its annual ceremony. We delivered the event.",
+    },
+    types: [{ ar: "احتفالية", en: "Celebration" }],
+    scope: [{ ar: "تنفيذ", en: "Delivery" }],
+    featured: true,
+  },
+  {
+    slug: 'sab-founding-day',
+    image: 'sab-founding-day',
+    category: 'ceremonies',
+    client: "البنك الأول",
+    title: {
+      ar: "البنك الأول — يوم التأسيس",
+      en: "SAB — Founding Day",
+    },
+    text: {
+      ar: "احتفل البنك الأول بيوم التأسيس بتجربة تمزج الرموز التراثية بحضور العلامة. نفّذنا الاحتفال، بالضيافة والتوثيق البصري.",
+      en: "SAB marked Founding Day with an experience weaving heritage symbols into the bank's brand presence. We delivered it, with hospitality and visual documentation.",
+    },
+    types: [{ ar: "احتفالية", en: "Celebration" }],
+    scope: [{ ar: "تنفيذ", en: "Delivery" }],
   },
 ]
 
 export const workIntro = {
   eyebrow: { ar: 'أعمالنا', en: 'Our Work' },
   lead: {
-    ar: 'من كأس السعودية إلى المعارض الدولية، ومن أجنحة الوزارات إلى احتفالات الشركات: مشاريع نفخر بأن نرويها كما صنعناها.',
-    en: 'From the Saudi Cup to international exhibitions, ministry pavilions to corporate celebrations: projects we are proud to tell the way we built them.',
-  },
-  note: {
-    ar: 'كل مشروع في هذه الصفحات نُفِّذ بفريقنا الداخلي — تصميمًا وتصنيعًا وتشغيلًا.',
-    en: 'Every project on these pages was delivered by our in-house team — design, fabrication, and operations.',
+    ar: 'من كأس السعودية إلى المعارض الدولية، ومن أجنحة الوزارات إلى احتفالات الشركات.',
+    en: 'From the Saudi Cup to international exhibitions, from ministry pavilions to corporate celebrations.',
   },
 }
+

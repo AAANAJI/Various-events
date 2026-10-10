@@ -5,21 +5,34 @@
 export const brand = {
   name:     { ar: 'فاريوس لخدمات الفعاليات', en: 'VARIOUS for Events Services' },
   shortName:{ ar: 'فاريوس',                   en: 'VARIOUS' },
-  tagline:  { ar: 'نصنع تجارب تستحق أن تُروى.', en: 'We craft experiences worth telling.' },
+  tagline:  { ar: 'نصنع تجارب تستحق أن تُروى.', en: 'We build experiences worth telling.' },
+  // «شركة», not «مؤسسة» — the registered entity is a company (copy deck G2).
+  // The commercial registration number is deliberately not published on the
+  // website, by the client's instruction.
   legalName:{
-    ar: 'مؤسسة الفعاليات المتنوعة لتنظيم المعارض والمؤتمرات',
-    en: 'Various Events Est. for Exhibitions & Conferences Organization',
+    ar: 'شركة الفعاليات المتنوعة لتنظيم المعارض والمؤتمرات',
+    en: 'Various Events Company for Organizing Exhibitions and Conferences',
   },
-  cr: '1010960212',
 }
 
 export const contact = {
   phone:       '+966 55 051 1403',
   phoneHref:   '+966550511403',
+  // The same number takes WhatsApp. wa.me wants digits only, no plus.
+  whatsappHref:'https://wa.me/966550511403',
   email:       'info@variousevent.com',
-  website:     'variouseventsksa.com',
-  websiteHref: 'https://variouseventsksa.com',
-  address: { ar: 'الرياض، المملكة العربية السعودية', en: 'Riyadh, Kingdom of Saudi Arabia' },
+  // variousevent.com — the deck's VARIOUSEVENTSKSA.COM was a typo (copy deck G3).
+  website:     'variousevent.com',
+  websiteHref: 'https://variousevent.com',
+  address: { ar: 'الرياض، المملكة العربية السعودية', en: 'Riyadh, Saudi Arabia' },
+  // Handles as given in the copy deck. The LinkedIn and YouTube URL forms
+  // (company page, @handle) are the platforms' current defaults.
+  social: [
+    { id: 'instagram', label: 'Instagram', handle: 'various_events_',    href: 'https://www.instagram.com/various_events_' },
+    { id: 'x',         label: 'X',         handle: 'various_event',      href: 'https://x.com/various_event' },
+    { id: 'linkedin',  label: 'LinkedIn',  handle: 'various-experience', href: 'https://www.linkedin.com/company/various-experience' },
+    { id: 'youtube',   label: 'YouTube',   handle: 'variousevents',      href: 'https://www.youtube.com/@variousevents' },
+  ],
 }
 
 // The site's information architecture. Each entry is a page; `children` become
@@ -32,24 +45,28 @@ export const nav = [
   {
     id: 'about', path: 'about', ar: 'من نحن', en: 'About',
     children: [
-      { id: 'about-index',    path: 'about',           ar: 'نبذة عن فاريوس',   en: 'Who we are' },
-      { id: 'about-vision',   path: 'about/vision',    ar: 'الرؤية والرسالة',  en: 'Vision & mission' },
-      { id: 'about-values',   path: 'about/values',    ar: 'قيمنا',            en: 'Our values' },
-      { id: 'about-founders', path: 'about/founders',  ar: 'كلمة المؤسسين',    en: 'From the founders' },
+      { id: 'about-index',  path: 'about',        ar: 'نبذة عن فاريوس',  en: 'Who we are' },
+      { id: 'about-vision', path: 'about/vision', ar: 'الرؤية والرسالة', en: 'Vision & mission' },
+      { id: 'about-values', path: 'about/values', ar: 'قيمنا',           en: 'Our values' },
     ],
   },
   {
     id: 'services', path: 'services', ar: 'خدماتنا', en: 'Services',
-    // Filled from content/services.mjs at build time so the menu and the
-    // service pages can never drift apart.
-    childrenFrom: 'services',
+    children: [
+      { id: 'services-index',  path: 'services',                   ar: 'خدماتنا',              en: 'Our services' },
+      { id: 'services-solutions', path: 'services/solutions',      ar: 'حلولنا',               en: 'Our solutions' },
+      { id: 'services-owners', path: 'services/exhibition-owners', ar: 'خدمات أصحاب المعارض', en: 'For exhibition owners' },
+    ],
   },
   { id: 'process', path: 'process', ar: 'منهجية العمل', en: 'How we work' },
   {
     id: 'work', path: 'work', ar: 'أعمالنا', en: 'Work',
+    // Category entries jump to their heading on the one work page.
     children: [
-      { id: 'work-index',   path: 'work',    ar: 'كل الأعمال',           en: 'All work' },
-      { id: 'work-sectors', path: 'sectors', ar: 'القطاعات التي نخدمها', en: 'Sectors we serve' },
+      { id: 'work-index',       path: 'work',                         ar: 'كل الأعمال',                   en: 'All work' },
+      { id: 'work-exhibitions', path: 'work', hash: 'exhibitions',    ar: 'المعارض والأجنحة',             en: 'Exhibitions & pavilions' },
+      { id: 'work-conferences', path: 'work', hash: 'conferences',    ar: 'المؤتمرات والاجتماعات',        en: 'Conferences & meetings' },
+      { id: 'work-ceremonies',  path: 'work', hash: 'ceremonies',     ar: 'الاحتفالات وفعاليات الشركات',  en: 'Ceremonies & corporate events' },
     ],
   },
   { id: 'clients', path: 'clients', ar: 'عملاؤنا', en: 'Clients' },
@@ -84,7 +101,6 @@ export const ui = {
   callUs:        { ar: 'اتصل بنا',                en: 'Call us' },
   emailUs:       { ar: 'راسلنا',                  en: 'Email us' },
   copyright:     { ar: 'جميع الحقوق محفوظة',      en: 'All rights reserved' },
-  crLabel:       { ar: 'س.ت',                     en: 'CR' },
   readMore:      { ar: 'اقرأ المزيد',             en: 'Read more' },
   links:         { ar: 'روابط',                   en: 'Links' },
   explore:       { ar: 'تصفح',                    en: 'Explore' },
@@ -94,29 +110,40 @@ export const ui = {
   relatedWork:   { ar: 'أعمال ذات صلة',           en: 'Related work' },
   whatWeDo:      { ar: 'ما نقوم به',              en: 'What this covers' },
   nextService:   { ar: 'الخدمة التالية',          en: 'Next service' },
-  seeSectors:    { ar: 'القطاعات التي نخدمها',    en: 'Sectors we serve' },
   seeWork:       { ar: 'شاهد أعمالنا',            en: 'See our work' },
   aboutUs:       { ar: 'المزيد عن فاريوس',        en: 'More about VARIOUS' },
   talkToUs:      { ar: 'تحدّث إلينا',             en: 'Talk to us' },
   pageOf:        { ar: 'من',                      en: 'of' },
+  whatsapp:      { ar: 'واتساب',                  en: 'WhatsApp' },
+  phoneWhatsapp: { ar: 'الهاتف والواتساب',        en: 'Phone & WhatsApp' },
+  followUs:      { ar: 'تابعنا',                  en: 'Follow us' },
+  company:       { ar: 'الشركة',                  en: 'Company' },
+  website:       { ar: 'الموقع الإلكتروني',       en: 'Website' },
+  address:       { ar: 'العنوان',                 en: 'Address' },
+  theme:         { ar: 'تبديل المظهر الفاتح والداكن', en: 'Switch light / dark appearance' },
+  themeLight:    { ar: 'المظهر الفاتح',           en: 'Light appearance' },
+  themeDark:     { ar: 'المظهر الداكن',           en: 'Dark appearance' },
+  relatedService:{ ar: 'أعمال ذات صلة',           en: 'See related work' },
+  solutions:     { ar: 'حلولنا',                  en: 'Our solutions' },
+  owners:        { ar: 'خدمات أصحاب المعارض',     en: 'For exhibition owners' },
+  inThisPage:    { ar: 'في هذه الصفحة',           en: 'On this page' },
+  projectPhotoSoon: { ar: 'صور المشروع قريبًا',   en: 'Project photography to follow' },
+  partsLabel:    { ar: 'المشاريع',                en: 'The projects' },
+  types:         { ar: 'نوع العمل',               en: 'Type of work' },
+  backToTop:     { ar: 'إلى أعلى الصفحة',         en: 'Back to top' },
 }
 
-const ARABIC_INDIC = '٠١٢٣٤٥٦٧٨٩'
-
 /**
- * Section numbering — zero-padded to two digits, as the deck sets it: ٠١ ٠٢ ٠٣.
- * The English edition keeps Latin digits.
+ * Every figure on the site uses Western digits — in the Arabic edition too —
+ * by the client's instruction, so the website and the printed profile match.
  */
-export function num(n, lang) {
-  const s = String(n).padStart(2, '0')
-  return lang === 'ar' ? s.replace(/\d/g, d => ARABIC_INDIC[Number(d)]) : s
+
+/** A sequence label, zero-padded: 01 02 03. */
+export function num(n) {
+  return String(n).padStart(2, '0')
 }
 
-/**
- * A quantity, not a label — so no zero padding, and grouped in thousands.
- * Arabic uses U+066C (٬) as its thousands separator, not the Latin comma.
- */
-export function figure(n, lang) {
-  const grouped = String(n).replace(/\B(?=(\d{3})+(?!\d))/g, lang === 'ar' ? '\u066C' : ',')
-  return lang === 'ar' ? grouped.replace(/\d/g, d => ARABIC_INDIC[Number(d)]) : grouped
+/** A quantity, not a label — no zero padding, grouped in thousands. */
+export function figure(n) {
+  return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ',')
 }

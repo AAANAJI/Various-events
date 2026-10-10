@@ -9,14 +9,11 @@ import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 import { LANGS, DIR, outDir, rootFrom, linkTo, esc, t, indexImages, widthsFor, walk } from './lib.mjs'
-import { nav as navSource, ui, brand, contact } from '../content/site.mjs'
+import { nav, ui } from '../content/site.mjs'
 import { projects } from '../content/projects.mjs'
-import { services } from '../content/services.mjs'
 import * as P from './pages.mjs'
-import { masthead, footer, resolveNav } from './components.mjs'
+import { masthead, footer } from './components.mjs'
 
-// Services drive their own sub-menu, so the menu and the pages cannot drift.
-const nav = resolveNav(navSource, { services })
 const sectionOf = id => nav.find(n => n.id === id)
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..')
@@ -33,8 +30,9 @@ cpSync(ASSETS, join(DIST, 'assets'), { recursive: true })
 indexImages(join(ASSETS, 'img'))
 
 // pattern.svg strokes with `currentColor` so it stays recolourable in the repo,
-// but it is referenced from an <img>, which cannot inherit colour. Bake the one
-// variant this dark-only site needs and ship that instead of both files.
+// but it is referenced from an <img>, which cannot inherit colour. Bake one
+// white variant and ship that instead of both files; the light theme inverts
+// it in CSS rather than fetching a second file.
 writeFileSync(
   join(DIST, 'assets/logo/pattern-white.svg'),
   readFileSync(join(ASSETS, 'logo/pattern.svg'), 'utf8').replaceAll('currentColor', '#ffffff'),
@@ -64,6 +62,7 @@ function document_({ route, lang, title, description, body, heroImage, heroSizes
 <meta name="description" content="${esc(description)}">
 <meta name="robots" content="${ROBOTS}">
 <meta name="theme-color" content="#0f1b28">
+<meta name="color-scheme" content="dark light">
 <meta property="og:type" content="website">
 <meta property="og:title" content="${esc(title)}">
 <meta property="og:description" content="${esc(description)}">
@@ -74,11 +73,12 @@ function document_({ route, lang, title, description, body, heroImage, heroSizes
 <link rel="preload" href="${esc(up)}assets/fonts/IBMPlexSansArabic-400.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="${esc(up)}assets/fonts/IBMPlexSansArabic-700.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="${esc(up)}css/site.css">
-<!-- Set synchronously, before first paint, so the stylesheet can hide the
-     elements the motion layer animates in without ever hiding them from a
-     visitor whose JavaScript never runs. site.js removes it again if GSAP
-     failed to load. -->
-<script>document.documentElement.classList.add('js')</script>
+<!-- Set synchronously, before first paint:
+     · \`js\` lets the stylesheet hide what the motion layer animates in, without
+       ever hiding it from a visitor whose JavaScript never runs. site.js
+       removes it again if GSAP failed to load.
+     · the saved theme, so a visitor who chose light never sees a dark flash. -->
+<script>(function(d){d.classList.add('js');try{var t=localStorage.getItem('various:theme');if(t==='light'||t==='dark')d.setAttribute('data-theme',t)}catch(e){}})(document.documentElement)</script>
 ${heroImage ? preloadHero(up, heroImage, heroSizes) : ''}
 </head>
 <body>
@@ -88,7 +88,7 @@ ${masthead(route, lang, nav)}
 <div data-top-sentinel aria-hidden="true"></div>
 ${body}
 </main>
-${footer(route, lang, { contact, ui, nav })}
+${footer(route, lang, { nav })}
 <script src="${esc(up)}assets/js/gsap.min.js" defer></script>
 <script src="${esc(up)}assets/js/ScrollTrigger.min.js" defer></script>
 <script src="${esc(up)}js/site.js" defer></script>
@@ -117,21 +117,15 @@ function routes() {
     { route: 'about',          render: (r, l) => P.aboutIndex(r, l, sectionOf('about')) },
     { route: 'about/vision',   render: (r, l) => P.aboutVision(r, l, sectionOf('about')) },
     { route: 'about/values',   render: (r, l) => P.aboutValues(r, l, sectionOf('about')) },
-    { route: 'about/founders', render: (r, l) => P.aboutFounders(r, l, sectionOf('about')) },
     { route: 'services',       render: (r, l) => P.servicesIndex(r, l, sectionOf('services')) },
+    { route: 'services/solutions',         render: (r, l) => P.solutionsPage(r, l, sectionOf('services')) },
+    { route: 'services/exhibition-owners', render: (r, l) => P.ownersPage(r, l, sectionOf('services')) },
     { route: 'process',        render: P.process },
     { route: 'work',           render: (r, l) => P.work(r, l, sectionOf('work')) },
-    { route: 'sectors',        render: (r, l) => P.sectorsPage(r, l, sectionOf('work')) },
     { route: 'clients',        render: P.clientsPage },
     { route: 'contact',        render: P.contactPage },
     { route: '404',            render: P.notFound },
   ]
-  services.forEach((s, i) => {
-    list.push({
-      route: `services/${s.slug}`,
-      render: (r, l) => P.servicePage(r, l, s, services[i - 1] ?? null, services[i + 1] ?? null, sectionOf('services')),
-    })
-  })
   projects.forEach((p, i) => {
     list.push({
       route: `work/${p.slug}`,

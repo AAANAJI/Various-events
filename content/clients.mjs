@@ -1,34 +1,32 @@
-// Client names as listed in the profile deck. The deck's own slide is a logo grid
-// awaiting artwork — no logo files were supplied, so the site presents the names
-// typographically instead. Order follows the deck.
-//
-// Two entries on the source slide were placeholders rather than clients
-// («شريك — تأكيد الإدراج» and «إضافات») and are deliberately not carried over.
+// Client names, in the order of the client's approved copy deck. No logo files
+// have been supplied yet (vector logos are requested), so the website sets the
+// names as a typographic roster and the profile reserves a logo slot per
+// project — a deliberate treatment rather than an empty logo grid.
 
 export const clients = [
-  { ar: 'وزارة الثقافة',                       en: 'Ministry of Culture' },
-  { ar: 'وزارة الصحة',                         en: 'Ministry of Health' },
-  { ar: 'وزارة التعليم',                       en: 'Ministry of Education' },
-  { ar: 'أرامكو السعودية',                     en: 'Saudi Aramco' },
-  { ar: 'البنك الأول',                         en: 'SAB' },
-  { ar: 'سبل',                                 en: 'SPL' },
-  { ar: 'تحكم',                                en: 'Tahakom' },
-  { ar: 'الهيئة السعودية للمواصفات والمقاييس والجودة', en: 'SASO' },
-  { ar: 'صندوق الوقف الصحي',                   en: 'Health Endowment Fund' },
-  { ar: 'برنامج تنمية القدرات البشرية',        en: 'Human Capability Development Program' },
-  { ar: 'رتال العقارية',                       en: 'Retal' },
-  { ar: 'حياة مول',                            en: 'Hayat Mall' },
-  { ar: 'فنادق سنود',                          en: 'Snood Hotels' },
-  { ar: 'سيرا',                                en: 'Sera' },
-  { ar: 'مايندوير',                            en: 'Mindware' },
-  { ar: 'نوفا الطبية',                         en: 'Nova Medical' },
-  { ar: 'سنكلير',                              en: 'Sinclair' },
-  { ar: 'تراكس',                               en: 'TRAX' },
-  { ar: 'ميديا آي دي',                         en: 'Media ID' },
-  { ar: 'بروكن برودكشن',                       en: 'Broken Production' },
-  { ar: 'سترونج ستيل',                         en: 'Strong Steel' },
-  { ar: 'رواق المعمارية',                      en: 'Rewaq Architecture' },
-  { ar: 'لواسيس شوكولا',                       en: "L'Oasis Chocolate" },
+  { ar: 'وزارة الثقافة',                                en: 'Ministry of Culture' },
+  { ar: 'وزارة الصحة',                                  en: 'Ministry of Health' },
+  { ar: 'وزارة التعليم',                                en: 'Ministry of Education' },
+  { ar: 'المديرية العامة للجوازات',                      en: 'General Directorate of Passports' },
+  { ar: 'الهيئة السعودية للمواصفات والمقاييس والجودة',    en: 'SASO' },
+  { ar: 'صندوق الوقف الصحي',                            en: 'Health Endowment Fund' },
+  { ar: 'برنامج تنمية القدرات البشرية',                  en: 'Human Capability Development Program' },
+  { ar: 'برنامج المقرات الإقليمية',                      en: 'Saudi Regional Headquarters Program' },
+  { ar: 'شركة تحكم التقنية',                            en: 'Technology Control Company' },
+  { ar: 'سبل',                                          en: 'SPL' },
+  { ar: 'البنك الأول',                                  en: 'SAB' },
+  { ar: 'العبيكان',                                     en: 'Obeikan' },
+  { ar: 'بُعد للاتصالات',                               en: 'BTC Networks' },
+  { ar: 'رتال العقارية',                                en: 'Retal' },
+  { ar: 'حياة مول',                                     en: 'Hayat Mall' },
+  { ar: 'فنادق سنود',                                   en: 'Snood Hotels' },
+  { ar: 'سيرا',                                         en: 'Sera' },
+  { ar: 'مايندوير',                                     en: 'Mindware' },
+  { ar: 'نوفا الطبية',                                  en: 'Nova Medical' },
+  { ar: 'سنكلير',                                       en: 'Sinclair' },
+  { ar: 'تراكس',                                        en: 'TRAX' },
+  { ar: 'ميديا آي دي',                                  en: 'Media ID' },
+  { ar: 'لواسيس شوكولا',                                en: "L'Oasis Chocolate" },
 ]
 
 export const clientsIntro = {

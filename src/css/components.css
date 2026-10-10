@@ -2,12 +2,6 @@
    Components
    ───────────────────────────────────────────────────────────────────────── */
 
-/* ── Bilingual heading pair ───────────────────────────────────────────────
-   Arabic leads at full size; English follows beneath, smaller and muted.
-   This pairing is the deck's core typographic idea and it repeats everywhere. */
-.pair__lead { display: block; color: var(--text-strong); }
-/* Arabic never takes tracking or a case transform — both break the script. */
-
 .h1 { font-size: var(--fs-h1); font-weight: 700; line-height: var(--lh-tight); }
 .h2 { font-size: var(--fs-h2); font-weight: 600; line-height: var(--lh-head); }
 .lead {
@@ -19,8 +13,6 @@
 .prose { max-inline-size: var(--measure); color: var(--text-body); }
 .prose p + p { margin-block-start: var(--sp-5); }
 .muted { color: var(--text-muted); }
-.faint { color: var(--text-faint); }
-.text-en { font-size: var(--fs-small); color: var(--text-muted); line-height: 1.7; }
 
 /* ── Buttons ─────────────────────────────────────────────────────────── */
 .btn {
@@ -39,24 +31,23 @@
 }
 .btn:active { transform: translateY(1px); }
 .btn__arrow { transition: transform var(--dur) var(--ease); flex: none; }
-/* The arrow leans toward the reading direction, so it flips under RTL. */
-[dir='rtl'] .btn__arrow { transform: scaleX(-1); }
-.btn:hover .btn__arrow { transform: translateX(4px); }
-[dir='rtl'] .btn:hover .btn__arrow { transform: scaleX(-1) translateX(4px); }
+/* A link arrow leans toward where the text is read to: left in Arabic, right
+   in English. */
+:lang(ar) .btn__arrow { transform: scaleX(-1); }
+.btn:hover .btn__arrow, .link-arrow:hover .btn__arrow { transform: translateX(4px); }
+:lang(ar) .btn:hover .btn__arrow, :lang(ar) .link-arrow:hover .btn__arrow { transform: scaleX(-1) translateX(4px); }
 
-.btn--primary { background: var(--lime-400); color: var(--ink-900); }
-.btn--primary:hover { background: var(--pale-300); }
+.btn--primary { background: var(--btn-bg); color: var(--btn-fg); }
+.btn--primary:hover { background: var(--btn-bg-hover); }
+[data-theme='light'] .btn--primary:hover { color: var(--white); }
+.scope-dark .btn--primary:hover { color: var(--ink-900); }
 .btn--ghost { border-color: var(--rule-strong); color: var(--text-strong); }
-.btn--ghost:hover { border-color: var(--lime-400); color: var(--lime-400); }
+.btn--ghost:hover { border-color: var(--accent); color: var(--accent); }
 
 .link-arrow {
   display: inline-flex; align-items: center; gap: var(--sp-2);
-  font-size: var(--fs-small); font-weight: 600; color: var(--lime-400);
+  font-size: var(--fs-small); font-weight: 600; color: var(--accent);
 }
-.link-arrow svg { transition: transform var(--dur) var(--ease); }
-[dir='rtl'] .link-arrow svg { transform: scaleX(-1); }
-.link-arrow:hover svg { transform: translateX(4px); }
-[dir='rtl'] .link-arrow:hover svg { transform: scaleX(-1) translateX(4px); }
 
 /* ── Hero ─────────────────────────────────────────────────────────────── */
 .hero {
@@ -66,16 +57,41 @@
   align-items: end;
   overflow: hidden;
   isolation: isolate;
+  background: var(--bg-deep);
 }
 .hero__media { position: absolute; inset: 0; z-index: -2; }
 .hero__media img { inline-size: 100%; block-size: 100%; object-fit: cover; }
 .hero__scrim { position: absolute; inset: 0; z-index: -1; background: var(--scrim-full); }
 .hero__body { padding-block: var(--sp-9) var(--sp-8); position: relative; }
-.hero__title { font-size: var(--fs-display); font-weight: 700; line-height: 1.1; }
+.hero__title { font-size: var(--fs-display); font-weight: 700; line-height: 1.1; max-inline-size: 18ch; }
+.hero .h1 { max-inline-size: 22ch; }
+.hero__sub { font-size: var(--fs-lead); color: var(--text-body); }
 .hero__actions { display: flex; flex-wrap: wrap; gap: var(--sp-4); margin-block-start: var(--sp-6); }
+.hero--page { min-block-size: clamp(24rem, 58vh, 36rem); }
+.hero--short { min-block-size: clamp(20rem, 46vh, 28rem); }
 
-/* ── Pause band ───────────────────────────────────────────────────────────
-   The deck's rhythm device: one sentence, large, over a landscape photograph. */
+/* The scroll cue: a down arrow at the foot of the opening photograph. */
+.scroll-cue {
+  position: absolute;
+  inset-block-end: var(--sp-6);
+  inset-inline-end: var(--gutter);
+  display: grid;
+  place-items: center;
+  inline-size: 48px;
+  block-size: 48px;
+  border: 1px solid var(--rule-strong);
+  border-radius: 50%;
+  color: var(--text-strong);
+  transition: border-color var(--dur-fast) var(--ease), color var(--dur-fast) var(--ease);
+}
+.scroll-cue:hover { border-color: var(--accent); color: var(--accent); }
+@media (prefers-reduced-motion: no-preference) {
+  .scroll-cue svg { animation: cue 2.4s var(--ease) infinite; }
+  @keyframes cue { 0%, 100% { transform: translateY(-3px); } 50% { transform: translateY(4px); } }
+}
+@media (max-width: 40rem) { .scroll-cue { display: none; } }
+
+/* ── Pause band ───────────────────────────────────────────────────────── */
 .pause {
   position: relative;
   display: grid;
@@ -84,6 +100,7 @@
   overflow: hidden;
   isolation: isolate;
   text-align: center;
+  background: var(--bg-deep);
 }
 .pause__media { position: absolute; inset: 0; z-index: -2; }
 .pause__media img { inline-size: 100%; block-size: 100%; object-fit: cover; }
@@ -94,39 +111,44 @@
 }
 .pause .rule { margin-inline: auto; }
 
+/* ── Split: copy beside a column of figures ───────────────────────────── */
+.split { display: grid; gap: var(--sp-7); align-items: start; }
+@media (min-width: 62rem) { .split { grid-template-columns: 1.5fr 1fr; gap: var(--sp-8); } }
+
 /* ── Project cards ───────────────────────────────────────────────────── */
-.work-grid {
-  display: grid;
-  gap: var(--sp-6);
-  grid-template-columns: 1fr;
-}
+.work-grid { display: grid; gap: var(--sp-7) var(--sp-5); grid-template-columns: 1fr; }
 @media (min-width: 40rem) { .work-grid { grid-template-columns: repeat(2, 1fr); } }
-@media (min-width: 68rem) { .work-grid { grid-template-columns: repeat(3, 1fr); gap: var(--sp-6) var(--sp-5); } }
+@media (min-width: 68rem) { .work-grid { grid-template-columns: repeat(3, 1fr); } }
 
 .card { position: relative; display: flex; flex-direction: column; }
 .card__media {
   position: relative;
   overflow: hidden;
-  background: var(--ink-700);
+  background: var(--surface);
   aspect-ratio: 4 / 3;
   margin-block-end: var(--sp-4);
 }
-.card__media img {
+.card__media img:not(.brand-panel *) {
   inline-size: 100%; block-size: 100%; object-fit: cover;
   transition: transform var(--dur-slow) var(--ease), filter var(--dur) var(--ease);
-  filter: saturate(0.92);
 }
-.card:hover .card__media img { transform: scale(1.04); filter: saturate(1.05); }
-.card__client {
-  font-size: var(--fs-micro); color: var(--text-eyebrow);
-  margin-block-end: var(--sp-2);
-}
+.card:hover .card__media > img { transform: scale(1.04); }
+.card__client { font-size: var(--fs-micro); color: var(--text-eyebrow); margin-block-end: var(--sp-2); font-weight: 600; }
 .card__title { font-size: var(--fs-h4); font-weight: 600; color: var(--text-strong); }
-/* The whole card is one hit target, but only the title is the link, so the
-   accessible name stays meaningful. */
+.card:hover .card__title { color: var(--accent); }
 .card__link::after { content: ''; position: absolute; inset: 0; }
 .card__link:focus-visible { outline: none; }
 .card__link:focus-visible::after { outline: var(--focus-ring); outline-offset: var(--focus-offset); }
+.card__award {
+  display: inline-flex;
+  margin-block-start: var(--sp-3);
+  padding: 2px var(--sp-3);
+  font-size: var(--fs-micro);
+  font-weight: 600;
+  color: var(--btn-fg);
+  background: var(--btn-bg);
+  border-radius: var(--radius);
+}
 
 .card__tags { display: flex; flex-wrap: wrap; gap: var(--sp-2); margin-block-start: var(--sp-3); }
 .tag {
@@ -137,40 +159,89 @@
   color: var(--text-muted);
 }
 
-/* Featured cards span two columns on wide screens, breaking the grid's rhythm
-   the way the deck alternates full-bleed and half-page project slides. */
-@media (min-width: 68rem) {
-  .card--featured { grid-column: span 2; }
-  .card--featured .card__media { aspect-ratio: 16 / 9; }
-  .card--featured .card__title { font-size: var(--fs-h3); }
+/* ── The brand panel: a project whose photographs are still to come ───── */
+.brand-panel {
+  position: relative;
+  display: grid;
+  place-items: center;
+  inline-size: 100%;
+  block-size: 100%;
+  min-block-size: 12rem;
+  overflow: hidden;
+  background: var(--ink-900) radial-gradient(120% 90% at 85% 15%, #17304a 0%, var(--ink-900) 70%);
+}
+.brand-panel__pattern {
+  position: absolute;
+  inline-size: 140%;
+  max-inline-size: none;
+  inset-block-start: -20%;
+  inset-inline-start: -10%;
+  opacity: 0.07;
+}
+.brand-panel__mark { position: relative; inline-size: 26%; max-inline-size: 9rem; }
+.brand-panel__label {
+  position: absolute;
+  inset-block-end: var(--sp-4);
+  inset-inline-start: var(--sp-4);
+  inset-inline-end: var(--sp-4);
+  font-size: var(--fs-micro);
+  font-weight: 600;
+  color: var(--sage-300);
 }
 
-/* ── Numbered list (values, method, why) ─────────────────────────────── */
+/* ── Titled blocks (values, why) ─────────────────────────────────────── */
 .numbered { display: grid; gap: var(--sp-6); }
 @media (min-width: 44rem) { .numbered { grid-template-columns: repeat(2, 1fr); gap: var(--sp-7) var(--sp-6); } }
-
+@media (min-width: 68rem) { .numbered--values { grid-template-columns: repeat(3, 1fr); } }
 .numbered__item { position: relative; padding-block-start: var(--sp-5); border-block-start: 1px solid var(--rule-hairline); }
-.numbered__title { font-size: var(--fs-h4); font-weight: 600; color: var(--text-strong); margin-block-end: var(--sp-3); }
-.numbered__text { font-size: var(--fs-small); color: var(--text-body); line-height: 1.75; }
+.numbered__item::before {
+  content: '';
+  position: absolute;
+  inset-block-start: -1px;
+  inset-inline-start: 0;
+  inline-size: 40px;
+  block-size: 3px;
+  background: var(--grad-rule);
+}
+.numbered__title { font-size: var(--fs-h3); font-weight: 600; color: var(--text-strong); margin-block-end: var(--sp-3); }
+.numbered__text { color: var(--text-body); line-height: 1.75; }
+
+/* ── The award strip ─────────────────────────────────────────────────── */
+.award {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-5);
+  padding: var(--sp-5) var(--sp-6);
+  border: 1px solid var(--rule-strong);
+  border-radius: var(--radius);
+  background: var(--bg-deep);
+}
+.award__mark {
+  flex: none;
+  display: grid;
+  place-items: center;
+  inline-size: 52px;
+  block-size: 52px;
+  border-radius: 50%;
+  background: var(--btn-bg);
+  color: var(--btn-fg);
+  font-size: 1.5rem;
+  line-height: 1;
+}
+.award__label { display: block; font-size: var(--fs-h4); color: var(--text-strong); }
+.award__text { display: block; color: var(--text-body); margin-block-start: var(--sp-1); }
 
 /* ── Stats ───────────────────────────────────────────────────────────── */
 .stats { display: grid; gap: var(--sp-5); grid-template-columns: repeat(2, 1fr); }
-@media (min-width: 52rem) { .stats { grid-template-columns: repeat(3, 1fr); gap: var(--sp-6); } }
-.stat { padding-block-start: var(--sp-4); border-block-start: 2px solid var(--rule-hairline); }
-.stat--known { border-block-start-color: var(--lime-400); }
+.stat { padding-block-start: var(--sp-4); border-block-start: 2px solid var(--accent); }
 .stat__value {
-  font-size: clamp(2.25rem, 1.6rem + 2.6vw, 3.5rem);
+  font-size: clamp(2.75rem, 2rem + 3vw, 4.5rem);
   font-weight: 700; line-height: 1; color: var(--text-strong);
   font-variant-numeric: tabular-nums;
-  display: flex; align-items: baseline; gap: 0.1em;
 }
-.stat--pending .stat__value { color: var(--text-faint); font-weight: 400; }
-.stat__unit { font-size: 0.42em; font-weight: 600; color: var(--lime-400); }
 .stat__label { font-size: var(--fs-small); color: var(--text-body); margin-block-start: var(--sp-3); }
 
-/* ── Client roster ───────────────────────────────────────────────────────
-   No logo files were supplied, so the names are set as a typographic roster —
-   a deliberate treatment rather than an empty logo grid. */
+/* ── Client roster ───────────────────────────────────────────────────── */
 .roster {
   display: grid; grid-template-columns: 1fr;
   border-block-start: 1px solid var(--rule-hairline);
@@ -179,83 +250,66 @@
 @media (min-width: 64rem) { .roster { grid-template-columns: repeat(3, 1fr); } }
 .roster__item {
   padding-block: var(--sp-5);
-  padding-inline-end: var(--sp-5);
+  padding-inline: var(--sp-3) var(--sp-5);
   border-block-end: 1px solid var(--rule-hairline);
-  display: flex; align-items: baseline; gap: var(--sp-4);
+  border-inline-start: 2px solid transparent;
+  transition: border-color var(--dur-fast) var(--ease);
 }
-.roster__name { font-size: var(--fs-h4); font-weight: 600; color: var(--text-strong); line-height: 1.4; }
-.roster__caption { display: block; font-size: var(--fs-micro); color: var(--text-faint); margin-block-start: var(--sp-2); }
-/* A linked name needs to look linkable before you hover it: its caption takes
-   the accent colour and a leading arrow, so the roster reads as a second index
-   into the work rather than a flat list with hidden behaviour. */
-.roster__link .roster__caption { color: var(--sage-300); }
-.roster__link .roster__caption::before {
-  content: '↳';
-  margin-inline-end: var(--sp-2);
-  color: var(--lime-400);
-}
+.roster__name { display: block; font-size: var(--fs-h4); font-weight: 600; color: var(--text-strong); line-height: 1.4; }
+.roster__caption { display: block; font-size: var(--fs-micro); font-weight: 400; color: var(--text-faint); margin-block-start: var(--sp-2); }
 .roster__link { display: block; transition: color var(--dur-fast) var(--ease); }
-.roster__link:hover { color: var(--lime-400); }
-/* A linked name earns the signature rule as its affordance. */
-.roster__item:has(.roster__link) { border-inline-start: 2px solid transparent; padding-inline-start: var(--sp-3); transition: border-color var(--dur-fast) var(--ease); }
-.roster__item:has(.roster__link:hover) { border-inline-start-color: var(--lime-400); }
+.roster__link + .roster__caption { color: var(--text-eyebrow); }
+.roster__link:hover { color: var(--accent); }
+.roster__item:has(.roster__link:hover) { border-inline-start-color: var(--accent); }
 
-/* ── Sector pills ────────────────────────────────────────────────────── */
-
-/* ── Project detail ────────────────────────────────────────────────────
-   The masthead is a split plate rather than a full-bleed band. Every project
-   master is between 899px and 1280px wide, so spanning the viewport upscaled
-   them 1.4x-3.2x. Here the media column is ~780px at the site's max width,
-   which every master covers at 1x or better — and the title and client sit
-   beside the photograph instead of below the fold. */
+/* ── Project detail ──────────────────────────────────────────────────── */
 .plate { display: grid; gap: var(--sp-6); align-items: center; }
-@media (min-width: 68rem) {
-  .plate { grid-template-columns: 1.35fr 1fr; gap: var(--sp-8); }
-}
-.plate__media { overflow: hidden; background: var(--ink-700); aspect-ratio: 4 / 3; }
-.plate__media img { inline-size: 100%; block-size: 100%; object-fit: cover; }
-.plate__client {
-  font-size: var(--fs-small); color: var(--text-eyebrow); margin-block-end: var(--sp-3);
-}
+@media (min-width: 68rem) { .plate { grid-template-columns: 1.35fr 1fr; gap: var(--sp-8); } }
+.plate__media { overflow: hidden; background: var(--surface); aspect-ratio: 4 / 3; }
+.plate__media > img { inline-size: 100%; block-size: 100%; object-fit: cover; }
+.plate__client { font-size: var(--fs-small); font-weight: 600; color: var(--text-eyebrow); margin-block-end: var(--sp-3); }
 
-/* Flex, not a fixed grid: most projects have only two of the four fields
-   confirmed, and a 4-column grid strands the rest as empty cells. The width cap
-   plus equal flex-basis means two items fill their block as convincingly as
-   four do, instead of huddling at the reading edge of a 1300px band. */
-.meta {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--sp-5) var(--sp-7);
-  max-inline-size: 64rem;
+.parts { display: grid; gap: var(--sp-7); }
+@media (min-width: 48rem) { .parts:not(:has(.part--media)) { grid-template-columns: repeat(2, 1fr); gap: var(--sp-6); } }
+.part { padding-block-start: var(--sp-5); border-block-start: 1px solid var(--rule-hairline); }
+.part--media { display: grid; gap: var(--sp-5); align-items: center; border: 0; padding: 0; }
+@media (min-width: 62rem) {
+  .part--media { grid-template-columns: 1fr 1fr; gap: var(--sp-8); }
+  .part--media:nth-child(even) .part__media { order: 2; }
 }
+.part__media { overflow: hidden; background: var(--surface); aspect-ratio: 4 / 3; }
+.part__media img { inline-size: 100%; block-size: 100%; object-fit: cover; }
+.part__group { font-size: var(--fs-micro); font-weight: 600; color: var(--text-eyebrow); margin-block-end: var(--sp-2); }
+.part__title { font-size: var(--fs-h3); font-weight: 600; color: var(--text-strong); }
+.part__text { color: var(--text-body); margin-block-start: var(--sp-3); max-inline-size: 52ch; }
+
+.meta { display: flex; flex-wrap: wrap; gap: var(--sp-5) var(--sp-7); }
 .meta > li {
-  flex: 1 1 12rem;
-  min-inline-size: 11rem;
+  flex: 1 1 14rem;
   padding-block-start: var(--sp-4);
   border-block-start: 1px solid var(--rule-hairline);
 }
-.meta__label {
-  font-size: var(--fs-micro); text-transform: uppercase; letter-spacing: var(--ls-eyebrow);
-  color: var(--text-eyebrow); margin-block-end: var(--sp-2);
-}
-.meta__value { font-size: var(--fs-small); color: var(--text-strong); font-weight: 600; }
+.meta__label { font-size: var(--fs-micro); color: var(--text-eyebrow); margin-block-end: var(--sp-2); }
+:lang(en) .meta__label { text-transform: uppercase; letter-spacing: var(--ls-eyebrow); }
+.meta__value { color: var(--text-strong); font-weight: 600; }
 
 .pager { display: flex; justify-content: space-between; gap: var(--sp-5); flex-wrap: wrap; }
-.pager__link { display: flex; flex-direction: column; gap: var(--sp-2); max-inline-size: 22rem; }
+.pager__link { display: flex; flex-direction: column; gap: var(--sp-2); max-inline-size: 24rem; }
+:lang(ar) .pager__link--next { text-align: end; }
 .pager__dir { font-size: var(--fs-micro); color: var(--text-eyebrow); }
 .pager__title { font-size: var(--fs-h4); font-weight: 600; color: var(--text-strong); }
-.pager__link:hover .pager__title { color: var(--lime-400); }
+.pager__link:hover .pager__title { color: var(--accent); }
 
 /* ── Contact ─────────────────────────────────────────────────────────── */
 .contact-grid { display: grid; gap: var(--sp-6); grid-template-columns: 1fr; }
 @media (min-width: 48rem) { .contact-grid { grid-template-columns: repeat(2, 1fr); } }
 .contact-item { padding-block-start: var(--sp-4); border-block-start: 1px solid var(--rule-hairline); }
-.contact-item__label {
-  font-size: var(--fs-micro); text-transform: uppercase; letter-spacing: var(--ls-eyebrow);
-  color: var(--text-eyebrow); margin-block-end: var(--sp-3);
-}
-.contact-item__value { font-size: var(--fs-h4); font-weight: 600; color: var(--text-strong); }
-.contact-item a:hover { color: var(--lime-400); }
+.contact-item--wide { grid-column: 1 / -1; }
+.contact-item__label { font-size: var(--fs-micro); color: var(--text-eyebrow); margin-block-end: var(--sp-3); }
+:lang(en) .contact-item__label { text-transform: uppercase; letter-spacing: var(--ls-eyebrow); }
+.contact-item__value { font-size: var(--fs-h3); font-weight: 600; color: var(--text-strong); }
+.contact-item__extra { margin-block-start: var(--sp-3); }
+.contact-item a:not(.social__link):hover { color: var(--accent); }
 
 /* ── The motion layer's starting state ────────────────────────────────────
    Guarded three ways, and all three have to hold before anything is hidden:
@@ -267,17 +321,16 @@
 @media (prefers-reduced-motion: no-preference) {
   .js [data-animate],
   .js [data-animate-group] > *,
-  .js [data-hero-item] { opacity: 0; }
-  /* The rule draws itself, so it starts at zero width rather than invisible. */
+  .js [data-hero-item],
+  .js [data-path] .path__node,
+  .js [data-path] .path__card { opacity: 0; }
+  /* Lines draw themselves, so they start at zero length rather than invisible. */
   .js .section .rule { transform: scaleX(0); }
+  .js [data-path] .path__line { transform: scaleY(0); }
+  .js [data-path] .path__arrow { opacity: 0; }
 }
 
-/* ─────────────────────────────────────────────────────────────────────────
-   Page components introduced by the multi-page architecture
-   ───────────────────────────────────────────────────────────────────────── */
-
-/* A single sentence carrying a section — the web equivalent of the deck's
-   statement slides, but sized to be read rather than projected. */
+/* A single sentence carrying a section. */
 .statement {
   font-size: var(--fs-h2);
   font-weight: 600;
@@ -289,86 +342,167 @@
 .prose--lead { font-size: var(--fs-lead); line-height: 1.75; color: var(--text-accent); }
 .prose--lead p + p { margin-block-start: var(--sp-5); }
 
-.hero--page { min-block-size: clamp(22rem, 56vh, 34rem); }
-.hero--short { min-block-size: clamp(19rem, 46vh, 28rem); }
-.hero__sub { font-size: var(--fs-lead); color: var(--text-body); }
-
-/* ── Service tiles (homepage) ─────────────────────────────────────────── */
+/* ── Tiles ───────────────────────────────────────────────────────────── */
 .tiles { display: grid; gap: 1px; background: var(--rule-hairline); border: 1px solid var(--rule-hairline); }
 @media (min-width: 40rem) { .tiles { grid-template-columns: repeat(2, 1fr); } }
 @media (min-width: 64rem) { .tiles { grid-template-columns: repeat(3, 1fr); } }
-.tile { background: var(--ink-900); }
+/* A short last row is closed up rather than left with empty cells. */
+@media (min-width: 40rem) and (max-width: 63.99rem) { .tile:last-child:nth-child(odd) { grid-column: 1 / -1; } }
+@media (min-width: 64rem) {
+  .tile:last-child:nth-child(3n + 1) { grid-column: 1 / -1; }
+  .tile:last-child:nth-child(3n + 2) { grid-column: span 2; }
+}
+.section--alt .tile { background: var(--bg-deep); }
+.tile { background: var(--bg); }
 .tile__link {
   display: block;
   block-size: 100%;
   padding: var(--sp-6) var(--sp-5);
   transition: background-color var(--dur-fast) var(--ease);
 }
-.tile__link:hover { background: var(--ink-700); }
+.tile__link:hover { background: var(--surface); }
 .tile__title { display: block; font-size: var(--fs-h4); font-weight: 600; color: var(--text-strong); }
+.tile__link:hover .tile__title { color: var(--accent); }
 .tile__lead { display: block; font-size: var(--fs-small); color: var(--text-muted); margin-block-start: var(--sp-3); line-height: 1.65; }
 
-/* ── Service rows (services index) ────────────────────────────────────── */
-.service-list { display: grid; gap: var(--sp-8); }
-.service-row { display: grid; gap: var(--sp-5); align-items: center; }
-@media (min-width: 62rem) {
-  .service-row { grid-template-columns: 0.85fr 1fr; gap: var(--sp-8); }
-  /* Alternate the media side so the page has a rhythm rather than a stack. */
-  .service-row:nth-child(even) .service-row__media { order: 2; }
-}
-.service-row__media { overflow: hidden; background: var(--ink-700); aspect-ratio: 4 / 3; }
-.service-row__media img { inline-size: 100%; block-size: 100%; object-fit: cover; transition: transform var(--dur-slow) var(--ease); }
-.service-row:hover .service-row__media img { transform: scale(1.03); }
-.service-row__title { font-size: var(--fs-h2); font-weight: 600; margin-block-start: var(--sp-3); }
-.service-row__title a { position: relative; }
-.service-row__title a::after { content: ''; position: absolute; inset: 0; }
-.service-row:hover .service-row__title { color: var(--lime-400); }
-.service-row__lead { font-size: var(--fs-lead); color: var(--text-body); margin-block-start: var(--sp-4); max-inline-size: 46ch; line-height: 1.6; }
+/* ── Services: the six kinds of event ────────────────────────────────── */
+.type-grid { display: grid; gap: var(--sp-6) var(--sp-5); grid-template-columns: 1fr; }
+@media (min-width: 40rem) { .type-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (min-width: 68rem) { .type-grid { grid-template-columns: repeat(3, 1fr); } }
+.type-card { position: relative; }
+.type-card__media { overflow: hidden; background: var(--surface); aspect-ratio: 4 / 3; margin-block-end: var(--sp-4); }
+.type-card__media img { inline-size: 100%; block-size: 100%; object-fit: cover; transition: transform var(--dur-slow) var(--ease); }
+.type-card:hover .type-card__media img { transform: scale(1.04); }
+.type-card__title { font-size: var(--fs-h3); font-weight: 600; }
+.type-card:hover .type-card__title { color: var(--accent); }
+.type-card__link::after { content: ''; position: absolute; inset: 0; }
+.type-card__more { display: inline-flex; align-items: center; gap: var(--sp-2); margin-block-start: var(--sp-2); font-size: var(--fs-small); font-weight: 600; color: var(--accent); }
+:lang(ar) .type-card__more .btn__arrow { transform: scaleX(-1); }
 
-.plate__lead { font-size: var(--fs-lead); color: var(--text-accent); line-height: 1.6; }
-
-/* ── Capability list ─────────────────────────────────────────────────── */
-.caps { display: grid; gap: var(--sp-4); margin-block-start: var(--sp-6); }
-@media (min-width: 44rem) { .caps { grid-template-columns: repeat(2, 1fr); gap: var(--sp-5) var(--sp-7); } }
-.cap {
-  display: flex; align-items: flex-start; gap: var(--sp-4);
-  padding-block-start: var(--sp-4);
-  border-block-start: 1px solid var(--rule-hairline);
-  font-size: var(--fs-body); color: var(--text-strong);
+.band {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-5);
+  margin-block-start: var(--sp-8);
+  padding: var(--sp-6);
+  border: 1px solid var(--rule-strong);
+  border-radius: var(--radius);
 }
-.cap__mark { flex: none; inline-size: 8px; block-size: 8px; margin-block-start: .55em; background: var(--grad-rule); }
+.band__title { font-size: var(--fs-h3); }
 
-/* ── Method steps ────────────────────────────────────────────────────── */
-.steps { display: grid; gap: var(--sp-7); counter-reset: step; }
-.step { display: grid; gap: var(--sp-4); grid-template-columns: auto 1fr; align-items: start; }
-.step__num {
-  font-size: var(--fs-h3); font-weight: 700; color: var(--lime-400);
-  font-variant-numeric: tabular-nums; line-height: 1.1;
-  min-inline-size: 3ch;
+.duo { display: grid; gap: var(--sp-8); }
+@media (min-width: 62rem) { .duo { grid-template-columns: repeat(2, 1fr); } }
+.duo__lead { font-size: var(--fs-lead); color: var(--text-accent); margin-block-end: var(--sp-5); max-inline-size: 40ch; }
+
+/* ── Chips: the service catalogues ───────────────────────────────────── */
+.chips { display: flex; flex-wrap: wrap; gap: var(--sp-2); }
+.chip {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--sp-1) var(--sp-4);
+  font-size: var(--fs-small);
+  line-height: 1.7;
+  color: var(--text-body);
+  border: 1px solid var(--rule-strong);
+  border-radius: 999px;
 }
-.step__body { padding-block-start: var(--sp-1); border-block-start: 1px solid var(--rule-hairline); padding-block-start: var(--sp-4); }
-.step__title { font-size: var(--fs-h3); font-weight: 600; color: var(--text-strong); }
-.step__text { font-size: var(--fs-body); color: var(--text-body); margin-block-start: var(--sp-3); max-inline-size: var(--measure); }
-.step__detail { font-size: var(--fs-small); color: var(--text-muted); margin-block-start: var(--sp-3); max-inline-size: var(--measure); font-style: italic; }
-:lang(ar) .step__detail { font-style: normal; padding-inline-start: var(--sp-4); border-inline-start: 2px solid var(--rule-hairline); }
+.chips--quiet .chip { font-size: var(--fs-micro); color: var(--text-muted); border-color: var(--rule-hairline); }
+.chip--link { transition: color var(--dur-fast) var(--ease), border-color var(--dur-fast) var(--ease), background-color var(--dur-fast) var(--ease); }
+.chip--link:hover { color: var(--btn-fg); background: var(--btn-bg); border-color: var(--btn-bg); }
+
+.catalogue { display: grid; gap: var(--sp-7) var(--sp-8); }
+@media (min-width: 62rem) { .catalogue { grid-template-columns: repeat(2, 1fr); } }
+.chip-group { padding-block-start: var(--sp-5); border-block-start: 1px solid var(--rule-hairline); position: relative; }
+.chip-group::before {
+  content: '';
+  position: absolute;
+  inset-block-start: -1px;
+  inset-inline-start: 0;
+  inline-size: 40px;
+  block-size: 3px;
+  background: var(--grad-rule);
+}
+.chip-group__title { font-size: var(--fs-h3); margin-block-end: var(--sp-4); }
+
+/* ── Work: category headings ─────────────────────────────────────────── */
+.cat-head { margin-block-end: var(--sp-7); }
+.cat-head__note { margin-block-start: var(--sp-3); color: var(--text-muted); max-inline-size: var(--measure); }
+
+/* ── The method path ─────────────────────────────────────────────────────
+   Numbered stations on a line, each joined to the next by an arrow pointing
+   down. On a phone the line runs down the reading edge with the stations
+   beside it; on a wide screen it runs down the middle and the stations
+   alternate either side, so the page reads as a route rather than a list. */
+.path { --node: 4rem; display: grid; max-inline-size: 68rem; margin-inline: auto; }
+.path__step {
+  position: relative;
+  display: grid;
+  grid-template-columns: var(--node) 1fr;
+  column-gap: var(--sp-5);
+  padding-block-end: var(--sp-8);
+}
+.path__step:last-child { padding-block-end: 0; }
+.path__node {
+  grid-column: 1;
+  grid-row: 1;
+  position: relative;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  inline-size: var(--node);
+  block-size: var(--node);
+  border-radius: 50%;
+  border: 2px solid var(--accent);
+  background: var(--bg);
+  color: var(--text-strong);
+  font-size: var(--fs-h4);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+.path__step:first-child .path__node { background: var(--btn-bg); color: var(--btn-fg); border-color: var(--btn-bg); }
+.path__card { grid-column: 2; grid-row: 1; padding-block-start: calc(var(--node) / 2 - 1.1em); }
+.path__title { font-size: var(--fs-h2); font-weight: 700; color: var(--text-strong); }
+.path__text { margin-block-start: var(--sp-3); color: var(--text-body); max-inline-size: 46ch; }
+.path__link {
+  position: absolute;
+  inset-block-start: var(--node);
+  /* Stop just short of the next station, so the arrow lands on it rather
+     than under it. */
+  inset-block-end: 6px;
+  inset-inline-start: calc(var(--node) / 2 - 1px);
+  inline-size: 2px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.path__line { flex: 1; inline-size: 2px; background: var(--grad-line); transform-origin: 50% 0; }
+.path__arrow { flex: none; color: var(--accent); line-height: 0; margin-block-start: -6px; }
+/* The arrow is wider than the 2px line it sits on; the global svg cap at
+   100% would squeeze it to nothing. */
+.path__arrow svg { inline-size: 22px; block-size: 22px; max-width: none; }
+
+@media (min-width: 56rem) {
+  .path { --node: 5rem; }
+  .path__step { grid-template-columns: 1fr var(--node) 1fr; column-gap: var(--sp-7); padding-block-end: var(--sp-6); }
+  .path__node { grid-column: 2; }
+  .path__step:nth-child(odd)  .path__card { grid-column: 1; }
+  .path__step:nth-child(even) .path__card { grid-column: 3; }
+  .path__link { inset-inline-start: calc(50% - 1px); inset-block-end: calc(var(--sp-6) + 6px); }
+  /* Stations on alternate sides can tuck under one another. */
+  .path__step + .path__step { margin-block-start: calc(var(--sp-6) * -1); }
+  .path__step { padding-block-end: calc(var(--sp-6) + var(--sp-8)); }
+  .path__step:last-child { padding-block-end: 0; }
+}
 
 /* ── Vision / mission cards ──────────────────────────────────────────── */
 .statement-pair { display: grid; gap: var(--sp-6); }
 @media (min-width: 52rem) { .statement-pair { grid-template-columns: repeat(2, 1fr); gap: var(--sp-7); } }
-.statement-card { padding-block-start: var(--sp-5); border-block-start: 2px solid var(--lime-400); }
-.statement-card__text { font-size: var(--fs-h3); font-weight: 600; color: var(--text-strong); line-height: 1.5; }
-
-/* ── Founders' quote ─────────────────────────────────────────────────── */
-.quote { font-size: var(--fs-lead); line-height: 1.8; color: var(--text-accent); max-inline-size: var(--measure); }
-.quote p + p { margin-block-start: var(--sp-5); }
-.quote__by { margin-block-start: var(--sp-6); font-weight: 600; color: var(--text-strong); }
-
-/* ── Sector grid ─────────────────────────────────────────────────────── */
-@media (min-width: 40rem) { .sector-grid { grid-template-columns: repeat(2, 1fr); } }
-@media (min-width: 64rem) { .sector-grid { grid-template-columns: repeat(3, 1fr); } }
+.statement-card { padding-block-start: var(--sp-5); border-block-start: 2px solid var(--accent); }
+.statement-card__text { font-size: var(--fs-h3); font-weight: 600; color: var(--text-strong); line-height: 1.55; }
 
 /* ── Call to action ──────────────────────────────────────────────────── */
-.cta { text-align: center; }
+.cta { text-align: center; background: var(--bg-deep); }
 .cta__title { max-inline-size: 20ch; margin-inline: auto; }
 .cta__actions { margin-block-start: var(--sp-6); display: flex; gap: var(--sp-4); justify-content: center; flex-wrap: wrap; }
-.cta .text-en { text-align: center; }

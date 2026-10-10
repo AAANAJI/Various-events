@@ -1,7 +1,7 @@
 # VARIOUS for Events Services — website
 
 A bilingual (Arabic / English) static site for **فاريوس لخدمات الفعاليات**,
-built from the 2026 company profile deck.
+built from the 2026 company profile and the client's approved copy deck.
 
 Intended home: **https://staging.shfrah.com/various/**
 (Arabic at that root, English at `/various/en/`.)
@@ -129,48 +129,39 @@ curl -sI https://staging.shfrah.com/various/assets/fonts/IBMPlexSansArabic-400.w
 # render as unstyled black-on-white Times New Roman.
 curl -s -o /dev/null -w '%{http_code} %{size_download}b %{content_type}\n' \
   https://staging.shfrah.com/various/css/site.css
-# expect: 200, ~32000b, text/css
+# expect: 200, ~54000b, text/css
 ```
 
-Finally, open `/various/` and `/various/en/work/saudi-cup/` and confirm both
+Finally, open `/various/` and `/various/en/work/ministry-of-culture/` and confirm both
 render fully styled, in the right reading direction.
 
 ---
 
 ## Content still awaiting confirmation
 
-Nothing in this repository is invented. Where the source deck carried a
-placeholder, the value is `null` and the template omits the field entirely.
+The copy is the client's approved copy deck (2026 revision). Nothing is
+invented; where the deck has a gap, the site leaves it out rather than filling
+it.
 
-**The six figures** — `content/stats.mjs` is the only file to edit. Set a number
-and its tile renders; leave it `null` and the tile shows a neutral em-dash with
-its label intact, so the section never looks broken. Five are pending:
+**Figures** — `content/stats.mjs` is the only file to edit. Two are published,
+both stated in the copy deck: 160+ events and exhibitions, 100+ clients. Team
+size, founding year and m² fabricated are still outstanding (copy deck B1–B3);
+add an entry and it renders.
 
-- years of experience · events & exhibitions delivered · government & private
-  clients · m² of stands fabricated · specialists on the team
+**Project photographs** — 11 of the 22 projects have photographs. The other 11
+render a branded panel (the star on navy, with the client's name) in place of
+the photo, so nothing reads as broken. Drop a JPEG into `assets/img/` as
+`<name>-<width>.jpg` and set `image:` in `content/projects.mjs`.
 
-*Sectors served* is already filled in at 9, derived from the nine sectors the
-deck itself lists.
+**Client logos** — the roster is set typographically until vector logos
+(AI/EPS/SVG) are supplied, together with each government entity's permission
+to use its logo (copy deck E2).
 
-**Per-project years and locations** — `content/projects.mjs`. The deck printed
-the literal words «السنة» / «الموقع» / «الدورة» alongside a «للاعتماد»
-(to be confirmed) marker for most projects. Only the four it actually stated are
-present: Boulevard City Riyadh, Clock Tower Makkah, Hayat Mall Riyadh, Sinclair
-Riyadh, plus the Media Excellence Award's fifth edition.
+**Social URLs** — the copy deck gives handles only. Instagram and X are
+unambiguous; LinkedIn is linked as a company page and YouTube as an
+`@handle`, the platforms' current defaults. Confirm both.
 
-**Project films** — the deck states that every project has a documentary film on
-the company's YouTube channel, and its project slides carry a «التوثيق: فيلم
-يوتيوب + أرشيف صور» field plus a note about per-project QR codes. No channel or
-video URLs were supplied, so no links are published and that metadata field is
-omitted. Supply the URLs and each project page can carry its film.
-
-**Also flagged in the deck itself**
-
-- Founders' names and titles — «تأكيد الأسماء والمسميات» on the founders' slide.
-- The website domain — the deck marks `variouseventsksa.com` «تأكيد النطاق»,
-  and it does not match the email domain `variousevent.com`.
-- Client logos — the deck's client slide is a logo grid awaiting artwork. No
-  logo files were supplied, so the names are set typographically instead.
+**Project films** — no YouTube links per project yet (copy deck F3).
 
 ---
 
@@ -188,42 +179,29 @@ dist/        generated output. Not committed.
 
 ### Information architecture
 
-32 routes per language, 64 pages. The homepage is deliberately short: it says
-what VARIOUS is, shows the six services and three projects, and sends the
-visitor into the section they want. The detail lives on the page that owns it.
+34 routes per language, 68 pages. The homepage is deliberately short: it says
+what VARIOUS is, shows what it does and three projects, and sends the visitor
+into the section they want. The detail lives on the page that owns it.
 
 ```
-/                     home — short, an index into the rest
-/about/               who we are, the integrated model, the numbers
-  /about/vision/      vision and mission
-  /about/values/      the four values
-  /about/founders/    the founders' letter
-/services/            the six services, as an index
-  /services/<slug>/   one page per service  (6)
-/process/             how we work — the five steps
-/work/                the portfolio index
-  /work/<slug>/       one page per project  (14)
-/sectors/             the nine sectors served
-/clients/             the client roster, linked to the work
-/contact/             contact details
+/                               home — short, an index into the rest
+/about/                         who we are, and the figures
+  /about/vision/                vision and mission
+  /about/values/                the five values
+/services/                      the kinds of event we deliver
+  /services/solutions/          14 disciplines, every item listed
+  /services/exhibition-owners/  8 service groups for show organisers
+/process/                       how we work — the five steps, as a path
+/work/                          the portfolio, in three categories
+  /work/<slug>/                 one page per project  (22)
+/clients/                       the client roster, linked to the work
+/contact/                       phone & WhatsApp, email, social
 ```
 
-`nav` in `content/site.mjs` is the single source for the menu, and the services
-sub-menu is generated from `content/services.mjs`, so the menu and the pages
-cannot drift apart. The menu is CSS-only — sub-menus open on hover **and** on
-`:focus-within`, so every item is keyboard-reachable with no JavaScript at all.
-
-### A note on the copy
-
-This is not a transcript of the deck. Slide copy is written to be spoken over;
-web copy has to be read alone and scanned before it is read. So the sentences
-are shorter and front-loaded, and each page opens with the one line that has to
-land. Service pages break out the capabilities their own paragraph already
-names, so the page is scannable.
-
-The substance is unchanged: every fact, claim, client and figure still traces to
-the deck. Nothing has been added that the company did not say about itself, and
-where the deck is silent — a project's year, a stat — the site is silent too.
+`nav` in `content/site.mjs` is the single source for the menu, the section
+sub-navigation and the footer columns. The menu is CSS-only — sub-menus open
+on hover **and** on `:focus-within`, so every item is keyboard-reachable with
+no JavaScript at all.
 
 ### Two rules that govern everything
 
@@ -241,49 +219,63 @@ means the prefix stays honest: an unknown URL returns a true 404 rather than a
 
 ### Design
 
-Follows the deck's own system, «منظومة الوقفة» / The Pause System: navy ground,
-full-bleed photography under a gradient scrim, the 56×3 lime-to-green rule
-opening each statement, Arabic-Indic section numerals, and the five-point star
-constellation bled off a corner as a watermark.
+Follows the profile's own system, «منظومة الوقفة» / The Pause System: navy
+ground, full-bleed photography under a gradient scrim, the 56×3 lime-to-green
+rule opening each statement, and the five-point star constellation bled off a
+corner as a watermark. One typeface — IBM Plex Sans Arabic, self-hosted —
+covers Arabic and Latin, so both editions are typographically identical.
 
-Arabic leads and English echoes beneath it; on the English edition the roles
-swap. One typeface — IBM Plex Sans Arabic, self-hosted, extracted from the deck —
-covers Arabic, Latin *and* Arabic-Indic digits, so both editions are
-typographically identical.
+**Light and dark.** Dark is the default, as in the profile; the switch in the
+masthead turns the light theme on and remembers it. Every colour is a token in
+`tokens.css`, set per theme, and `.scope-dark` re-declares the dark set on the
+things that stay dark in both — photographic heroes, the pause bands, the call
+to action and the footer. A saved choice is applied by an inline script before
+first paint, so there is no flash.
+
+**The logo** is shown exactly as drawn — wordmark, then the mark to its right,
+no plate, no shadow — and that lockup never mirrors.
+
+**Western digits everywhere**, in Arabic too, so the website and the printed
+profile agree.
 
 ### Bilingual mechanics
 
-Arabic RTL at the root, English LTR under `/en/`. Every route exists in both;
-`check.mjs` fails the build if one is missing. Layout uses CSS logical
-properties throughout, so a single stylesheet serves both directions with no
-mirrored overrides.
+Arabic at the root, English under `/en/`. Every route exists in both;
+`check.mjs` fails the build if one is missing.
 
-**Each edition is single-language.** The deck sets Arabic and English together
-on every slide, because a printed profile has to serve both readers at once. A
-website with a language switcher does not: the Arabic edition is Arabic, the
-English edition is English. The only cross-language elements left are the
-`hreflang` metadata and the switcher itself, which is deliberately labelled in
-the language it leads to.
+**One layout for both languages.** By the client's instruction, switching
+language must not move anything: every block keeps its place and only the text
+inside it changes direction. So `body` is laid out right-to-left in both
+editions, and in English (`base.css`):
 
-**No section numbering.** The deck numbers its sections ٠١ ٠٢ ٠٣ because slides
-are a sequence. Web sections are destinations reached in any order, so the
-numbers are gone — except on `/process/`, where the five steps genuinely are
-ordered and the numbering carries meaning.
+- a **text group** (`.tb` — a heading with its lead, a hero's copy) reads LTR
+  inside but shrinks to its content, so the group stays on the same side of the
+  page as its Arabic twin;
+- a **boxed component** (a card, a tile, a contact block) keeps its box, and
+  its copy reads LTR;
+- grids, rows and lists keep the shared geometry, so the order of elements is
+  identical too.
 
-Two bidi rules the code depends on:
+`<html dir>` still states the language's true direction. The language switch
+also remembers which section you were reading and restores it on the other
+edition.
 
-- The `dir` attribute goes on an **inline span**, never on the block. A block
-  with `dir="ltr"` inside an RTL page resolves `text-align: start` to the left
-  edge, tearing every English line away from the Arabic above it.
-- Latin numeral runs — phone numbers, the CR number — need explicit LTR
-  isolation, or the bidi algorithm moves the leading `+` to the end and
-  `+966 55 051 1403` renders as `1403 051 55 966+`.
+Layout still uses logical properties only (`check.mjs` enforces it): the text
+leaves that turn LTR in English carry their padding and borders with them.
+
+**Each edition is single-language**, and there is no section numbering —
+except on `/process/`, where the five steps are a sequence and are drawn as a
+connected path, each station joined to the next by an arrow pointing down.
+
+Latin numeral runs — phone numbers, email, handles — carry explicit LTR
+isolation, or the bidi algorithm moves the leading `+` to the end and
+`+966 55 051 1403` renders as `1403 051 55 966+`.
 
 ### Motion
 
 GSAP 3.15 with ScrollTrigger, self-hosted in `assets/js/` rather than pulled
 from a CDN — no third-party request, and the checksum sweep can verify it like
-any other file. 123KB, about 46KB over the wire once gzipped.
+any other file.
 
 It is strictly a layer on top. Three guards have to hold before anything is
 hidden: the visitor has not asked for reduced motion, an inline script has set
@@ -301,27 +293,14 @@ page stays blank. Every tween states its end values explicitly with `fromTo()`.
 
 `build/check.mjs` enforces six invariants and fails the build on any of them:
 no root-absolute URLs, no dead links, no dead `srcset` candidates, no physical
-CSS properties (see the bidi note above — one stylesheet serves both
-directions), `lang`/`dir`/`noindex`/`<title>` on every page, and both language
-editions of every route.
+CSS properties, `lang`/`dir`/`noindex`/`<title>` on every page, and both
+language editions of every route.
 
-Against a real browser, on every page in both languages:
-
-- 40 pages crawled: no console errors, no failed requests, no broken images, no
-  horizontal overflow, exactly one `h1` each, no skipped heading levels
-- Fourteen viewport widths from 320px to 1920px: no overflow, no text under 12px
-- All text meets WCAG AA contrast — the alphas in `tokens.css` are set from
-  measured ratios, not by eye
-- No photograph renders above 1.3× its real pixel width at any viewport
-- Skip link takes the first Tab; the mobile menu opens, closes on Escape and
-  returns focus to its trigger
-- Every image carries alt text and intrinsic dimensions, so nothing shifts as
-  photographs load; the above-the-fold image is preloaded with `imagesizes`
-  matched to its `sizes`, so nothing is fetched twice
-- Works with JavaScript blocked and with `prefers-reduced-motion`: nothing is
-  hidden in either case, and the masthead is opaque rather than transparent
-- No scroll handlers ship at all
-- Total HTML across all 42 pages: 0.48 MB
+Against a real browser, all 68 pages at 390px and 1280px, in both themes:
+no console errors, no failed requests, no broken images, no horizontal
+overflow, and all text outside the photo heroes at WCAG AA contrast. The mobile
+menu opens over a scrolled page with its close button on top, at 390px and
+320px.
 
 ### Staging hygiene
 

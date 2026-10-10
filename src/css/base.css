@@ -1,13 +1,13 @@
 /* ─────────────────────────────────────────────────────────────────────────
-   Base: fonts, reset, typography, RTL/LTR mechanics, focus, motion.
-   Everything is written with LOGICAL properties (inline-start/end, margin-inline)
-   so the Arabic RTL edition and the English LTR edition share one stylesheet
-   with no mirrored overrides.
+   Base: fonts, reset, typography, the shared layout direction, focus, motion.
+   Everything is written with LOGICAL properties (inline-start/end,
+   margin-inline) — see the note on direction below for why that still matters
+   with one fixed layout.
    ───────────────────────────────────────────────────────────────────────── */
 
-/* IBM Plex Sans Arabic — one family covers Arabic, Latin and Arabic-Indic
-   digits, so the two editions are typographically identical. Self-hosted;
-   `font-display: swap` keeps first paint honest if a weight is slow. */
+/* IBM Plex Sans Arabic — one family covers Arabic and Latin, so the two
+   editions are typographically identical. Self-hosted; `font-display: swap`
+   keeps first paint honest if a weight is slow. */
 @font-face {
   font-family: 'IBM Plex Sans Arabic';
   font-style: normal; font-weight: 400; font-display: swap;
@@ -32,20 +32,64 @@ html {
   -webkit-text-size-adjust: 100%;
   scroll-behavior: smooth;
   /* Anchored headings clear the sticky masthead. */
-  scroll-padding-block-start: 6rem;
+  scroll-padding-block-start: 7rem;
 }
 
+/* ── One layout, two reading directions ───────────────────────────────────
+   By the client's instruction, switching language must not move anything:
+   every block keeps its place and only the text inside it changes direction.
+   So the page is laid out right-to-left in BOTH editions, and the English
+   edition turns its text runs left-to-right below.
+
+   <html dir> still states the truth about the language (the build guard
+   checks it); the layout direction is set here, on body, instead. */
 body {
+  direction: rtl;
   font-family: 'IBM Plex Sans Arabic', 'Segoe UI', system-ui, -apple-system, sans-serif;
   font-size: var(--fs-body);
   font-weight: 400;
   line-height: var(--lh-body);
   color: var(--text-body);
-  background: var(--ink-800);
+  background: var(--bg);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
   min-height: 100vh;
+  transition: background-color var(--dur) var(--ease), color var(--dur) var(--ease);
+}
+
+/* In English, three kinds of thing turn left-to-right:
+
+   · A text group (.tb) — a heading with its lead, a hero's copy — reads LTR
+     inside but shrinks to its content, so the group as a whole stays on the
+     same side of the page as its Arabic twin instead of migrating across.
+   · A boxed component — a card, a tile, a contact block — keeps its box, and
+     the copy inside it reads LTR.
+   · Any other text leaf behaves like a one-element text group.
+
+   Grids, rows and lists are not listed: they keep the shared right-to-left
+   geometry, so every block and element holds its position. */
+:lang(en) :is(h1, h2, h3, h4, h5, h6, p, blockquote, dt, dd, figcaption,
+              .roster__name, .brand-panel__label) {
+  direction: ltr;
+  inline-size: fit-content;
+}
+:lang(en) .tb {
+  direction: ltr;
+  inline-size: fit-content;
+  max-inline-size: 100%;
+}
+:lang(en) .tb :is(h1, h2, h3, h4, h5, h6, p, blockquote) { inline-size: auto; }
+:lang(en) :is(.card, .tile__link, .type-card__body, .numbered__item, .path__card,
+              .chip-group, .statement-card, .contact-item, .meta > li, .stat,
+              .pager__link, .roster__item, .site-footer__col, .duo__item) {
+  direction: ltr;
+}
+/* Inline components: their own content (label, arrow, chevron) follows the
+   text, while their position in the row is the shared one. */
+:lang(en) :is(.nav__link, .subnav__link, .sectionnav__link, .chip, .tag,
+              .btn, .link-arrow, .skip-link, .social__link) {
+  direction: ltr;
 }
 
 /* NOTE: body must NOT carry `overflow-x: hidden`. It forces overflow-y to
@@ -53,19 +97,16 @@ body {
    breaks `position: sticky` on the masthead and re-bases `position: fixed`
    for the mobile nav panel, which then renders off-screen. Horizontal
    overflow is contained where it originates instead: `.section` clips its
-   own watermark. `build/check.mjs` fails the build if any page overflows. */
+   own watermark. */
 
 /* Deliberately NO scroll lock while the nav is open. Setting overflow:hidden on
    the scroll container while the page is scrolled makes a `position: fixed`
    panel resolve against the document instead of the viewport — it then renders
-   at -scrollY, entirely off-screen. The panel is a full-screen opaque overlay
-   with `overscroll-behavior: contain`, so nothing shows through and no scroll
-   chains out of it; a lock buys nothing and costs that bug. */
+   at -scrollY, entirely off-screen. */
 
-/* Latin headings get a touch of negative tracking; Arabic never does —
-   letter-spacing breaks Arabic joining. */
+/* Latin headings may take tracking; Arabic never does — letter-spacing breaks
+   Arabic joining. */
 :lang(ar) * { letter-spacing: normal !important; }
-:lang(ar) .eyebrow { letter-spacing: normal !important; }
 
 h1, h2, h3, h4, h5, h6 {
   font-weight: 600;
@@ -77,25 +118,25 @@ h1, h2, h3, h4, h5, h6 {
 p { text-wrap: pretty; }
 
 img, svg, video { display: block; max-width: 100%; }
-img { height: auto; background-color: var(--ink-700); }
+/* No background on images: a logo must sit on the page exactly as drawn. The
+   photo wells that need a placeholder tone set it on their own frame. */
+img { height: auto; }
 
 ul, ol { list-style: none; padding: 0; }
 
 a { color: inherit; text-decoration: none; }
 
-/* Body-copy links keep an underline — only navigation and cards drop it. */
 .prose a {
   text-decoration: underline;
   text-decoration-thickness: 1px;
   text-underline-offset: 0.25em;
-  text-decoration-color: rgba(175, 218, 104, 0.5);
+  text-decoration-color: color-mix(in srgb, var(--accent) 50%, transparent);
   transition: text-decoration-color var(--dur-fast) var(--ease), color var(--dur-fast) var(--ease);
 }
-.prose a:hover { color: var(--lime-400); text-decoration-color: var(--lime-400); }
+.prose a:hover { color: var(--accent); text-decoration-color: var(--accent); }
 
 button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
 
-/* One visible focus treatment everywhere, keyboard-only. */
 :focus-visible {
   outline: var(--focus-ring);
   outline-offset: var(--focus-offset);
@@ -103,7 +144,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 }
 :focus:not(:focus-visible) { outline: none; }
 
-/* Latin runs inside Arabic text (brand names, years, "LEAP 2023") must not be
+/* Latin runs inside Arabic text (phone numbers, emails, handles) must not be
    re-ordered by the bidi algorithm. */
 .lt {
   direction: ltr;
@@ -138,8 +179,6 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
-  /* Reveal-on-scroll elements must never stay hidden when motion is off. */
-  [data-reveal] { opacity: 1 !important; transform: none !important; }
 }
 
 @media print {
