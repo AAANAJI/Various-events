@@ -6,7 +6,9 @@
 //
 //   • No project carries a year or a location field. A project is not tied to
 //     a date or a place; where an edition name includes one ("Global Health
-//     Exhibition 2024") it is part of the name, not metadata.
+//     Exhibition 2024") it is part of the name, not metadata. Two titles the
+//     copy deck gave as client + city ("Sinclair — Riyadh", "TRAX — Riyadh
+//     Exhibition") are titled by what was delivered instead.
 //   • Every figure uses Western digits, in Arabic as well as English.
 //
 // `image: null` means no photograph has been supplied yet. Both outputs
@@ -300,8 +302,8 @@ export const projects = [
     category: 'exhibitions',
     client: "تراكس",
     title: {
-      ar: "تراكس — أحد معارض الرياض",
-      en: "TRAX — Riyadh Exhibition",
+      ar: "تراكس — جناح معرض",
+      en: "TRAX — Exhibition Stand",
     },
     text: {
       ar: "شاركت تراكس في أحد معارض الرياض بجناح عرضت فيه حلولها في التحول الرقمي والاستشارات التقنية. نفّذنا الجناح.",
@@ -398,8 +400,8 @@ export const projects = [
     category: 'conferences',
     client: "سنكلير",
     title: {
-      ar: "سنكلير — الرياض",
-      en: "Sinclair — Riyadh",
+      ar: "سنكلير — مؤتمر متخصص",
+      en: "Sinclair — Specialist Conference",
     },
     text: {
       ar: "عقدت سنكلير مؤتمرًا متخصصًا في الرياض بجلسات وورش عمل في مجال التجميل الطبي. نفّذنا المؤتمر: قاعة الجلسات وورش العمل وبيئة العرض والضيافة.",

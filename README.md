@@ -137,6 +137,28 @@ render fully styled, in the right reading direction.
 
 ---
 
+## The company profile (PDF)
+
+The printed profile is generated from the same `content/` files as the website,
+so the two cannot disagree.
+
+```sh
+node profile/build.mjs    # dist-profile/{ar,en}/index.html
+node profile/export.mjs   # dist-profile/VARIOUS-Profile-2026-{AR,EN}.pdf
+```
+
+`export.mjs` needs Playwright with Chromium (resolved from `node_modules` or the
+global install); the website itself still needs nothing. Two editions, Arabic
+and English, 45 landscape pages each at 1280×720: cover, contents, five chapters
+each opening on a divider page, and one closing page. The contents, the
+dividers, every page footer and the client list are internal links in the PDF.
+Project pages put the text on one half and the photograph on the other,
+alternating, with a slot for the client's logo.
+
+`dist-profile/` is generated and not committed.
+
+---
+
 ## Content still awaiting confirmation
 
 The copy is the client's approved copy deck (2026 revision). Nothing is
