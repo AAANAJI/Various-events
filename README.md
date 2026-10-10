@@ -139,23 +139,24 @@ render fully styled, in the right reading direction.
 
 ## The company profile (PDF)
 
-The printed profile is generated from the same `content/` files as the website,
-so the two cannot disagree.
+The approved design is the agency's v7 profile («منظومة الوقفة / THE PAUSE
+SYSTEM»). It is the source of truth and is not stored here. Revisions are
+applied to v7's own pages, never by rebuilding them:
 
 ```sh
-node profile/build.mjs    # dist-profile/{ar,en}/index.html
-node profile/export.mjs   # dist-profile/VARIOUS-Profile-2026-{AR,EN}.pdf
+node profile/revise-v7.mjs path/to/VARIOUS…v7.html   # → dist-profile/
 ```
 
-`export.mjs` needs Playwright with Chromium (resolved from `node_modules` or the
-global install); the website itself still needs nothing. Two editions, Arabic
-and English, 45 landscape pages each at 1280×720: cover, contents, five chapters
-each opening on a divider page, and one closing page. The contents, the
-dividers, every page footer and the client list are internal links in the PDF.
-Project pages put the text on one half and the photograph on the other,
-alternating, with a slot for the client's logo.
+`profile/v7-transform.js` runs inside Chromium against v7's markup and makes
+only the edits the client asked for; every page keeps v7's inline styles. New
+pages (the chapter dividers, the merged closing page) are clones of v7 pages.
+`profile/v7-dictionary.json` holds English for the few strings v7 set in Arabic
+only. The output is an Arabic and an English edition, each as HTML and PDF,
+35 pages, with the contents, dividers and page numbers as internal links.
 
-`dist-profile/` is generated and not committed.
+Needs Playwright with Chromium (resolved from `node_modules` or the global
+install); the website itself still needs nothing. `dist-profile/` is
+generated and not committed.
 
 ---
 
