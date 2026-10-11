@@ -14,7 +14,7 @@
  */
 import { createRequire } from 'node:module'
 import { execSync } from 'node:child_process'
-import { readFileSync, writeFileSync, mkdirSync, statSync } from 'node:fs'
+import { readFileSync, writeFileSync, mkdirSync, readdirSync, statSync } from 'node:fs'
 import { dirname, join, resolve } from 'node:path'
 import { fileURLToPath, pathToFileURL } from 'node:url'
 
@@ -31,33 +31,50 @@ async function loadPlaywright() {
   return (await import(pathToFileURL(join(g, 'playwright/index.js')).href)).default
 }
 
-const jpeg = f => 'data:image/jpeg;base64,' + readFileSync(join(ROOT, 'assets/img', f)).toString('base64')
-const { contact } = await import(pathToFileURL(join(ROOT, 'content/site.mjs')).href)
+const imgDir = join(ROOT, 'assets/img')
+const dataUri = (mime, buf) => `data:${mime};base64,${buf.toString('base64')}`
+/** The 1600px variant if there is one, else the largest the repository has. */
+function photo(name) {
+  const widths = readdirSync(imgDir).map(f => new RegExp(`^${name}-(\\d+)\\.jpg$`).exec(f)).filter(Boolean).map(m => +m[1]).sort((a, b) => a - b)
+  if (!widths.length) throw new Error(`no photograph named ${name}`)
+  const w = widths.includes(1600) ? 1600 : widths[widths.length - 1]
+  return dataUri('image/jpeg', readFileSync(join(imgDir, `${name}-${w}.jpg`)))
+}
 
-const { about, method } = await import(pathToFileURL(join(ROOT, 'content/pages.mjs')).href)
-const { clients } = await import(pathToFileURL(join(ROOT, 'content/clients.mjs')).href)
+// The profile is built from the same content files as the website, so the
+// two cannot disagree: this is the client's approved copy deck.
+const load = async f => import(pathToFileURL(join(ROOT, 'content', f)).href)
+const [site, pages, services, projects, clients, stats] = await Promise.all(
+  ['site', 'pages', 'services', 'projects', 'clients', 'stats'].map(f => load(`${f}.mjs`)))
+
+const content = {
+  brand: site.brand,
+  contact: site.contact,
+  contactLinks: { whatsapp: site.contact.whatsappHref },
+  legal: {
+    ar: 'شركة الفعاليات المتنوعة لتنظيم المعارض والمؤتمرات — سجل تجاري 1010960212',
+    en: 'Various Events Company for Organizing Exhibitions and Conferences — CR 1010960212',
+  },
+  about: pages.about, vision: pages.vision, values: pages.values, method: pages.method, why: pages.why,
+  eventTypes: services.eventTypes, frameworkAgreements: services.frameworkAgreements,
+  solutions: services.solutions, ownerServices: services.ownerServices,
+  projects: projects.projects, categories: projects.categories,
+  clients: clients.clients, stats: stats.stats,
+}
+const names = new Set(['mood-riyadh', 'cover-collage', 'mood-line', 'mood-fireworks', 'mood-city'])
+for (const p of content.projects) { if (p.image) names.add(p.image); for (const x of p.parts || []) if (x.image) names.add(x.image) }
+const photos = Object.fromEntries([...names].map(n => [n, photo(n)]))
+Object.assign(photos, { d1: photos['mood-riyadh'], d2: photos['cover-collage'], d3: photos['mood-line'], d4: photos['mood-fireworks'], d5: photos['mood-city'] })
 
 const assets = {
-  // The client's approved copy for the pages whose words changed.
-  about: { ar: about.body.map(p => p.ar), en: about.body.map(p => p.en) },
-  method: method.steps,
-  clients,
-  cap: { en: { p09: 16.5 }, ar: {} },
-  // Divider photographs: two the approved profile does not already use, and
-  // two of its own.
-  images: {
-    d1: jpeg('mood-riyadh-1600.jpg'),
-    d2: jpeg('mood-line-1600.jpg'),
-    d3: jpeg('saudi-cup-1520.jpg'),
-    d4: jpeg('mood-city-1600.jpg'),
-  },
-  social: contact.social,
-  dict: JSON.parse(readFileSync(join(HERE, 'v7-dictionary.json'), 'utf8')),
+  c: content,
+  photos,
+  mark: dataUri('image/svg+xml', readFileSync(join(ROOT, 'assets/logo/mark.svg'))),
 }
 
 const { chromium } = await loadPlaywright()
 const browser = await chromium.launch({ args: ['--no-sandbox', '--disable-gpu'] })
-const names = { ar: 'VARIOUS-Profile-AR-2026-v8', en: 'VARIOUS-Profile-EN-2026-v8' }
+const outNames = { ar: 'VARIOUS-Profile-AR-2026-v9', en: 'VARIOUS-Profile-EN-2026-v9' }
 
 for (const lang of ['ar', 'en']) {
   const page = await browser.newPage({ viewport: { width: 1400, height: 900 } })
@@ -68,10 +85,10 @@ for (const lang of ['ar', 'en']) {
   await page.evaluate(() => document.fonts.ready)
   if (result.leftovers.length) console.warn(`${lang}: Arabic left untranslated:\n  ` + result.leftovers.join('\n  '))
   const html = '<!DOCTYPE html>' + await page.evaluate(() => document.documentElement.outerHTML)
-  writeFileSync(join(OUT, names[lang] + '.html'), html)
-  const pdf = join(OUT, names[lang] + '.pdf')
+  writeFileSync(join(OUT, outNames[lang] + '.html'), html)
+  const pdf = join(OUT, outNames[lang] + '.pdf')
   await page.pdf({ path: pdf, width: '1280px', height: '720px', printBackground: true, preferCSSPageSize: true })
-  console.log(`${names[lang]}.pdf — ${result.pages} pages, ${(statSync(pdf).size / 1048576).toFixed(1)} MB`)
+  console.log(`${outNames[lang]}.pdf — ${result.pages} pages, ${(statSync(pdf).size / 1048576).toFixed(1)} MB`)
   await page.close()
 }
 await browser.close()

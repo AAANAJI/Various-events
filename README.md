@@ -140,19 +140,22 @@ render fully styled, in the right reading direction.
 ## The company profile (PDF)
 
 The approved design is the agency's v7 profile («منظومة الوقفة / THE PAUSE
-SYSTEM»). It is the source of truth and is not stored here. Revisions are
-applied to v7's own pages, never by rebuilding them:
+SYSTEM»); it is the source of truth for design and is not stored here. The
+words are not v7's: they come from the client's approved copy deck, through the
+same `content/*.mjs` files the website is built from, so the two cannot
+disagree.
 
 ```sh
 node profile/revise-v7.mjs path/to/VARIOUS…v7.html   # → dist-profile/
 ```
 
-`profile/v7-transform.js` runs inside Chromium against v7's markup and makes
-only the edits the client asked for; every page keeps v7's inline styles. New
-pages (the chapter dividers, the merged closing page) are clones of v7 pages.
-`profile/v7-dictionary.json` holds English for the few strings v7 set in Arabic
-only. The output is an Arabic and an English edition, each as HTML and PDF,
-35 pages, with the contents, dividers and page numbers as internal links.
+`profile/v7-transform.js` runs inside Chromium against v7's markup. Pages v7
+has a counterpart for are re-worded in place; pages it has none for (service
+and solution lists, project pages, chapter dividers) are clones of the nearest
+v7 page, filled from the content files. The output is an Arabic and an English
+edition, each as HTML and PDF, with the contents, dividers and page numbers as
+internal links. Page counts differ between editions because English runs
+longer.
 
 Needs Playwright with Chromium (resolved from `node_modules` or the global
 install); the website itself still needs nothing. `dist-profile/` is
