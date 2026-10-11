@@ -34,7 +34,15 @@ async function loadPlaywright() {
 const jpeg = f => 'data:image/jpeg;base64,' + readFileSync(join(ROOT, 'assets/img', f)).toString('base64')
 const { contact } = await import(pathToFileURL(join(ROOT, 'content/site.mjs')).href)
 
+const { about, method } = await import(pathToFileURL(join(ROOT, 'content/pages.mjs')).href)
+const { clients } = await import(pathToFileURL(join(ROOT, 'content/clients.mjs')).href)
+
 const assets = {
+  // The client's approved copy for the pages whose words changed.
+  about: { ar: about.body.map(p => p.ar), en: about.body.map(p => p.en) },
+  method: method.steps,
+  clients,
+  cap: { en: { p09: 16.5 }, ar: {} },
   // Divider photographs: two the approved profile does not already use, and
   // two of its own.
   images: {
