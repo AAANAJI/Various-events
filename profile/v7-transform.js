@@ -245,7 +245,10 @@
         : { strong: '#0f1b28', body: 'rgba(15,27,40,.86)', line: 'rgba(15,27,40,.16)', muted: 'rgba(15,27,40,.60)', pill: 'rgba(15,27,40,.24)', plate: 'rgba(15,27,40,.16)', accent: '#457a2e' }
       const frame = $(pg, ':scope > div[style*="width:660px;z-index:2"] > div[style*="overflow:hidden"]')
       if (s.image && A.photos[s.image]) frame.querySelector('img').src = A.photos[s.image]
-      else frame.innerHTML = `<div style="position:absolute;inset:0;background:radial-gradient(120% 90% at 80% 10%,#17304a 0%,#0a141f 70%);display:flex;align-items:center;justify-content:center"><img src="${A.mark}" style="width:190px;height:auto"></div>`
+      else frame.innerHTML = `<div style="position:absolute;inset:0;background:${dark ? '#132232' : '#eef1ea'};display:flex;align-items:center;justify-content:center;padding:48px">
+        <div style="width:100%;height:100%;border:3px dashed ${K.accent};display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;text-align:center;direction:${dir}">
+          <span style="font-size:30px;font-weight:700;color:${K.strong}">${EN ? 'Project photo needed here' : 'مطلوب صورة للمشروع هنا'}</span>
+          <span style="font-size:20px;color:${K.muted}">${esc(s.title)}</span></div></div>`
       $(pg, ':scope > div[style*="top:60px"][style*="width:540px"]').remove()
       pg.querySelectorAll(':scope > div[style*="linear-gradient(180deg,rgba(15,27,40"]').forEach(d => d.remove())
       const col = $(pg, ':scope > div[style*="top:112px"][style*="width:540px"]')
@@ -264,11 +267,9 @@
       fit(col)
       return pg
     }
-    // Only the projects v7 has photographs for, in v7's order; the others
-    // wait for their photographs rather than showing an empty frame.
-    const V7ORDER = ['saudi-cup', 'book-fair', 'kleija', 'data-privacy', 'sab-founding-day', 'tahakom', 'saso',
-      'health-endowment', 'investment-forum', 'media-award', 'hayat-mall', 'retal', 'nova-medical', 'sinclair']
-    const shown = specs.filter(x => V7ORDER.includes(x.image)).sort((a, b) => V7ORDER.indexOf(a.image) - V7ORDER.indexOf(b.image))
+    // Every project in the client's copy deck, in the deck's order; a project
+    // without a photograph says so in its frame until the photograph arrives.
+    const shown = specs
     const projectPages = shown.map(projectPage)
     const firstOfCat = {}
     shown.forEach((x, i) => { if (!firstOfCat[x.cat]) firstOfCat[x.cat] = projectPages[i] })
@@ -385,7 +386,7 @@
     const order = [P(1), P(2),
       D.about, P(5), P(7), P(8), P(9),
       D.services, partOne, ...solutionPages, ...ownerPages, P(11), P(12), P(13),
-      D.work, P(14), ...projectPages.slice(0, 7), P(22), ...projectPages.slice(7),
+      D.work, P(14), ...projectPages.slice(0, shown.findIndex(x => x.cat !== shown[0].cat)), P(22), ...projectPages.slice(shown.findIndex(x => x.cat !== shown[0].cat)),
       D.clients, P(31), P(32), P(33),
       closing]
     body.replaceChildren(...order)
