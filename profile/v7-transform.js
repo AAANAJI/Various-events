@@ -70,6 +70,7 @@
         const row = t.parentElement; row.style.direction = 'ltr'
         const wrap = row.parentElement; wrap.style.textAlign = 'left'
         const pos = wrap.parentElement
+        pos.setAttribute('data-hdr', '1')
         if (pos.style.right && !pos.style.left) { pos.style.left = pos.style.right; pos.style.right = 'auto' }
       }
     }
@@ -80,7 +81,13 @@
       const box = $(P(1), ':scope > div[style*="right:72px;top:190px"]')
       const [eyebrow, title, nameEn, tagBox] = box.children
       eyebrow.classList.remove('lt'); eyebrow.textContent = EN ? 'COMPANY PROFILE — 2026' : 'الملف التعريفي — 2026'
-      if (EN) { box.style.direction = 'ltr'; title.innerHTML = 'VARIOUS<br>for Events Services'; eyebrow.style.direction = 'ltr' }
+      if (EN) {
+        box.style.direction = 'ltr'; title.innerHTML = 'VARIOUS<br>for Events Services'; eyebrow.style.direction = 'ltr'
+        // Left to right: the title block on the left, the logo on the right.
+        box.style.left = '72px'; box.style.right = 'auto'
+        const lg = $(P(1), ':scope > div[style*="top:54px"][style*="z-index:9"]')
+        lg.style.left = 'auto'; lg.style.right = '64px'; lg.style.display = 'flex'; lg.style.justifyContent = 'flex-end'
+      }
       nameEn.remove()
       tagBox.children[1].textContent = L(C.brand.tagline)
       tagBox.children[2].remove()
@@ -474,6 +481,29 @@
       if (!el.textContent.trim() || el.querySelector('img, svg') || el.closest('[data-keep-fs]')) continue
       const sty = el.getAttribute('style')
       if (/(^|;)\s*height:\s*[\d.]+px/.test(sty)) el.setAttribute('style', sty.replace(/(^|;)(\s*)height:/, '$1$2min-height:'))
+    }
+
+    // English edition: a title sits on the left edge of its page's content, so
+    // it never lands on the decorative mark when the content is in the right half.
+    if (EN) {
+      for (const pg of body.querySelectorAll('.page')) {
+        const pos = pg.querySelector('[data-hdr]'); if (!pos) continue
+        const x0 = pg.getBoundingClientRect().left, y0 = pg.getBoundingClientRect().top
+        let min = Infinity
+        const w = document.createTreeWalker(pg, NodeFilter.SHOW_TEXT)
+        for (let n; (n = w.nextNode());) {
+          if (!n.textContent.trim() || pos.contains(n) || n.parentElement.closest('div[style*="bottom:50px"]')) continue
+          const rg = document.createRange(); rg.selectNodeContents(n)
+          const r = rg.getBoundingClientRect()
+          if (!r.width || r.top - y0 < 130 || r.bottom - y0 > 650) continue
+          min = Math.min(min, r.left - x0)
+        }
+        for (const im of pg.querySelectorAll('img[alt]')) {         // client logos count as content; decorative art does not
+          const r = im.parentElement.getBoundingClientRect()          // the logo's box: the image itself may not have decoded yet
+          if (r.width && r.width < 600 && r.height < 400 && r.top - y0 > 130 && r.bottom - y0 < 650) min = Math.min(min, r.left - x0)
+        }
+        if (min !== Infinity && min > 200) { pos.style.left = Math.round(min) + 'px'; pos.style.right = 'auto' }
+      }
     }
 
     // Western digits throughout.
