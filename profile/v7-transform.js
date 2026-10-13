@@ -59,10 +59,19 @@
     const markSpan = railOf(P(1)).querySelector('span:has(img)').cloneNode(true)
 
     // Section header: the page's own language leads, the other trails.
+    // One language per edition: the title in the edition's language, no
+    // translated eyebrow beside it; the English edition reads left to right.
     const setHeader = (page, ar, en) => {
-      const t = headOf(page), e = t.nextElementSibling
-      if (EN) { t.textContent = en; t.style.direction = 'ltr'; e.textContent = ar; e.classList.remove('lt'); e.style.direction = 'rtl' }
-      else { t.textContent = ar; e.textContent = en.toUpperCase() }
+      const t = headOf(page)
+      t.textContent = EN ? en : ar
+      if (t.nextElementSibling) t.nextElementSibling.remove()
+      if (EN) {
+        t.style.direction = 'ltr'
+        const row = t.parentElement; row.style.direction = 'ltr'
+        const wrap = row.parentElement; wrap.style.textAlign = 'left'
+        const pos = wrap.parentElement
+        if (pos.style.right && !pos.style.left) { pos.style.left = pos.style.right; pos.style.right = 'auto' }
+      }
     }
     const dropLogo = p => p.querySelectorAll(':scope > div[style*="top:54px"][style*="z-index:9"]').forEach(d => d.remove())
 
@@ -70,6 +79,7 @@
     {
       const box = $(P(1), ':scope > div[style*="right:72px;top:190px"]')
       const [eyebrow, title, nameEn, tagBox] = box.children
+      eyebrow.classList.remove('lt'); eyebrow.textContent = EN ? 'COMPANY PROFILE — 2026' : 'الملف التعريفي — 2026'
       if (EN) { box.style.direction = 'ltr'; title.innerHTML = 'VARIOUS<br>for Events Services'; eyebrow.style.direction = 'ltr' }
       nameEn.remove()
       tagBox.children[1].textContent = L(C.brand.tagline)
@@ -347,7 +357,7 @@
       const svgImg = $(d, 'svg image'), clip = $(d, 'clipPath'), id = 'dv' + Math.random().toString(36).slice(2, 8)
       svgImg.setAttribute('href', img); clip.id = id; svgImg.setAttribute('clip-path', `url(#${id})`)
       setHeader(d, ar, en)
-      headOf(d).style.color = '#ffffff'; headOf(d).nextElementSibling.style.color = '#d3e9b0'
+      headOf(d).style.color = '#ffffff'
       const big = bigOf(d)
       big.textContent = EN ? en2 : ar2; big.style.color = '#ffffff'
       big.nextElementSibling.remove()
@@ -374,9 +384,8 @@
     /* ── v7 pages kept from the previous round, each in one language ──── */
     const oneLang = (pg, ar, en) => {
       setHeader(pg, ar, en)
-      const eyebrow = headOf(pg).nextElementSibling
       for (const tw of [...pg.querySelectorAll('.lt')]) {
-        if (tw === eyebrow || !/[A-Za-z]/.test(tw.textContent) || tw.closest('div[style*="bottom:50px"]') || tw.parentElement.closest('.lt')) continue
+        if (!/[A-Za-z]/.test(tw.textContent) || tw.closest('div[style*="bottom:50px"]') || tw.parentElement.closest('.lt')) continue
         if (EN) {
           let src = tw.previousElementSibling
           while (src && !/[\u0600-\u06FF]/.test(src.textContent)) src = src.previousElementSibling
