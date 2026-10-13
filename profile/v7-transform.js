@@ -264,9 +264,14 @@
       fit(col)
       return pg
     }
-    const projectPages = specs.map(projectPage)
+    // Only the projects v7 has photographs for, in v7's order; the others
+    // wait for their photographs rather than showing an empty frame.
+    const V7ORDER = ['saudi-cup', 'book-fair', 'kleija', 'data-privacy', 'sab-founding-day', 'tahakom', 'saso',
+      'health-endowment', 'investment-forum', 'media-award', 'hayat-mall', 'retal', 'nova-medical', 'sinclair']
+    const shown = specs.filter(x => V7ORDER.includes(x.image)).sort((a, b) => V7ORDER.indexOf(a.image) - V7ORDER.indexOf(b.image))
+    const projectPages = shown.map(projectPage)
     const firstOfCat = {}
-    specs.forEach((s, i) => { if (!firstOfCat[s.cat]) firstOfCat[s.cat] = projectPages[i] })
+    shown.forEach((x, i) => { if (!firstOfCat[x.cat]) firstOfCat[x.cat] = projectPages[i] })
 
     /* ── Clients: the approved list ───────────────────────────────────── */
     {
@@ -346,25 +351,42 @@
       return d
     }
     const D = {
-      about: makeDivider('من نحن', 'Who We Are', 'فريق واحد، وقصة تستحق أن تُروى.', 'One team, and a story worth telling.', A.photos.d1,
+      about: makeDivider('من نحن', 'Who We Are', 'فريق واحد، وقصة تستحق أن تُروى.', 'One team, and a story worth telling.', A.photos['mood-riyadh'],
         [['من نحن', 'Who We Are', P(5)], ['الرؤية والرسالة', 'Vision & Mission', P(7)], ['قيمنا', 'Our Values', P(9)]]),
-      services: makeDivider('خدماتنا وحلولنا', 'Services & Solutions', 'من الفكرة الأولى إلى إطفاء آخر ضوء.', 'From the first idea to the last light.', A.photos.d2,
-        [['أولًا — خدماتنا', 'Part One — Our Services', partOne], ['ثانيًا — حلولنا', 'Part Two — Our Solutions', solutionPages[0]], ['ثالثًا — خدمات أصحاب المعارض', 'Part Three — For Exhibition Owners', ownerPages[0]]]),
-      method: makeDivider('منهجية عملنا', 'How We Work', 'خطوات واضحة، ونتيجة تُقاس.', 'Clear steps. Results you can measure.', A.photos.d3,
-        [['منهجية عملنا', 'How We Work', P(11)], ['فاريوس بالأرقام', 'VARIOUS in Numbers', P(12)], ['لماذا فاريوس', 'Why VARIOUS', P(33)]]),
-      work: makeDivider('أعمالنا', 'Featured Work', 'مشاريع تتحدّث عن نفسها.', 'Work that speaks for itself.', A.photos.d4,
-        C.categories.map(c => [c.title.ar, c.title.en, firstOfCat[c.id]])),
-      clients: makeDivider('عملاؤنا', 'Our Clients', 'ثقةٌ نعتزّ بها، مشروعًا بعد مشروع.', 'Trust we are proud of, one project at a time.', A.photos.d5,
-        [['عملاؤنا', 'Our Clients', P(32)]]),
+      services: makeDivider('خدماتنا وحلولنا', 'Services & Solutions', 'من الفكرة الأولى إلى إطفاء آخر ضوء.', 'From the first idea to the last light.', A.photos['mood-line'],
+        [['خدماتنا وحلولنا', 'Services & Solutions', partOne], ['منهجية عملنا', 'How We Work', P(11)], ['فاريوس بالأرقام', 'VARIOUS in Numbers', P(12)], ['القطاعات التي نخدمها', 'Sectors We Serve', P(13)]]),
+      work: makeDivider('أعمالنا', 'Featured Work', 'مشاريع تتحدّث عن نفسها.', 'Work that speaks for itself.', A.photos['saudi-cup'],
+        [['أعمالنا', 'Featured Work', P(14)]]),
+      clients: makeDivider('عملاؤنا', 'Our Clients', 'ثقةٌ نعتزّ بها، مشروعًا بعد مشروع.', 'Trust we are proud of, one project at a time.', A.photos['mood-city'],
+        [['عملاؤنا', 'Our Clients', P(31)], ['لماذا فاريوس', 'Why VARIOUS', P(33)]]),
     }
+
+    /* ── v7 pages kept from the previous round, each in one language ──── */
+    const oneLang = (pg, ar, en) => {
+      setHeader(pg, ar, en)
+      const eyebrow = headOf(pg).nextElementSibling
+      for (const tw of [...pg.querySelectorAll('.lt')]) {
+        if (tw === eyebrow || !/[A-Za-z]/.test(tw.textContent) || tw.closest('div[style*="bottom:50px"]') || tw.parentElement.closest('.lt')) continue
+        if (EN) {
+          let src = tw.previousElementSibling
+          while (src && !/[\u0600-\u06FF]/.test(src.textContent)) src = src.previousElementSibling
+          if (src) { src.innerHTML = tw.innerHTML; src.style.direction = 'ltr'; if (!src.closest('span[style*="border-radius:99px"]')) src.style.textAlign = 'left' }
+        }
+        tw.remove()
+      }
+    }
+    $(P(14), ':scope > div[style*="top:500px;right:72px;width:760px"]')?.remove()
+    oneLang(P(13), 'القطاعات التي نخدمها', 'Sectors We Serve')
+    oneLang(P(14), 'أعمالنا', 'Featured Work')
+    oneLang(P(22), 'وقفة', 'Pause')
+    oneLang(P(31), 'عملاؤنا', 'Our Clients')
 
     /* ── Assemble ──────────────────────────────────────────────────────── */
     const order = [P(1), P(2),
       D.about, P(5), P(7), P(8), P(9),
-      D.services, partOne, ...solutionPages, ...ownerPages,
-      D.method, P(11), P(12), P(33),
-      D.work, ...projectPages,
-      D.clients, P(32),
+      D.services, partOne, ...solutionPages, ...ownerPages, P(11), P(12), P(13),
+      D.work, P(14), ...projectPages.slice(0, 7), P(22), ...projectPages.slice(7),
+      D.clients, P(31), P(32), P(33),
       closing]
     body.replaceChildren(...order)
     const total = order.length
@@ -401,8 +423,8 @@
       const entries = [
         ['من نحن', 'Who We Are', P(5)], ['الرؤية والرسالة', 'Vision & Mission', P(7)], ['قيمنا', 'Our Values', P(9)],
         ['خدماتنا وحلولنا', 'Services & Solutions', partOne], ['منهجية عملنا', 'How We Work', P(11)], ['فاريوس بالأرقام', 'VARIOUS in Numbers', P(12)],
-        ['لماذا فاريوس', 'Why VARIOUS', P(33)], ['أعمالنا', 'Featured Work', projectPages[0]], ['عملاؤنا', 'Our Clients', P(32)],
-        ['التواصل والبيانات النظامية', 'Contact & Legal', closing],
+        ['القطاعات التي نخدمها', 'Sectors We Serve', P(13)], ['أعمالنا', 'Featured Work', P(14)], ['عملاؤنا', 'Our Clients', P(31)],
+        ['لماذا فاريوس', 'Why VARIOUS', P(33)], ['التواصل والبيانات النظامية', 'Contact & Legal', closing],
       ]
       setHeader(P(2), 'المحتويات', 'Index')
       grid.style.direction = dir
