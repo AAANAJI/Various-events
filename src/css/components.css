@@ -256,6 +256,13 @@
   transition: border-color var(--dur-fast) var(--ease);
 }
 .roster__name { display: block; font-size: var(--fs-h4); font-weight: 600; color: var(--text-strong); line-height: 1.4; }
+.roster__logo {
+  display: flex; align-items: center; justify-content: center;
+  height: 6rem; padding: var(--sp-3) var(--sp-4);
+  background: #fff; border: 1px solid var(--rule-hairline);
+}
+.roster__logo--dark { background: #0f1b28; border-color: rgba(255, 255, 255, .28); }
+.roster__logo img { max-width: 100%; max-height: 100%; object-fit: contain; }
 .roster__caption { display: block; font-size: var(--fs-micro); font-weight: 400; color: var(--text-faint); margin-block-start: var(--sp-2); }
 .roster__link { display: block; transition: color var(--dur-fast) var(--ease); }
 .roster__link + .roster__caption { color: var(--text-eyebrow); }

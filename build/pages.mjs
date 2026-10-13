@@ -1,7 +1,7 @@
 // One function per route. Each is handed its own `route` and `lang`, so every
 // link and asset reference it emits is relative to where the page will live.
 
-import { esc, t, linkTo, img } from './lib.mjs'
+import { esc, t, linkTo, img, rootFrom } from './lib.mjs'
 import { ui, brand, contact } from '../content/site.mjs'
 import * as C from './components.mjs'
 import { home as homeCopy, about, vision, values, method, why, pauses } from '../content/pages.mjs'
@@ -502,9 +502,14 @@ export function clientsPage(route, lang) {
         ${clients.map(c => {
           const rel = relatedWork(c)
           const name = esc(t(c, lang))
-          const label = rel.href
-            ? `<a class="roster__link" href="${esc(linkTo(route, lang, rel.href, lang))}">${name}</a>`
+          // The logo stands for the name (its alt text is the name); a client
+          // without a logo yet stays a name.
+          const mark = c.logo
+            ? `<span class="roster__logo${c.onDark ? ' roster__logo--dark' : ''}"><img src="${esc(rootFrom(route, lang))}assets/clients/${esc(c.logo)}" alt="${name}" loading="lazy" decoding="async"></span>`
             : name
+          const label = rel.href
+            ? `<a class="roster__link" href="${esc(linkTo(route, lang, rel.href, lang))}">${mark}</a>`
+            : mark
           return `<li class="roster__item">
           <span class="roster__name">${label}
             ${rel.caption ? `<span class="roster__caption">${esc(rel.caption[lang])}</span>` : ''}

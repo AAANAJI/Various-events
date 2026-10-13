@@ -179,8 +179,7 @@ render a branded panel (the star on navy, with the client's name) in place of
 the photo, so nothing reads as broken. Drop a JPEG into `assets/img/` as
 `<name>-<width>.jpg` and set `image:` in `content/projects.mjs`.
 
-**Client logos** — the website sets the roster typographically. The profile
-shows the 22 logos found (`assets/clients/`; official sites or public logo libraries,
+**Client logos** — the website's clients page and the profile show the 22 logos found (`assets/clients/`; official sites or public logo libraries,
 mapped by `logo:` in `content/clients.mjs`); the other clients stay as names.
 Replace any of them with the vector logo once supplied, together with each
 government entity's permission to use its logo (copy deck E2).
