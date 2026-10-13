@@ -1,17 +1,17 @@
 // Client names, in the order of the client's approved copy deck.
 //
 // `logo` is a file in assets/clients/, collected from each organisation's own
-// website; the profile uses them on the clients page and on each project page.
+// website or from public logo libraries; the profile uses them on the clients page and on each project page.
 // `onDark` marks a logo drawn in white, which needs a dark plate. A client with
 // no `logo` is set as a name until its logo is supplied (vector logos are
 // requested from the client). The website still shows the typographic roster.
 
 export const clients = [
-  { ar: 'وزارة الثقافة',                                en: 'Ministry of Culture' },
+  { ar: 'وزارة الثقافة',                                en: 'Ministry of Culture', logo: 'culture.png' },
   { ar: 'وزارة الصحة',                                  en: 'Ministry of Health', logo: 'moh.png' },
   { ar: 'وزارة التعليم',                                en: 'Ministry of Education', logo: 'moe.svg' },
-  { ar: 'المديرية العامة للجوازات',                      en: 'General Directorate of Passports' },
-  { ar: 'الهيئة السعودية للمواصفات والمقاييس والجودة',    en: 'SASO' },
+  { ar: 'المديرية العامة للجوازات',                      en: 'General Directorate of Passports', logo: 'passports.png' },
+  { ar: 'الهيئة السعودية للمواصفات والمقاييس والجودة',    en: 'SASO', logo: 'saso.png' },
   { ar: 'صندوق الوقف الصحي',                            en: 'Health Endowment Fund' },
   { ar: 'برنامج تنمية القدرات البشرية',                  en: 'Human Capability Development Program' },
   { ar: 'برنامج المقرات الإقليمية',                      en: 'Saudi Regional Headquarters Program' },
@@ -24,9 +24,9 @@ export const clients = [
   { ar: 'حياة مول',                                     en: 'Hayat Mall' },
   { ar: 'فنادق سنود',                                   en: 'Snood Hotels', logo: 'snood.svg' },
   { ar: 'سيرا',                                         en: 'Sera', logo: 'sera.png' },
-  { ar: 'مايندوير',                                     en: 'Mindware' },
+  { ar: 'مايندوير',                                     en: 'Mindware', logo: 'mindware.png' },
   { ar: 'نوفا الطبية',                                  en: 'Nova Medical' },
-  { ar: 'سنكلير',                                       en: 'Sinclair' },
+  { ar: 'سنكلير',                                       en: 'Sinclair', logo: 'sinclair.png', onDark: true },
   { ar: 'تراكس',                                        en: 'TRAX' },
   { ar: 'ميديا آي دي',                                  en: 'Media ID', logo: 'mediaid.png' },
   { ar: 'لواسيس شوكولا',                                en: "L'Oasis Chocolate", logo: 'loasis.png' },

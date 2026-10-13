@@ -180,7 +180,7 @@ the photo, so nothing reads as broken. Drop a JPEG into `assets/img/` as
 `<name>-<width>.jpg` and set `image:` in `content/projects.mjs`.
 
 **Client logos** — the website sets the roster typographically. The profile
-shows the 12 logos found on each organisation's own website (`assets/clients/`,
+shows the 17 logos found (`assets/clients/`; official sites or public logo libraries,
 mapped by `logo:` in `content/clients.mjs`); the other clients stay as names.
 Replace any of them with the vector logo once supplied, together with each
 government entity's permission to use its logo (copy deck E2).

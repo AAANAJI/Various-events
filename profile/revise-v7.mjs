@@ -79,7 +79,7 @@ const assets = {
 
 const { chromium } = await loadPlaywright()
 const browser = await chromium.launch({ args: ['--no-sandbox', '--disable-gpu'] })
-const outNames = { ar: 'VARIOUS-Profile-AR-2026-v12', en: 'VARIOUS-Profile-EN-2026-v12' }
+const outNames = { ar: 'VARIOUS-Profile-AR-2026-v13', en: 'VARIOUS-Profile-EN-2026-v13' }
 
 for (const lang of ['ar', 'en']) {
   const page = await browser.newPage({ viewport: { width: 1400, height: 900 } })

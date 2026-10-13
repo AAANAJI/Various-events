@@ -290,9 +290,7 @@
         const lg = logoOf(c)
         cell.style.height = '92px'
         cell.innerHTML = lg
-          ? `<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;width:100%;height:100%">
-              <div style="width:150px;height:46px;background:${c.onDark ? '#0f1b28' : 'transparent'};display:flex;align-items:center;justify-content:center;padding:${c.onDark ? '4px 10px' : '0'}"><img src="${lg}" alt="${esc(L(c))}" style="max-width:100%;max-height:100%;object-fit:contain"></div>
-              <span style="font-size:12px;line-height:1.3;color:rgba(15,27,40,.62);direction:${dir};text-align:center">${esc(L(c))}</span></div>`
+          ? `<div style="width:150px;height:56px;background:${c.onDark ? '#0f1b28' : 'transparent'};display:flex;align-items:center;justify-content:center;padding:${c.onDark ? '6px 12px' : '0'}"><img src="${lg}" alt="${esc(L(c))}" style="max-width:100%;max-height:100%;object-fit:contain"></div>`
           : `<span style="font-size:16px;font-weight:600;line-height:1.4;color:rgba(15,27,40,.78);direction:${dir};text-align:center">${esc(L(c))}</span>`
         grid.appendChild(cell)
       }
