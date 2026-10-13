@@ -66,15 +66,20 @@ for (const p of content.projects) { if (p.image) names.add(p.image); for (const 
 const photos = Object.fromEntries([...names].map(n => [n, photo(n)]))
 Object.assign(photos, { d1: photos['mood-riyadh'], d2: photos['cover-collage'], d3: photos['mood-line'], d4: photos['mood-fireworks'], d5: photos['mood-city'] })
 
+const mime = { png: 'image/png', svg: 'image/svg+xml' }
+const logos = Object.fromEntries(content.clients.filter(c => c.logo).map(c => [c.logo,
+  dataUri(mime[c.logo.split('.').pop()], readFileSync(join(ROOT, 'assets/clients', c.logo)))]))
+
 const assets = {
   c: content,
   photos,
+  logos,
   mark: dataUri('image/svg+xml', readFileSync(join(ROOT, 'assets/logo/mark.svg'))),
 }
 
 const { chromium } = await loadPlaywright()
 const browser = await chromium.launch({ args: ['--no-sandbox', '--disable-gpu'] })
-const outNames = { ar: 'VARIOUS-Profile-AR-2026-v11', en: 'VARIOUS-Profile-EN-2026-v11' }
+const outNames = { ar: 'VARIOUS-Profile-AR-2026-v12', en: 'VARIOUS-Profile-EN-2026-v12' }
 
 for (const lang of ['ar', 'en']) {
   const page = await browser.newPage({ viewport: { width: 1400, height: 900 } })

@@ -215,6 +215,7 @@
 
     /* ── Projects: v7's half-photo layout, alternating sides ──────────── */
     const clientName = ar => { const c = C.clients.find(x => x.ar === ar); return c ? L(c) : ar }
+    const logoOf = c => c && c.logo && A.logos[c.logo] ? A.logos[c.logo] : ''
     const specs = []
     for (const p of C.projects) {
       const { head, rest } = splitTitle(L(p.title))
@@ -254,7 +255,10 @@
       const col = $(pg, ':scope > div[style*="top:112px"][style*="width:540px"]')
       keep(col)
       col.setAttribute('style', `position:absolute;top:0;bottom:0;${dark ? 'left' : 'right'}:72px;width:540px;display:flex;flex-direction:column;justify-content:center;direction:${dir};text-align:${start}`)
-      const plate = s.client ? `<div style="width:220px;height:78px;margin-bottom:28px;background:#ffffff;border:1px solid ${K.plate};display:flex;align-items:center;justify-content:center;padding:6px 14px;text-align:center"><span style="font-size:18px;font-weight:700;line-height:1.3;color:#0f1b28;direction:${dir}">${esc(clientName(s.client))}</span></div>` : ''
+      const cl = C.clients.find(x => x.ar === s.client)
+      const plate = s.client ? `<div style="width:220px;height:78px;margin-bottom:28px;background:${cl && cl.onDark ? '#0f1b28' : '#ffffff'};border:1px solid ${K.plate};display:flex;align-items:center;justify-content:center;padding:8px 16px;text-align:center">${logoOf(cl)
+        ? `<img src="${logoOf(cl)}" alt="${esc(clientName(s.client))}" style="max-width:100%;max-height:100%;object-fit:contain">`
+        : `<span style="font-size:18px;font-weight:700;line-height:1.3;color:#0f1b28;direction:${dir}">${esc(clientName(s.client))}</span>`}</div>` : ''
       const badge = t => `<span style="display:inline-block;margin-inline-start:8px;padding:1px 10px;background:#afda68;color:#0f1b28;font-size:15px;font-weight:700">★ ${esc(t)}</span>`
       col.innerHTML = `<div class="pc">${plate}
         <div style="font-size:36px;font-weight:700;line-height:1.3;color:${K.strong}">${esc(s.title)}</div>
@@ -283,10 +287,17 @@
       grid.innerHTML = ''
       for (const c of C.clients) {
         const cell = proto.cloneNode(true)
-        cell.innerHTML = `<span style="font-size:12px;line-height:1.4;color:rgba(15,27,40,.74);direction:${dir}">${esc(L(c))}</span>`
+        const lg = logoOf(c)
+        cell.style.height = '92px'
+        cell.innerHTML = lg
+          ? `<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;width:100%;height:100%">
+              <div style="width:150px;height:46px;background:${c.onDark ? '#0f1b28' : 'transparent'};display:flex;align-items:center;justify-content:center;padding:${c.onDark ? '4px 10px' : '0'}"><img src="${lg}" alt="${esc(L(c))}" style="max-width:100%;max-height:100%;object-fit:contain"></div>
+              <span style="font-size:12px;line-height:1.3;color:rgba(15,27,40,.62);direction:${dir};text-align:center">${esc(L(c))}</span></div>`
+          : `<span style="font-size:16px;font-weight:600;line-height:1.4;color:rgba(15,27,40,.78);direction:${dir};text-align:center">${esc(L(c))}</span>`
         grid.appendChild(cell)
       }
       grid.style.gridTemplateColumns = 'repeat(6,1fr)'
+      grid.style.direction = dir
       for (const d of cp.querySelectorAll('div, span')) if (d.textContent.includes('شبكة الشعارات') && !d.querySelector('div, span')) d.remove()
     }
 

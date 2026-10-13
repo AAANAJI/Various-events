@@ -179,9 +179,11 @@ render a branded panel (the star on navy, with the client's name) in place of
 the photo, so nothing reads as broken. Drop a JPEG into `assets/img/` as
 `<name>-<width>.jpg` and set `image:` in `content/projects.mjs`.
 
-**Client logos** — the roster is set typographically until vector logos
-(AI/EPS/SVG) are supplied, together with each government entity's permission
-to use its logo (copy deck E2).
+**Client logos** — the website sets the roster typographically. The profile
+shows the 12 logos found on each organisation's own website (`assets/clients/`,
+mapped by `logo:` in `content/clients.mjs`); the other clients stay as names.
+Replace any of them with the vector logo once supplied, together with each
+government entity's permission to use its logo (copy deck E2).
 
 **Social URLs** — the copy deck gives handles only. Instagram and X are
 unambiguous; LinkedIn is linked as a company page and YouTube as an
