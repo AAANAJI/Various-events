@@ -25,13 +25,13 @@ export const contact = {
   website:     'variousevent.com',
   websiteHref: 'https://variousevent.com',
   address: { ar: 'الرياض، المملكة العربية السعودية', en: 'Riyadh, Saudi Arabia' },
-  // Handles as given in the copy deck. The LinkedIn and YouTube URL forms
-  // (company page, @handle) are the platforms' current defaults.
+  // Handles as the client confirmed them: one handle on every network.
   social: [
-    { id: 'instagram', label: 'Instagram', handle: 'various_events_',    href: 'https://www.instagram.com/various_events_' },
-    { id: 'x',         label: 'X',         handle: 'various_event',      href: 'https://x.com/various_event' },
-    { id: 'linkedin',  label: 'LinkedIn',  handle: 'various-experience', href: 'https://www.linkedin.com/company/various-experience' },
-    { id: 'youtube',   label: 'YouTube',   handle: 'variousevents',      href: 'https://www.youtube.com/@variousevents' },
+    { id: 'linkedin',  label: 'LinkedIn',  handle: 'variousevent',  href: 'https://www.linkedin.com/company/variousevent' },
+    { id: 'instagram', label: 'Instagram', handle: '@variousevent', href: 'https://www.instagram.com/variousevent' },
+    { id: 'x',         label: 'X',         handle: '@Variousevent', href: 'https://x.com/variousevent' },
+    { id: 'youtube',   label: 'YouTube',   handle: '@variousevent', href: 'https://www.youtube.com/@variousevent' },
+    { id: 'tiktok',    label: 'TikTok',    handle: '@variousevent', href: 'https://www.tiktok.com/@variousevent' },
   ],
 }
 

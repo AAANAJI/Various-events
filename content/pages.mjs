@@ -201,10 +201,10 @@ export const why = {
       },
     },
     {
-      title: { ar: 'التزام تشهد له مواعيدنا', en: 'Deadlines we are known for' },
+      title: { ar: 'نلتزم بمواعيد التسليم', en: 'We deliver on time' },
       text: {
-        ar: 'مواعيد التسليم عندنا التزام تعاقدي وثقافة فريق.',
-        en: 'Delivery dates are a contractual commitment and a team culture.',
+        ar: 'نسلّم كل مشروع في موعده المتفق عليه؛ الموعد عندنا التزام تعاقدي وثقافة فريق.',
+        en: 'We hand over every project on the agreed date; the deadline is a contractual commitment and a team culture.',
       },
     },
     {

@@ -58,10 +58,10 @@ const content = {
   about: pages.about, vision: pages.vision, values: pages.values, method: pages.method, why: pages.why,
   eventTypes: services.eventTypes, frameworkAgreements: services.frameworkAgreements,
   solutions: services.solutions, ownerServices: services.ownerServices,
-  projects: projects.projects, categories: projects.categories,
-  clients: clients.clients, stats: stats.stats,
+  projects: [...projects.projects, ...projects.pendingProjects], categories: projects.categories,
+  clients: clients.clients, clientsLead: clients.clientsIntro.lead, stats: stats.stats,
 }
-const names = new Set(['mood-riyadh', 'cover-collage', 'mood-line', 'mood-fireworks', 'mood-city'])
+const names = new Set(['mood-riyadh', 'cover-collage', 'mood-line', 'mood-fireworks', 'mood-city', 'mood-services'])
 for (const p of content.projects) { if (p.image) names.add(p.image); for (const x of p.parts || []) if (x.image) names.add(x.image) }
 const photos = Object.fromEntries([...names].map(n => [n, photo(n)]))
 Object.assign(photos, { d1: photos['mood-riyadh'], d2: photos['cover-collage'], d3: photos['mood-line'], d4: photos['mood-fireworks'], d5: photos['mood-city'] })
@@ -79,7 +79,7 @@ const assets = {
 
 const { chromium } = await loadPlaywright()
 const browser = await chromium.launch({ args: ['--no-sandbox', '--disable-gpu'] })
-const outNames = { ar: 'VARIOUS-Profile-AR-2026-v16', en: 'VARIOUS-Profile-EN-2026-v16' }
+const outNames = { ar: 'VARIOUS-Profile-AR-2026-v17', en: 'VARIOUS-Profile-EN-2026-v17' }
 
 for (const lang of ['ar', 'en']) {
   const page = await browser.newPage({ viewport: { width: 1400, height: 900 } })

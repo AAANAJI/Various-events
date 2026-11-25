@@ -42,7 +42,7 @@ export const categories = [
 export const projects = [
   {
     slug: 'moh-nonprofit-pavilion',
-    image: null,
+    image: 'moh-nonprofit',
     category: 'exhibitions',
     client: "وزارة الصحة",
     title: {
@@ -92,7 +92,7 @@ export const projects = [
   },
   {
     slug: 'obeikan-health',
-    image: null,
+    image: 'obeikan',
     category: 'exhibitions',
     client: "العبيكان",
     title: {
@@ -196,7 +196,7 @@ export const projects = [
   },
   {
     slug: 'snood-hotels',
-    image: null,
+    image: 'snood-new',
     category: 'exhibitions',
     client: "فنادق سنود",
     title: {
@@ -214,6 +214,7 @@ export const projects = [
       {
         title: { ar: "معرض الحج والعمرة — جدة سوبر دوم", en: "Hajj & Umrah Expo — Jeddah Super Dome" },
         group: { ar: "الهوية القديمة", en: "Previous identity" },
+        image: 'snood-old',
         scope: [{ ar: "تصميم", en: "Design" }, { ar: "تنفيذ", en: "Delivery" }],
       },
       {
@@ -223,6 +224,7 @@ export const projects = [
       {
         title: { ar: "معرض الحج والعمرة — جدة سوبر دوم", en: "Hajj & Umrah Expo — Jeddah Super Dome" },
         group: { ar: "الهوية الجديدة", en: "New identity" },
+        image: 'snood-new',
         scope: [{ ar: "تصميم", en: "Design" }, { ar: "تنفيذ", en: "Delivery" }, { ar: "تدشين", en: "Launch" }],
       },
       {
@@ -234,7 +236,7 @@ export const projects = [
   },
   {
     slug: 'btc-networks-black-hat',
-    image: null,
+    image: 'btc',
     category: 'exhibitions',
     client: "بُعد للاتصالات",
     title: {
@@ -412,7 +414,7 @@ export const projects = [
   },
   {
     slug: 'passports-founding-day',
-    image: null,
+    image: 'passports-founding-day',
     category: 'ceremonies',
     client: "المديرية العامة للجوازات",
     title: {
@@ -428,7 +430,7 @@ export const projects = [
   },
   {
     slug: 'tahakom-great-place-to-work',
-    image: null,
+    image: 'tahakom-gptw',
     category: 'ceremonies',
     client: "شركة تحكم التقنية",
     title: {
@@ -501,3 +503,11 @@ export const workIntro = {
   },
 }
 
+
+// Projects the client has asked to add but has not yet sent copy or
+// photographs for. The profile gives each a page that says what is missing;
+// the website leaves them out until they are complete.
+export const pendingProjects = [
+  { slug: 'othaim-mall', image: null, category: 'exhibitions', client: null,
+    title: { ar: 'العثيم مول', en: 'Othaim Mall' }, text: { ar: 'بانتظار وصف المشروع وصوره.', en: 'Project description and photographs to be supplied.' }, types: [], scope: [] },
+]
