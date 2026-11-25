@@ -58,10 +58,13 @@ const content = {
   about: pages.about, vision: pages.vision, values: pages.values, method: pages.method, why: pages.why,
   eventTypes: services.eventTypes, frameworkAgreements: services.frameworkAgreements,
   solutions: services.solutions, ownerServices: services.ownerServices,
+  solutionSpreads: services.solutionSpreads, ownerSpreads: services.ownerSpreads,
   projects: [...projects.projects, ...projects.pendingProjects], categories: projects.categories,
   clients: clients.clients, clientsLead: clients.clientsIntro.lead, stats: stats.stats,
 }
 const names = new Set(['mood-riyadh', 'cover-collage', 'mood-line', 'mood-fireworks', 'mood-city', 'mood-services'])
+for (const e of content.eventTypes) names.add(`tile-${e.id}`)      // the event-type mosaic: grey versions, toned on the page
+for (const sp of [...content.solutionSpreads, ...content.ownerSpreads]) names.add(sp.image)
 for (const p of content.projects) { if (p.image) names.add(p.image); for (const x of p.parts || []) if (x.image) names.add(x.image) }
 const photos = Object.fromEntries([...names].map(n => [n, photo(n)]))
 Object.assign(photos, { d1: photos['mood-riyadh'], d2: photos['cover-collage'], d3: photos['mood-line'], d4: photos['mood-fireworks'], d5: photos['mood-city'] })
@@ -79,7 +82,7 @@ const assets = {
 
 const { chromium } = await loadPlaywright()
 const browser = await chromium.launch({ args: ['--no-sandbox', '--disable-gpu'] })
-const outNames = { ar: 'VARIOUS-Profile-AR-2026-v20', en: 'VARIOUS-Profile-EN-2026-v20' }
+const outNames = { ar: 'VARIOUS-Profile-AR-2026-v21', en: 'VARIOUS-Profile-EN-2026-v21' }
 
 for (const lang of ['ar', 'en']) {
   const page = await browser.newPage({ viewport: { width: 1400, height: 900 } })

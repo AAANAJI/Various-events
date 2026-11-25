@@ -154,8 +154,15 @@ has a counterpart for are re-worded in place; pages it has none for (service
 and solution lists, project pages, chapter dividers) are clones of the nearest
 v7 page, filled from the content files. The output is an Arabic and an English
 edition, each as HTML and PDF, with the contents, dividers and page numbers as
-internal links. Page counts differ between editions because English runs
-longer.
+internal links.
+
+The services chapter is three kinds of page, each borrowed from v7: the kinds
+of event as a mosaic of our work (`assets/img/tile-*.jpg`, grey versions toned
+on the page like the cover's collage); the solutions as a map in the contents
+grid; then `solutionSpreads` and `ownerSpreads` in `content/services.mjs` —
+two related groups to a page, or one long list alone, beside a photograph of
+our work (`assets/img/sol-*.jpg`, `own-*.jpg`) cut with the project pages'
+chevron. Each group has a pictogram, keyed by its `id` in `v7-transform.js`.
 
 Needs Playwright with Chromium (resolved from `node_modules` or the global
 install); the website itself still needs nothing. `dist-profile/` is

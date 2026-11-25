@@ -382,3 +382,24 @@ export const ownerServices = [
     ],
   },
 ]
+
+// How the printed profile lays parts two and three out: two related groups to
+// a page — the two longest lists get a page each — beside one photograph of
+// our own work (assets/img). The website lists every group on its own page
+// and does not use these.
+export const solutionSpreads = [
+  { groups: ['planning', 'project-management'], image: 'sol-planning' },
+  { groups: ['design', 'engineering'],          image: 'sol-design' },
+  { groups: ['fabrication', 'venue'],           image: 'sol-fabrication' },
+  { groups: ['avl'],                            image: 'sol-avl' },
+  { groups: ['technology'],                     image: 'sol-technology' },
+  { groups: ['agenda', 'protocol'],             image: 'sol-agenda' },
+  { groups: ['crowd', 'hospitality'],           image: 'sol-hospitality' },
+  { groups: ['advertising', 'documentation'],   image: 'sol-media' },
+]
+export const ownerSpreads = [
+  { groups: ['show-planning', 'stands'],        image: 'own-planning' },
+  { groups: ['infrastructure', 'identity'],     image: 'own-identity' },
+  { groups: ['visitors', 'exhibitors'],         image: 'own-visitors' },
+  { groups: ['operations', 'closing'],          image: 'own-operations' },
+]
