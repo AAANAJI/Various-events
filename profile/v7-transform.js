@@ -298,8 +298,8 @@
       const cl = C.clients.find(x => x.ar === s.client)
       // The client's logo alone: no plate, no frame; white on the dark pages.
       const tone = dark ? 'brightness(0) invert(1)' : cl && cl.onDark ? 'brightness(0)' : 'none'
-      const plate = s.client ? `<div style="height:76px;margin-bottom:26px;display:flex;align-items:center">${logoOf(cl)
-        ? `<img src="${logoOf(cl)}" alt="${esc(clientName(s.client))}" style="max-width:240px;max-height:76px;object-fit:contain;filter:${tone}">`
+      const plate = s.client ? `<div style="height:96px;margin-bottom:24px;display:flex;align-items:center">${logoOf(cl)
+        ? `<img src="${logoOf(cl)}" alt="${esc(clientName(s.client))}" style="max-width:290px;max-height:96px;object-fit:contain;filter:${tone}">`
         : `<span style="font-size:20px;font-weight:700;line-height:1.3;color:${K.strong};direction:${dir}">${esc(clientName(s.client))}</span>`}</div>` : ''
       const badge = t => `<span style="display:inline-block;margin-inline-start:8px;padding:1px 10px;background:#afda68;color:#0f1b28;font-size:15px;font-weight:700">★ ${esc(t)}</span>`
       col.innerHTML = `<div class="pc">${plate}
@@ -332,7 +332,7 @@
         const lg = logoOf(c)
         cell.style.height = '92px'
         cell.innerHTML = lg
-          ? `<div style="width:150px;height:56px;background:${c.onDark ? '#0f1b28' : 'transparent'};display:flex;align-items:center;justify-content:center;padding:${c.onDark ? '6px 12px' : '0'}"><img src="${lg}" alt="${esc(L(c))}" style="max-width:100%;max-height:100%;object-fit:contain"></div>`
+          ? `<div style="width:150px;height:56px;display:flex;align-items:center;justify-content:center"><img src="${lg}" alt="${esc(L(c))}" style="max-width:100%;max-height:100%;object-fit:contain;filter:${c.onDark ? 'brightness(0)' : 'none'}"></div>`
           : `<span style="font-size:16px;font-weight:600;line-height:1.4;color:rgba(15,27,40,.78);direction:${dir};text-align:center">${esc(L(c))}</span>`
         grid.appendChild(cell)
       }
@@ -364,7 +364,7 @@
       const link = (href, t) => `<a class="lt" href="${href}" style="color:inherit;text-decoration:none">${t}</a>`
       const values = [
         link(C.contactLinks.whatsapp, C.contact.phone), link('mailto:' + C.contact.email, C.contact.email), link(C.contact.websiteHref, C.contact.website), esc(L(C.contact.address)),
-        `<span style="display:grid;grid-template-columns:repeat(2,max-content);gap:10px 30px;direction:ltr;justify-content:${EN ? 'start' : 'end'}">${C.contact.social.map(x => `<a href="${x.href}" style="display:inline-flex;align-items:center;gap:10px;color:inherit;text-decoration:none"><svg viewBox="0 0 24 24" width="30" height="30" fill="#afda68" style="flex:none"><path d="${ICONS[x.id]}"/></svg><span class="lt" style="font-size:17px">${x.handle}</span></a>`).join('')}</span>`,
+        `<span style="display:grid;grid-template-columns:repeat(2,max-content);gap:10px 30px;direction:ltr;width:max-content;${EN ? '' : 'margin-left:auto'}">${C.contact.social.map(x => `<a href="${x.href}" style="display:inline-flex;align-items:center;gap:10px;color:inherit;text-decoration:none"><svg viewBox="0 0 24 24" width="30" height="30" fill="#afda68" style="flex:none"><path d="${ICONS[x.id]}"/></svg><span class="lt" style="font-size:17px">${x.handle}</span></a>`).join('')}</span>`,
       ]
       rows.slice(0, 5).forEach((r, i) => {
         r.children[0].textContent = labels[i]; r.children[0].style.width = '175px'
