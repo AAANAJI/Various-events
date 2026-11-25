@@ -144,13 +144,40 @@
 
     /* ── Services and solutions, from v7's services page ──────────────── */
     const svcTpl = P(10)
-    // One row per group: its name on a navy tile, its items as the same
-    // pills the project pages use — a list to scan, not a paragraph to read.
-    const svcBlock = (title, items) => html(`<div style="display:flex;align-items:stretch;gap:20px;direction:${dir}">
-      <div style="flex:none;width:262px;box-sizing:border-box;background:#0f1b28;padding:16px 20px;display:flex;flex-direction:column;justify-content:center;gap:10px;text-align:${start}">
-        <span style="width:38px;height:4px;background:linear-gradient(90deg,#afda68,#457a2e)"></span>
-        <span style="font-size:23px;font-weight:700;line-height:1.35;color:#ffffff">${esc(title)}</span></div>
-      <div style="flex:1;display:flex;flex-wrap:wrap;align-content:center;gap:8px;padding:4px 0">${items.map(i => `<span style="border:1px solid rgba(15,27,40,.22);background:#ffffff;border-radius:99px;padding:${EN ? '5px 13px' : '6px 15px'};font-size:${EN ? 16 : 17}px;line-height:1.35;color:rgba(15,27,40,.9)">${esc(L(i))}</span>`).join('')}</div></div>`)
+    // One row per group: its name and its own pictogram on a tile, its items
+    // as the pills the project pages use. Tiles alternate navy and green, so
+    // a reader can tell the rows apart at a glance and find a group again.
+    const SOL_ICONS = [
+      '<circle cx="12" cy="12" r="9"/><path d="M15.5 8.5l-2 5-5 2 2-5z"/>',
+      '<rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4V2.5h6V4M8.5 13l2.5 2.5 4.5-5"/>',
+      '<path d="M4 20l1-5L16 4l4 4L9 19zM14 6l4 4"/>',
+      '<path d="M4 20V6l14 14zM8 16v-3l3 3z"/>',
+      '<path d="M14 6l4-2 2 2-2 4-2-1-9 9-2-2 9-9z"/>',
+      '<path d="M12 4L3 20h18zM12 4v16M9 20l3-6 3 6"/>',
+      '<path d="M4 10v4h3l5 4V6l-5 4zM16 9a4 4 0 0 1 0 6M18.5 6.5a8 8 0 0 1 0 11"/>',
+      '<rect x="7" y="7" width="10" height="10" rx="1.5"/><path d="M10 3v4M14 3v4M10 17v4M14 17v4M3 10h4M3 14h4M17 10h4M17 14h4"/>',
+      '<rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M8 3v4M16 3v4"/>',
+      '<path d="M12 3l2.6 5.6 6 .8-4.4 4.2 1.1 6L12 16.8 6.7 19.6l1.1-6L3.4 9.4l6-.8z"/>',
+      '<circle cx="9" cy="8" r="3"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6"/><circle cx="17" cy="9" r="2.3"/><path d="M16 14.2c2.9.3 5 2.6 5 5.8"/>',
+      '<path d="M5 8h11v6a5 5 0 0 1-5 5h-1a5 5 0 0 1-5-5zM16 10h2a2.5 2.5 0 0 1 0 5h-2M8 3v2M12 3v2"/>',
+      '<path d="M4 10v4l3 .5V9.5zM7 9.5L18 5v14L7 14.5M9 15l1 5h2.5l-1-4.2"/>',
+      '<path d="M4 8h3.5L9 5.5h6L16.5 8H20v11H4z"/><circle cx="12" cy="13" r="3.3"/>',
+    ]
+    const OWN_ICONS = [
+      '<rect x="4" y="4" width="16" height="16" rx="1.5"/><path d="M4 11h9M13 4v16M13 15h7"/>',
+      '<path d="M4 20V8l8-4 8 4v12M4 12h16M9 20v-5h6v5"/>',
+      '<path d="M13 3L5 13.5h6L10 21l9-11h-6z"/>',
+      '<path d="M7 9V4h10v5M7 17H4.5V9h15v8H17"/><rect x="7" y="14" width="10" height="6"/>',
+      '<rect x="6" y="6" width="12" height="15" rx="2"/><path d="M10 6V3h4v3"/><circle cx="12" cy="12" r="2.2"/><path d="M9 17.5h6"/>',
+      '<rect x="3.5" y="8" width="17" height="11" rx="2"/><path d="M9 8V5.5h6V8M3.5 13h17"/>',
+      '<path d="M3 7h11v9H3zM14 10h4l3 3v3h-7"/><circle cx="7.5" cy="17.5" r="1.8"/><circle cx="17" cy="17.5" r="1.8"/>',
+      '<path d="M4 4v16h16M8 16v-4M12 16V8M16 16v-6"/>',
+    ]
+    const svcBlock = (title, items, icon, alt) => html(`<div style="display:flex;align-items:stretch;gap:20px;direction:${dir}">
+      <div style="flex:none;width:290px;box-sizing:border-box;background:${alt ? '#457a2e' : '#0f1b28'};padding:14px 18px;display:flex;align-items:center;gap:14px;text-align:${start}">
+        <svg viewBox="0 0 24 24" width="42" height="42" fill="none" stroke="${alt ? '#ffffff' : '#afda68'}" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="flex:none">${icon || ''}</svg>
+        <span style="font-size:22px;font-weight:700;line-height:1.35;color:#ffffff">${esc(title)}</span></div>
+      <div style="flex:1;display:flex;flex-wrap:wrap;align-content:center;gap:8px;padding:4px 0">${items.map(i => `<span style="border:1px solid ${alt ? 'rgba(69,122,46,.55)' : 'rgba(15,27,40,.22)'};background:${alt ? '#f3f8ec' : '#ffffff'};border-radius:99px;padding:${EN ? '5px 13px' : '6px 15px'};font-size:${EN ? 16 : 17}px;line-height:1.35;color:rgba(15,27,40,.9)">${esc(L(i))}</span>`).join('')}</div></div>`)
     const SVC = { h: 486, gap: 16 }
     const newSvcPage = () => {
       const pg = svcTpl.cloneNode(true)
@@ -161,11 +188,11 @@
       return { pg, box: bodyBox }
     }
     // Stack rows down the page, spread evenly; a new page opens when the next row will not fit.
-    const flow = (groups, ar, en) => {
+    const flow = (groups, icons, ar, en) => {
       const pages = []
       let cur = newSvcPage(); pages.push(cur)
-      for (const g of groups) {
-        const row = svcBlock(L(g.title), g.items)
+      for (const [k, g] of groups.entries()) {
+        const row = svcBlock(L(g.title), g.items, icons[k], k % 2 === 1)
         cur.box.appendChild(row)
         if (cur.box.offsetHeight > SVC.h && cur.box.children.length > 1) { row.remove(); cur = newSvcPage(); pages.push(cur); cur.box.appendChild(row) }
       }
@@ -182,8 +209,8 @@
       setHeader(pg, 'خدماتنا', 'Our Services')
       return pg
     })()
-    const solutionPages = flow(C.solutions, 'حلولنا', 'Our Solutions')
-    const ownerPages = flow(C.ownerServices, 'خدمات أصحاب المعارض', 'For Exhibition Owners')
+    const solutionPages = flow(C.solutions, SOL_ICONS, 'حلولنا', 'Our Solutions')
+    const ownerPages = flow(C.ownerServices, OWN_ICONS, 'خدمات أصحاب المعارض', 'For Exhibition Owners')
 
     /* ── How we work: the website's connected path ────────────────────── */
     {
