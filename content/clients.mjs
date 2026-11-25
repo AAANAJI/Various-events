@@ -2,7 +2,8 @@
 //
 // `logo` is a file in assets/clients/, collected from each organisation's own
 // website or from public logo libraries; the profile uses them on the clients page and on each project page.
-// `onDark` marks a logo drawn in white, which needs a dark plate. A client with
+// `logoLight` is a version for dark grounds where a plain white silhouette
+// would lose the mark. `onDark` marks a logo drawn in white, which needs a dark plate. A client with
 // no `logo` is set as a name until its logo is supplied (vector logos are
 // requested from the client). The website still shows the typographic roster.
 
@@ -17,7 +18,7 @@ export const clients = [
   { ar: 'برنامج المقرات الإقليمية',                      en: 'Saudi Regional Headquarters Program' },
   { ar: 'شركة تحكم التقنية',                            en: 'Technology Control Company', logo: 'tahakom.svg' },
   { ar: 'سبل',                                          en: 'SPL', logo: 'spl.svg' },
-  { ar: 'البنك الأول',                                  en: 'SAB', logo: 'sab.svg' },
+  { ar: 'البنك الأول',                                  en: 'SAB', logo: 'sab.svg', logoLight: 'sab-light.svg' },
   { ar: 'العبيكان',                                     en: 'Obeikan', logo: 'obeikan.png', onDark: true },
   { ar: 'بُعد للاتصالات',                               en: 'BTC Networks', logo: 'btc.png' },
   { ar: 'رتال العقارية',                                en: 'Retal', logo: 'retal.png', onDark: true },

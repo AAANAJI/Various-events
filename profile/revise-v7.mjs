@@ -67,8 +67,8 @@ const photos = Object.fromEntries([...names].map(n => [n, photo(n)]))
 Object.assign(photos, { d1: photos['mood-riyadh'], d2: photos['cover-collage'], d3: photos['mood-line'], d4: photos['mood-fireworks'], d5: photos['mood-city'] })
 
 const mime = { png: 'image/png', svg: 'image/svg+xml' }
-const logos = Object.fromEntries(content.clients.filter(c => c.logo).map(c => [c.logo,
-  dataUri(mime[c.logo.split('.').pop()], readFileSync(join(ROOT, 'assets/clients', c.logo)))]))
+const logos = Object.fromEntries(content.clients.flatMap(c => [c.logo, c.logoLight]).filter(Boolean).map(f => [f,
+  dataUri(mime[f.split('.').pop()], readFileSync(join(ROOT, 'assets/clients', f)))]))
 
 const assets = {
   c: content,
@@ -79,7 +79,7 @@ const assets = {
 
 const { chromium } = await loadPlaywright()
 const browser = await chromium.launch({ args: ['--no-sandbox', '--disable-gpu'] })
-const outNames = { ar: 'VARIOUS-Profile-AR-2026-v18', en: 'VARIOUS-Profile-EN-2026-v18' }
+const outNames = { ar: 'VARIOUS-Profile-AR-2026-v19', en: 'VARIOUS-Profile-EN-2026-v19' }
 
 for (const lang of ['ar', 'en']) {
   const page = await browser.newPage({ viewport: { width: 1400, height: 900 } })

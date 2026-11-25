@@ -144,41 +144,30 @@
 
     /* ── Services and solutions, from v7's services page ──────────────── */
     const svcTpl = P(10)
-    const svcBlock = (title, items, span = 1) => html(`<div style="background:#f3f6ef;border-top:4px solid #457a2e;padding:13px 20px 12px;direction:${dir};text-align:${start}">
-      <div style="font-size:24px;font-weight:700;line-height:1.3;color:#0f1b28">${esc(title)}</div>
-      <div style="margin-top:11px;column-count:${span};column-gap:26px">${items.map(i => `<div style="display:flex;gap:10px;margin-bottom:6px;break-inside:avoid;align-items:baseline;font-size:17.5px;line-height:1.38;color:rgba(15,27,40,.88)"><span style="flex:none;width:7px;height:7px;background:#457a2e;transform:translateY(-3px)"></span><span>${esc(L(i))}</span></div>`).join('')}</div></div>`)
-    const SVC = { w: 557, gap: 22, h: 482 }                 // two columns inside v7's 1136px text block
+    // One row per group: its name on a navy tile, its items as the same
+    // pills the project pages use — a list to scan, not a paragraph to read.
+    const svcBlock = (title, items) => html(`<div style="display:flex;align-items:stretch;gap:20px;direction:${dir}">
+      <div style="flex:none;width:262px;box-sizing:border-box;background:#0f1b28;padding:16px 20px;display:flex;flex-direction:column;justify-content:center;gap:10px;text-align:${start}">
+        <span style="width:38px;height:4px;background:linear-gradient(90deg,#afda68,#457a2e)"></span>
+        <span style="font-size:23px;font-weight:700;line-height:1.35;color:#ffffff">${esc(title)}</span></div>
+      <div style="flex:1;display:flex;flex-wrap:wrap;align-content:center;gap:8px;padding:4px 0">${items.map(i => `<span style="border:1px solid rgba(15,27,40,.22);background:#ffffff;border-radius:99px;padding:${EN ? '5px 13px' : '6px 15px'};font-size:${EN ? 16 : 17}px;line-height:1.35;color:rgba(15,27,40,.9)">${esc(L(i))}</span>`).join('')}</div></div>`)
+    const SVC = { h: 486, gap: 16 }
     const newSvcPage = () => {
       const pg = svcTpl.cloneNode(true)
       const bodyBox = $(pg, ':scope > div[style*="top:184px;right:72px;left:72px;display:flex"]')
-      keep(bodyBox); bodyBox.innerHTML = ''; bodyBox.style.display = 'block'; bodyBox.style.top = '166px'; bodyBox.style.height = SVC.h + 'px'; bodyBox.style.direction = dir
+      keep(bodyBox); bodyBox.innerHTML = ''; bodyBox.style.display = 'flex'; bodyBox.style.flexDirection = 'column'; bodyBox.style.gap = SVC.gap + 'px'
+      bodyBox.style.top = '168px'; bodyBox.style.direction = dir
       body.appendChild(pg)
-      return { pg, box: bodyBox, heights: [0, 0] }
+      return { pg, box: bodyBox }
     }
-    // Pack cards into two columns, each card's items in two columns of its
-    // own. A new page opens when nothing fits.
+    // Stack rows down the page, spread evenly; a new page opens when the next row will not fit.
     const flow = (groups, ar, en) => {
       const pages = []
       let cur = newSvcPage(); pages.push(cur)
       for (const g of groups) {
-        const span = 1
-        const card = svcBlock(L(g.title), g.items, 2)
-        const width = span * SVC.w + (span - 1) * SVC.gap
-        card.style.position = 'absolute'; card.style.width = width + 'px'; card.style.boxSizing = 'border-box'
-        for (let placed = false; !placed;) {
-          cur.box.appendChild(card)
-          const need = card.offsetHeight
-          let at = -1
-          for (let c = 0; c + span <= 2 && at < 0; c++) {
-            const top = Math.max(...cur.heights.slice(c, c + span))
-            if (top + need <= SVC.h || (top === 0 && cur.heights.every(x => x === 0))) at = c
-          }
-          if (at < 0) { card.remove(); cur = newSvcPage(); pages.push(cur); continue }
-          const top = Math.max(...cur.heights.slice(at, at + span))
-          card.style.top = top + 'px'; card.style[start] = at * (SVC.w + SVC.gap) + 'px'
-          for (let c = at; c < at + span; c++) cur.heights[c] = top + need + 14
-          placed = true
-        }
+        const row = svcBlock(L(g.title), g.items)
+        cur.box.appendChild(row)
+        if (cur.box.offsetHeight > SVC.h && cur.box.children.length > 1) { row.remove(); cur = newSvcPage(); pages.push(cur); cur.box.appendChild(row) }
       }
       pages.forEach((p, i) => setHeader(p.pg, pages.length > 1 ? `${ar} (${i + 1}/${pages.length})` : ar, pages.length > 1 ? `${en} (${i + 1}/${pages.length})` : en))
       return pages.map(p => p.pg)
@@ -186,7 +175,7 @@
     const partOne = (() => {
       const { pg, box } = newSvcPage()
       const names = [...C.eventTypes.map(e => L(e.title)), L(C.frameworkAgreements.title)]
-      box.style.height = 'auto'; box.style.display = 'grid'; box.style.gridTemplateColumns = 'repeat(4,1fr)'; box.style.gap = '18px'
+      box.style.display = 'grid'; box.style.gridTemplateColumns = 'repeat(4,1fr)'; box.style.gap = '18px'
       box.innerHTML = names.map(n => `<div style="background:#0f1b28;min-height:178px;padding:22px 22px 24px;display:flex;flex-direction:column;justify-content:space-between;direction:${dir};text-align:${start}">
         <span style="width:44px;height:5px;background:linear-gradient(90deg,#afda68,#457a2e)"></span>
         <span style="font-size:25px;font-weight:700;line-height:1.35;color:#ffffff">${esc(n)}</span></div>`).join('')
@@ -233,17 +222,20 @@
       setHeader(wp, 'لماذا فاريوس', 'Why VARIOUS')
       const box = $(wp, ':scope > div[style*="top:190px;right:72px;left:72px"]')
       keep(box); box.style.top = '172px'
-      box.innerHTML = C.why.items.map((w, i) => `<div style="display:flex;direction:${dir};gap:26px;align-items:baseline;padding:8px 0;border-bottom:1px solid rgba(15,27,40,.12)">
-        <span style="flex:none;width:36px;font-size:24px;font-weight:700;color:#457a2e">${String(i + 1).padStart(2, '0')}</span>
-        <span style="flex:none;width:300px;font-size:24px;font-weight:700;line-height:1.35;color:#0f1b28;text-align:${start}">${esc(L(w.title))}</span>
-        <span style="flex:1;font-size:19px;line-height:1.55;color:rgba(15,27,40,.86);text-align:${start}">${esc(L(w.text))}</span></div>`).join('') +
-        `<div style="margin-top:16px;display:flex;direction:${dir};align-items:center;gap:16px;border:1px solid rgba(69,122,46,.45);padding:12px 20px;background:rgba(175,218,104,.14)">
-          <span style="flex:none;width:36px;height:36px;border-radius:50%;background:#afda68;color:#0f1b28;display:flex;align-items:center;justify-content:center;font-size:19px">★</span>
-          <span style="font-size:19px;font-weight:600;line-height:1.5;color:#0f1b28;text-align:${start}">${esc(L(C.why.award.label))} · ${esc(L(C.why.award.text))}</span></div>`
+      box.setAttribute('style', `position:absolute;top:168px;right:72px;left:72px;display:grid;grid-template-columns:repeat(3,1fr);gap:16px;direction:${dir}`)
+      const cellCss = `padding:20px 22px 22px;display:flex;flex-direction:column;min-height:206px;box-sizing:border-box;text-align:${start}`
+      box.innerHTML = C.why.items.map((w, i) => `<div style="background:#0f1b28;${cellCss}">
+        <span style="font-size:22px;font-weight:700;color:#afda68">${String(i + 1).padStart(2, '0')}</span>
+        <span style="font-size:24px;font-weight:700;line-height:1.35;color:#ffffff;margin-top:8px">${esc(L(w.title))}</span>
+        <span style="font-size:17.5px;line-height:1.55;color:rgba(255,255,255,.86);margin-top:10px">${esc(L(w.text))}</span></div>`).join('') +
+        `<div style="background:linear-gradient(135deg,#afda68,#7fb24a);${cellCss}">
+          <span style="width:38px;height:38px;border-radius:50%;background:#0f1b28;color:#afda68;display:flex;align-items:center;justify-content:center;font-size:20px">★</span>
+          <span style="font-size:24px;font-weight:700;line-height:1.35;color:#0f1b28;margin-top:10px">${esc(L(C.why.award.label))}</span>
+          <span style="font-size:17.5px;font-weight:600;line-height:1.55;color:#0f1b28;margin-top:8px">${esc(L(C.why.award.text))}</span></div>`
       // Everything stays above the page number.
-      const base = new Map([...box.querySelectorAll('*')].map(e => [e, parseFloat(getComputedStyle(e).fontSize)]))
+      const base = new Map([...box.querySelectorAll('span')].map(e => [e, parseFloat(getComputedStyle(e).fontSize)]))
       let f = 1
-      while (box.getBoundingClientRect().bottom - wp.getBoundingClientRect().top > 625 && f > 0.6) { f *= 0.95; base.forEach((bz, e) => { e.style.fontSize = (bz * f).toFixed(1) + 'px' }) }
+      while (box.getBoundingClientRect().bottom - wp.getBoundingClientRect().top > 648 && f > 0.6) { f *= 0.96; base.forEach((bz, e) => { if (bz < 30 || !e.textContent.includes('★')) e.style.fontSize = (bz * f).toFixed(1) + 'px' }) }
     }
 
     /* ── Projects: v7's half-photo layout, alternating sides ──────────── */
@@ -299,7 +291,7 @@
       // The client's logo alone: no plate, no frame; white on the dark pages.
       const tone = dark ? 'brightness(0) invert(1)' : cl && cl.onDark ? 'brightness(0)' : 'none'
       const plate = s.client ? `<div style="height:96px;margin-bottom:24px;display:flex;align-items:center">${logoOf(cl)
-        ? `<img src="${logoOf(cl)}" alt="${esc(clientName(s.client))}" style="max-width:290px;max-height:96px;object-fit:contain;filter:${tone}">`
+        ? `<img src="${dark && cl.logoLight && A.logos[cl.logoLight] ? A.logos[cl.logoLight] : logoOf(cl)}" alt="${esc(clientName(s.client))}" style="max-width:290px;max-height:96px;object-fit:contain;filter:${dark && cl.logoLight ? 'none' : tone}">`
         : `<span style="font-size:20px;font-weight:700;line-height:1.3;color:${K.strong};direction:${dir}">${esc(clientName(s.client))}</span>`}</div>` : ''
       const badge = t => `<span style="display:inline-block;margin-inline-start:8px;padding:1px 10px;background:#afda68;color:#0f1b28;font-size:15px;font-weight:700">★ ${esc(t)}</span>`
       col.innerHTML = `<div class="pc">${plate}
